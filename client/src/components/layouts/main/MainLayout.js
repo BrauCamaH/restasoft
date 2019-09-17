@@ -2,7 +2,7 @@ import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 
-import TopBar from './TopBar';
+import TopBar from './topbar/TopBar';
 import SideBar from './sidebar/SideBar';
 
 const drawerWidth = 240;
