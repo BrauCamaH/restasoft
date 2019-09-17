@@ -4,11 +4,31 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import SidebarNav from './SidebarNav';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import ReceiptIcon from '@material-ui/icons/Receipt';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
+import EventSeatIcon from '@material-ui/icons/EventSeat';
+import AssignmentInd from '@material-ui/icons/AssignmentInd';
 
 const pages = [
   {
     title: 'Sales',
-    icon: <DashboardIcon></DashboardIcon>,
+    icon: <DashboardIcon />,
+  },
+  {
+    title: 'Orders',
+    icon: <ReceiptIcon />,
+  },
+  {
+    title: 'Products',
+    icon: <FastfoodIcon />,
+  },
+  {
+    title: 'Tables',
+    icon: <EventSeatIcon />,
+  },
+  {
+    title: 'Clients',
+    icon: <AssignmentInd Icon />,
   },
 ];
 
