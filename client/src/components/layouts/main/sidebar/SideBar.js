@@ -8,6 +8,14 @@ import ReceiptIcon from '@material-ui/icons/Receipt';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import EventSeatIcon from '@material-ui/icons/EventSeat';
 import AssignmentInd from '@material-ui/icons/AssignmentInd';
+import Profile from './components/profile';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  divider: {
+    margin: theme.spacing(2, 0),
+  },
+}));
 
 const pages = [
   {
@@ -34,11 +42,13 @@ const pages = [
 
 export default function Sidebar(props) {
   const { mobileOpen, container, classes, onDrawerToggle } = props;
+  const style = useStyles();
 
   const drawer = (
     <div>
       <div className={classes.toolbar} />
-      <Divider />
+      <Profile />
+      <Divider className={style.divider} />
       <SidebarNav pages={pages}></SidebarNav>
     </div>
   );
