@@ -2,7 +2,7 @@ import React from 'react';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
-import SidebarNav from './SidebarNav';
+import SidebarNav from './components/SidebarNav';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
