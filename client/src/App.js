@@ -1,5 +1,5 @@
 import React from 'react';
-import MainLayout from './/lacomponentsyouts/MainLayout';
+import MainLayout from './components/layouts/MainLayout';
 import { ThemeProvider } from '@material-ui/styles';
 import theme from './components/theme';
 
