@@ -2,14 +2,13 @@ import React from 'react';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
-import SidebarNav from './components/SidebarNav';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import EventSeatIcon from '@material-ui/icons/EventSeat';
 import AssignmentInd from '@material-ui/icons/AssignmentInd';
-import Profile from './components/profile';
 import { makeStyles } from '@material-ui/core/styles';
+import { SidebarNav, Profile } from './components';
 
 const useStyles = makeStyles(theme => ({
   divider: {

@@ -28,11 +28,7 @@ const Profile = () => {
   };
   return (
     <div className={classes.root}>
-      <Avatar
-        alt='Person'
-        className={classes.avatar}
-        src={user.avatar}
-      />
+      <Avatar alt='Person' className={classes.avatar} src={user.avatar} />
       <Typography className={classes.name} variant='h4'>
         {user.name}
       </Typography>

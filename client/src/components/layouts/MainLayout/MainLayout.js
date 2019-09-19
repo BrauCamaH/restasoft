@@ -2,8 +2,7 @@ import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 
-import TopBar from './topbar/TopBar';
-import SideBar from './sidebar/SideBar';
+import { Sidebar, Topbar } from './components';
 
 const drawerWidth = 240;
 
@@ -47,12 +46,12 @@ function Main() {
   return (
     <div className={classes.root}>
       <CssBaseline>
-        <TopBar classes={classes} onDrawerToggle={handleDrawerToggle}></TopBar>
-        <SideBar
+        <Topbar classes={classes} onDrawerToggle={handleDrawerToggle}></Topbar>
+        <Sidebar
           classes={classes}
           onDrawerToggle={handleDrawerToggle}
           mobileOpen={mobileOpen}
-        ></SideBar>
+        ></Sidebar>
       </CssBaseline>
     </div>
   );
