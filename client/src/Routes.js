@@ -1,9 +1,9 @@
-import { SingIn, SingUp } from './components/views';
+import { SingIn, SingUp, Tables } from './components/views';
 import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
 
 import { RouteWithLayout } from './components/tools';
-import { MinimalLayout } from './components/layouts';
+import { MinimalLayout, MainLayout } from './components/layouts';
 
 const Routes = () => {
   return (
@@ -20,6 +20,12 @@ const Routes = () => {
         exact
         layout={MinimalLayout}
         path='/sign-in'
+      />
+      <RouteWithLayout
+        component={Tables}
+        exact
+        layout={MainLayout}
+        path='/board/tables'
       />
     </Switch>
   );
