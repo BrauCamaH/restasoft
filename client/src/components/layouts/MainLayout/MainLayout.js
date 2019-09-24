@@ -1,6 +1,7 @@
 import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 
 import { Sidebar, Topbar } from './components';
 
@@ -33,11 +34,15 @@ const useStyles = makeStyles(theme => ({
   drawerPaper: {
     width: drawerWidth,
   },
+  content: {
+    height: '100%',
+  },
 }));
 
-function Main() {
+const MainLayout = props => {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { children } = props;
 
   function handleDrawerToggle() {
     setMobileOpen(!mobileOpen);
@@ -52,9 +57,14 @@ function Main() {
           onDrawerToggle={handleDrawerToggle}
           mobileOpen={mobileOpen}
         ></Sidebar>
+        <main className='classes content'>{children}</main>
       </CssBaseline>
     </div>
   );
-}
+};
 
-export default Main;
+MainLayout.propTypes= {
+  children : PropTypes.node
+};
+
+export default MainLayout;
