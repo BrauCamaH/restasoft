@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "dependencies": {
+    "concurrently": "^4.1.2"
+  },
+  "scripts": {
+    "start": "concurrently \"cd server && npm start\" \"cd client && npm start\"",
+    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm start\""
+  },
+  "author": "Braulio Camarena"
+}
