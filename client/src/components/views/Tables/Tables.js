@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,20 +14,32 @@ const useStyles = makeStyles(theme => ({
 export default function MaterialTableDemo() {
   const classes = useStyles();
 
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     columns: [
-      { title: 'Code', field: 'code' },
-      { title: 'Observations', field: 'observations'},
+      {
+        title: 'Code ',
+        field: 'code',
+        headerStyle: { minWidth: 150 },
+      },
+      {
+        title: 'Observations',
+        field: 'observations',
+        headerStyle: { minWidth: 200 },
+      },
     ],
-    data: [
-      { code: 'AbG32', observations :'Just a observation' },
-    ],
+    data: [{ code: 'AbG32', observations: 'Just a observation' }],
   });
 
+  useEffect(() => {
+    console.log('mounted');
+  }, []);
+
   return (
-    <div className={classes.root}>
-      <Grid container spacing={4}>
+    <div style={{ Width: '100%' }}>
+      <Grid container spacing={4} className={classes.root}>
         <MaterialTable
+          width='100%'
+          heigth='100%'
           title='Tables'
           columns={state.columns}
           data={state.data}

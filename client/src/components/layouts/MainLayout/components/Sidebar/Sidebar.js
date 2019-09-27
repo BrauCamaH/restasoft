@@ -19,23 +19,28 @@ const useStyles = makeStyles(theme => ({
 const pages = [
   {
     title: 'Sales',
+    href: '/sales',
     icon: <DashboardIcon />,
   },
   {
     title: 'Orders',
+    href: '/orders',
     icon: <ReceiptIcon />,
   },
   {
     title: 'Products',
+    href: '/products',
     icon: <FastfoodIcon />,
   },
   {
     title: 'Tables',
+    href: '/tables',
     icon: <EventSeatIcon />,
   },
   {
     title: 'Clients',
-    icon: <AssignmentInd Icon />,
+    href: '/clients',
+    icon: <AssignmentInd />,
   },
 ];
 

@@ -25,7 +25,7 @@ const Routes = () => {
         component={Tables}
         exact
         layout={MainLayout}
-        path='/board/tables'
+        path='/tables'
       />
     </Switch>
   );
