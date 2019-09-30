@@ -34,10 +34,36 @@ const addTable = (req, res) => {
   );
 };
 
+const updateTable = (req, res) => {
+  const id = req.params.id;
+  const {code, observations}= req.body;
+  pool.query('UPDATE Tables SET code = $1, observations = $2 where id = $3',
+  [code, observations, id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    res.status(200).send(`Table modified with ID: ${id}`)
+  });
+};
+const deleteTable = (req, res) => {
+  const id = req.params.id;
+  pool.query('DELETE FROM Tables WHERE id = $1',
+  [id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    res.status(200).send(`Table deleted with ID: ${id}`)
+  });
+};
+
 app
   .route('/tables')
   .get(getTables)
   .post(addTable);
+
+app.route('/tables/:id')
+   .put(updateTable)
+   .delete(deleteTable);
 
 // Start server
 const PORT = process.env.PORT || 8080;
