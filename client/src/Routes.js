@@ -1,4 +1,4 @@
-import { SingIn, SingUp, Tables } from './components/views';
+import { SingIn, SingUp, Tables, Categories } from './components/views';
 import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
 
@@ -26,6 +26,12 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path='/tables'
+      />
+      <RouteWithLayout
+        component={Categories}
+        exact
+        layout={MainLayout}
+        path='/products'
       />
     </Switch>
   );
