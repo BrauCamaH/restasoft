@@ -9,7 +9,6 @@ import {
   ButtonBase,
   Button,
   ButtonGroup,
-  Grid,
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
