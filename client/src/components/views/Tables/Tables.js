@@ -55,7 +55,7 @@ const Table = ()=> {
 
   const sendData = (code, observations) => {
     axios
-      .post(`/tables`,{
+      .post(`api/tables`,{
         code: code,
         observations: observations,
       })
@@ -70,7 +70,7 @@ const Table = ()=> {
   const getDataAxios = () => {
     setIsLoading(true);
     axios
-      .get('/tables')
+      .get('api/tables')
       .then(res => {
         setIsLoading(false);
         const data = res.data;
@@ -84,7 +84,7 @@ const Table = ()=> {
 
   const updateData = (id,code, observations) => {
     axios
-      .put(`/tables/${id}`, {
+      .put(`api/tables/${id}`, {
           code: code,
           observations: observations,
       })
@@ -98,7 +98,7 @@ const Table = ()=> {
 
   const deleteData = id => {
     axios
-      .delete(`/tables/${id}`)
+      .delete(`api/tables/${id}`)
       .then(res => {
         console.log(res.data);
       })
