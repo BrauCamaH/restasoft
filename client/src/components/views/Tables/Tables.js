@@ -7,12 +7,12 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(15),
-    width: '100%',
+    padding: theme.spacing(3),
+    marginTop: theme.spacing(8),
   },
 }));
 
-export default function MaterialTableDemo() {
+const Table = ()=> {
   const classes = useStyles();
 
   const [state, setState] = useState({
@@ -55,7 +55,7 @@ export default function MaterialTableDemo() {
 
   const sendData = (code, observations) => {
     axios
-      .post('http://localhost:8080/tables/', {
+      .post(`/tables`,{
         code: code,
         observations: observations,
       })
@@ -70,7 +70,7 @@ export default function MaterialTableDemo() {
   const getDataAxios = () => {
     setIsLoading(true);
     axios
-      .get('http://localhost:8080/tables')
+      .get('/tables')
       .then(res => {
         setIsLoading(false);
         const data = res.data;
@@ -84,7 +84,7 @@ export default function MaterialTableDemo() {
 
   const updateData = (id,code, observations) => {
     axios
-      .put(`http://localhost:8080/tables/${id}`, {
+      .put(`/tables/${id}`, {
           code: code,
           observations: observations,
       })
@@ -98,7 +98,7 @@ export default function MaterialTableDemo() {
 
   const deleteData = id => {
     axios
-      .delete(`http://localhost:8080/tables/${id}`)
+      .delete(`/tables/${id}`)
       .then(res => {
         console.log(res.data);
       })
@@ -168,3 +168,5 @@ export default function MaterialTableDemo() {
     </div>
   );
 }
+
+export default Table;
