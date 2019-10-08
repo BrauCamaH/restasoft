@@ -1,4 +1,3 @@
-const { pool } = require('../../config/pool');
 const db = require('../../config/sequelize');
 
 const Tables = db.tables;
