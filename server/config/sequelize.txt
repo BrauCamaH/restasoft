@@ -1,0 +1,13 @@
+sequelize model:generate --name users --attributes name:STRING,username:TEXT,password:STRING,type:STRING 
+
+sequelize model:generate --name clients --attributes rfc:STRING,name:TEXT,city:STRING,address:STRING,zipcode:STRING,colony:STRING,phone:STRING
+
+sequelize model:generate --name tables --attributes code:TEXT,observations:TEXT 
+
+sequelize model:generate --name sales --attributes pay:DECIMAL,total:DECIMAL,start:DATE,finish:DATE,user:INTEGER,client:INTEGER,table:INTEGER
+
+sequelize model:generate --name categories --attributes image:TEXT,name:STRING,description:TEXT
+
+sequelize model:generate --name products --attributes name:TEXT,description:TEXT,image:TEXT,price:DECIMAL,category:INTEGER
+
+sequelize model:generate --name orders --attributes price:DECIMAL,quantity:INTEGER,sale:INTEGER,product:INTEGER
