@@ -1,4 +1,4 @@
-const db = require('../../config/sequelize');
+const db = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
@@ -11,7 +11,7 @@ exports.getUsers = (req, res) => {
     .catch(e => res.json({ err: e }));
 };
 
-exports.user_signup = (req, res, next) => {
+exports.signUp = (req, res, next) => {
   const { name, username, password, type } = req.body;
   Users.findAll({ where: { username: username } }).then(user => {
     if (user.length >= 1) {
@@ -51,11 +51,11 @@ exports.user_signup = (req, res, next) => {
   });
 };
 
-exports.user_login = (req, res, next) => {
+exports.signIn = (req, res, next) => {
   const { username, password } = req.body;
   Users.findOne({ where: { username: username } })
     .then(user => {
-      if (user.length < 1) {
+      if (!user) {
         return res.status(401).json({
           message: 'Auth failed',
         });
