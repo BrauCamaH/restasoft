@@ -1,4 +1,4 @@
-const db = require('../../config/sequelize');
+const db = require('../models');
 
 const Tables = db.tables;
 
