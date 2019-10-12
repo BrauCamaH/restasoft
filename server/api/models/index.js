@@ -12,7 +12,12 @@ let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    config,
+  );
 }
 
 //Check for success connection
@@ -25,10 +30,11 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
-fs
-  .readdirSync(__dirname)
+fs.readdirSync(__dirname)
   .filter(file => {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+    return (
+      file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js'
+    );
   })
   .forEach(file => {
     console.info(`Loading model file ${file}`);
@@ -41,6 +47,11 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
+
+// sequelize.sync().then(err => {
+//   if (err) console.error('An error occured %j', err);
+//   else console.info('Database synchronized');
+// });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
