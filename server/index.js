@@ -8,9 +8,11 @@ const app = express();
 const tableRoutes = require('./api/routes/tables');
 const usersRoutes = require('./api/routes/users');
 const clientsRoutes = require('./api/routes/clients');
-const categoriesRoutes = require('./api/routes/categories')
+const categoriesRoutes = require('./api/routes/categories');
+const productsRoutes = require('./api/routes/products');
 
 app.use(morgan('dev'));
+app.use('/api/uploads', express.static('uploads'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -20,6 +22,7 @@ app.use('/api/tables', tableRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/clients', clientsRoutes);
 app.use('/api/categories', categoriesRoutes);
+app.use('/api/products', productsRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
