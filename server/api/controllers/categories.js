@@ -9,10 +9,11 @@ exports.getCategories = (req, res) => {
 };
 
 exports.addCategory = (req, res) => {
-  const { image, name, description } = req.body;
+  const { name, description } = req.body;
+  console.log(req.file);
 
   const Category = Categories.build({
-    image: image,
+    image: req.file.path,
     name: name,
     description: description,
   });
