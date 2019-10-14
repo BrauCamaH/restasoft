@@ -7,6 +7,7 @@ const app = express();
 
 const tableRoutes = require('./api/routes/tables');
 const usersRoutes = require('./api/routes/users');
+const clientsRoutes = require('./api/routes/clients');
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -16,6 +17,8 @@ app.use(cors());
 //Routes
 app.use('/api/tables', tableRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/clients', clientsRoutes);
+
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
