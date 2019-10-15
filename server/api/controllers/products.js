@@ -1,6 +1,17 @@
 const db = require('../models');
 
 const Products = db.products;
+const fs = require('fs');
+
+function deleteImageByPath(path) {
+  try {
+    fs.unlinkSync(path);
+    //file removed
+    console.log(`File Removed with path ${path}`);
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 exports.getProducts = (req, res) => {
   Products.findAll()
@@ -8,13 +19,13 @@ exports.getProducts = (req, res) => {
     .catch(e => res.json({ err: e }));
 };
 
-
 exports.addProduct = (req, res) => {
-  const { name, description, image, price, category } = req.body;
+  const { name, description, price, category } = req.body;
 
   const Product = Products.build({
-    name: description,
-    image: image,
+    name: name,
+    description: description,
+    image: req.file.path,
     price: price,
     category: category,
   });
@@ -30,31 +41,48 @@ exports.addProduct = (req, res) => {
 
 exports.updateProduct = (req, res) => {
   const id = req.params.id;
-  const { name, description, image, price, category } = req.body;
-  Products.update(
-    {
-      name: description,
-      image: image,
-      price: price,
-      category: category,
-    },
-    {
-      where: {
-        id: id,
+  const { name, description, price, category } = req.body;
+
+  let imagePath = '';
+
+  Products.findOne({ where: { id: id } }).then(product => {
+    if (!req.file) {
+      imagePath = product.image;
+    } else {
+      deleteImageByPath(product.image);
+      imagePath = req.file.path;
+    }
+
+    Products.update(
+      {
+        name: name,
+        description: description,
+        image: imagePath,
+        price: price,
+        category: category,
       },
-    },
-  )
-    .then(() => {
-      res.status(200).send(`Product updated with ID: ${id}`);
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: err,
+      {
+        where: {
+          id: id,
+        },
+      },
+    )
+      .then(() => {
+        res.status(200).send(`Product updated with ID: ${id}`);
+      })
+      .catch(err => {
+        res.status(500).json({
+          error: err,
+        });
       });
-    });
+  });
+
 };
 exports.deleteProduct = (req, res) => {
   const id = req.params.id;
+  Products.findOne({ where: { id: id } }).then(product => {
+    deleteImageByPath(product.image);
+  });
   Products.destroy({
     where: {
       id: id,
