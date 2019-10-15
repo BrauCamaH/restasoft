@@ -19,6 +19,12 @@ exports.getProducts = (req, res) => {
     .catch(e => res.json({ err: e }));
 };
 
+exports.getProductsByCategory = (req, res) => {
+  category = Products.findAll({ where: { category: req.params.category } })
+    .then(product => res.json(product))
+    .catch(e => res.jso({ err: e }));
+};
+
 exports.addProduct = (req, res) => {
   const { name, description, price, category } = req.body;
 
@@ -76,7 +82,6 @@ exports.updateProduct = (req, res) => {
         });
       });
   });
-
 };
 exports.deleteProduct = (req, res) => {
   const id = req.params.id;

@@ -32,6 +32,7 @@ const upload = multer({
 });
 
 router.get('/', ProductsController.getProducts);
+router.get('/:category', ProductsController.getProductsByCategory);
 router.post('/', upload.single('image'), ProductsController.addProduct);
 
 router.put('/:id', upload.single('image'), ProductsController.updateProduct);
