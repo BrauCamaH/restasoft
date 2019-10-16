@@ -2,6 +2,7 @@ const db = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
+const Joi = require('joi');
 
 const Users = db.users;
 
@@ -13,7 +14,26 @@ exports.getUsers = (req, res) => {
 
 exports.signUp = (req, res, next) => {
   const { name, username, password, type } = req.body;
+
+  const schema = {
+    name: Joi.string().required(),
+    username: Joi.string()
+      .min(4)
+      .required(),
+    password: Joi.string()
+      .min(6)
+      .required(),
+    type: Joi.string().required(),
+  };
+
+  const result = Joi.validate(req.body, schema);
+
   Users.findAll({ where: { username: username } }).then(user => {
+    if (result.error) {
+      return res.status(400).json({
+        message: result.error.details[0].message,
+      });
+    }
     if (user.length >= 1) {
       return res.status(409).json({
         message: 'username exists',

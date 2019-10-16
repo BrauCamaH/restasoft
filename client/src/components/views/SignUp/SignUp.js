@@ -4,6 +4,7 @@ import { Link as RouterLink, withRouter } from 'react-router-dom';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useSnackbar } from 'notistack';
 
 import axios from 'axios';
 import validate from 'validate.js';
@@ -36,7 +37,7 @@ const schema = {
   username: {
     presence: { allowEmpty: false, message: 'is required' },
     length: {
-      maximum: 10,
+      maximum: 20,
     },
   },
   password: {
@@ -133,11 +134,16 @@ const SignUp = props => {
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
-  const handleSubmit = () => {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  const handleSubmit = event => {
+    const { history } = props;
     //create user
-    const { firstName, lastName, username, password } = formState.values;
+    event.preventDefault();
+    const { firstName, lastName, username, password, rewrite } = formState.values;
     const { type } = values;
-    axios
+    if(password === rewrite){
+         axios
       .post(`api/users/sign-up`, {
         name: `${firstName} ${lastName}`,
         username: username,
@@ -145,11 +151,28 @@ const SignUp = props => {
         type: type,
       })
       .then(res => {
-        console.log(res.data);
+        console.log(res.message);
+        enqueueSnackbar(res.data.message, {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+        history.push('/sign-in');
       })
       .catch(err => {
-        console.log(err.response);
+        console.log()
+        enqueueSnackbar(err.response.data.message, {
+          variant: 'error',
+        });
+        setTimeout(closeSnackbar, 2000);
       });
+    }else{
+      console.log()
+      enqueueSnackbar('passwords do not match', {
+        variant: 'error',
+      });
+      setTimeout(closeSnackbar, 2000);
+    }
+ 
   };
   return (
     <Container component='main' maxWidth='xs'>
@@ -161,7 +184,7 @@ const SignUp = props => {
         <Typography component='h1' variant='h5'>
           Sign up
         </Typography>
-        <form className={classes.form}>
+        <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -174,7 +197,7 @@ const SignUp = props => {
                 name='firstName'
                 onChange={handleChange}
                 type='text'
-                value={formState.values.firstName || ''}
+                //value={formState.values.firstName || ''}
                 variant='outlined'
               />
             </Grid>
@@ -189,7 +212,7 @@ const SignUp = props => {
                 name='lastName'
                 onChange={handleChange}
                 type='text'
-                value={formState.values.lastName || ''}
+                //value={formState.values.lastName || ''}
                 variant='outlined'
               />
             </Grid>
@@ -204,7 +227,7 @@ const SignUp = props => {
                 name='username'
                 onChange={handleChange}
                 type='text'
-                value={formState.values.username || ''}
+                //value={formState.values.username || ''}
                 variant='outlined'
               />
             </Grid>
@@ -219,7 +242,7 @@ const SignUp = props => {
                 name='password'
                 onChange={handleChange}
                 type='password'
-                value={formState.values.password || ''}
+                //value={formState.values.password || ''}
                 variant='outlined'
               />
             </Grid>
@@ -234,7 +257,7 @@ const SignUp = props => {
                 name='rewrite'
                 onChange={handleChange}
                 type='password'
-                value={formState.values.rewrite || ''}
+                //value={formState.values.rewrite || ''}
                 variant='outlined'
               />
             </Grid>
@@ -254,14 +277,13 @@ const SignUp = props => {
             </Grid>
           </Grid>
           <Button
-            //type='submit'
-            fullWidth
-            disabled={!formState.isValid}
-            variant='contained'
-            onClick={handleSubmit}
             className={classes.submit}
-            component={CustomRouterLink}
-            to='/sign-in'
+            color='primary'
+            disabled={!formState.isValid}
+            fullWidth
+            size='large'
+            type='submit'
+            variant='contained'
           >
             Sign Up
           </Button>
