@@ -1,15 +1,57 @@
-import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
+import React, { useState, useEffect, forwardRef } from 'react';
 import Link from '@material-ui/core/Link';
 import { Link as RouterLink, withRouter } from 'react-router-dom';
-import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import axios from 'axios';
+import validate from 'validate.js';
+
+import {
+  TextField,
+  CssBaseline,
+  Avatar,
+  Button,
+  Typography,
+  Grid,
+  MenuItem,
+  Select,
+  FormControl,
+} from '@material-ui/core';
+
+const schema = {
+  firstName: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 32,
+    },
+  },
+  lastName: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 32,
+    },
+  },
+  username: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 10,
+    },
+  },
+  password: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 30,
+    },
+  },
+  rewrite: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 128,
+    },
+  },
+};
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -18,7 +60,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(3),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -36,11 +78,79 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.primary.main,
     margin: theme.spacing(3, 0, 2),
   },
+  formControl: {
+    width: '100%',
+  },
 }));
 
-const SignUp = () => {
+const SignUp = props => {
   const classes = useStyles();
 
+  const [formState, setFormState] = useState({
+    isValid: false,
+    values: {},
+    touched: {},
+    errors: {},
+  });
+
+  useEffect(() => {
+    const errors = validate(formState.values, schema);
+
+    setFormState(formState => ({
+      ...formState,
+      isValid: errors ? false : true,
+      errors: errors || {},
+    }));
+  }, [formState.values]);
+
+  const handleChange = event => {
+    event.persist();
+
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        [event.target.name]: event.target.value,
+      },
+      touched: {
+        ...formState.touched,
+        [event.target.name]: true,
+      },
+    }));
+  };
+
+  const [values, setValues] = React.useState({
+    type: 'Waiter',
+  });
+
+  const handleSelect = event => {
+    setValues(oldValues => ({
+      ...oldValues,
+      type: event.target.value,
+    }));
+  };
+
+  const hasError = field =>
+    formState.touched[field] && formState.errors[field] ? true : false;
+
+  const handleSubmit = () => {
+    //create user
+    const { firstName, lastName, username, password } = formState.values;
+    const { type } = values;
+    axios
+      .post(`api/users/sign-up`, {
+        name: `${firstName} ${lastName}`,
+        username: username,
+        password: password,
+        type: type,
+      })
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => {
+        console.log(err.response);
+      });
+  };
   return (
     <Container component='main' maxWidth='xs'>
       <CssBaseline />
@@ -55,66 +165,103 @@ const SignUp = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                autoComplete='fname'
-                name='firstName'
-                variant='outlined'
-                required
+                error={hasError('firstName')}
                 fullWidth
-                id='firstName'
-                label='First Name'
-                autoFocus
+                helperText={
+                  hasError('firstName') ? formState.errors.firstName[0] : null
+                }
+                label='First name'
+                name='firstName'
+                onChange={handleChange}
+                type='text'
+                value={formState.values.firstName || ''}
+                variant='outlined'
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                variant='outlined'
-                required
+                error={hasError('lastName')}
                 fullWidth
-                id='lastName'
-                label='Last Name'
+                helperText={
+                  hasError('lastName') ? formState.errors.lastName[0] : null
+                }
+                label='Last name'
                 name='lastName'
-                autoComplete='lname'
+                onChange={handleChange}
+                type='text'
+                value={formState.values.lastName || ''}
+                variant='outlined'
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant='outlined'
-                required
+                error={hasError('username')}
                 fullWidth
-                id='email'
-                label='Email Address'
-                name='email'
-                autoComplete='email'
+                helperText={
+                  hasError('username') ? formState.errors.username[0] : null
+                }
+                label='Username'
+                name='username'
+                onChange={handleChange}
+                type='text'
+                value={formState.values.username || ''}
+                variant='outlined'
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant='outlined'
-                required
+                error={hasError('password')}
                 fullWidth
-                name='password'
+                helperText={
+                  hasError('password') ? formState.errors.password[0] : null
+                }
                 label='Password'
+                name='password'
+                onChange={handleChange}
                 type='password'
-                id='password'
+                value={formState.values.password || ''}
+                variant='outlined'
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant='outlined'
-                required
+                error={hasError('rewrite')}
                 fullWidth
-                name='Rewrite'
+                helperText={
+                  hasError('rewrite') ? formState.errors.rewrite[0] : null
+                }
                 label='Rewrite Password'
+                name='rewrite'
+                onChange={handleChange}
                 type='password'
-                id='Rewrite'
+                value={formState.values.rewrite || ''}
+                variant='outlined'
               />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl variant='outlined' className={classes.formControl}>
+                <Select
+                  fullWidth
+                  value={values.type}
+                  name={formState.values.type}
+                  onChange={handleSelect}
+                  type='text'
+                >
+                  <MenuItem value={'Administrator'}>Administrator</MenuItem>
+                  <MenuItem value={'Waiter'}>Waiter</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
           <Button
-            type='submit'
+            //type='submit'
             fullWidth
+            disabled={!formState.isValid}
             variant='contained'
+            onClick={handleSubmit}
             className={classes.submit}
+            component={CustomRouterLink}
+            to='/sign-in'
           >
             Sign Up
           </Button>
@@ -130,5 +277,11 @@ const SignUp = () => {
     </Container>
   );
 };
+
+const CustomRouterLink = forwardRef((props, ref) => (
+  <div ref={ref} style={{ flexGrow: 1 }}>
+    <RouterLink {...props} />
+  </div>
+));
 
 export default withRouter(SignUp);
