@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Link as RouterLink, withRouter } from 'react-router-dom';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import axios from 'axios';
 import validate from 'validate.js';
+import { useSnackbar } from 'notistack';
 
 import {
   TextField,
@@ -63,8 +64,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const SignIn = () => {
+const SignIn = props => {
   const classes = useStyles();
+
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -99,14 +102,12 @@ const SignIn = () => {
     }));
   };
 
-  const [values, setValues] = React.useState({
-    type: 'Waiter',
-  });
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
   const handleSubmit = () => {
-    //create user
+    const { history } = props;
+
     const { username, password } = formState.values;
     axios
       .post(`api/users/sign-in`, {
@@ -114,10 +115,18 @@ const SignIn = () => {
         password: password,
       })
       .then(res => {
-        console.log(res.data);
+        if (res.status === 200) {
+          history.push('/products');
+        } else {
+          const error = new Error(res.error);
+          throw error;
+        }
       })
       .catch(err => {
-        console.log(err.response);
+        enqueueSnackbar(err.response.data.message, {
+          variant: 'error',
+        });
+        setTimeout(closeSnackbar, 2000);
       });
   };
 
@@ -173,7 +182,7 @@ const SignIn = () => {
             variant='contained'
             className={classes.submit}
             disabled={!formState.isValid}
-            onClick = {handleSubmit}
+            onClick={handleSubmit}
           >
             Sign In
           </Button>
