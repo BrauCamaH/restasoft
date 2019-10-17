@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from '@material-ui/core/Link';
 import { Link as RouterLink, withRouter } from 'react-router-dom';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -140,39 +140,41 @@ const SignUp = props => {
     const { history } = props;
     //create user
     event.preventDefault();
-    const { firstName, lastName, username, password, rewrite } = formState.values;
+    const {
+      firstName,
+      lastName,
+      username,
+      password,
+      rewrite,
+    } = formState.values;
     const { type } = values;
-    if(password === rewrite){
-         axios
-      .post(`api/users/sign-up`, {
-        name: `${firstName} ${lastName}`,
-        username: username,
-        password: password,
-        type: type,
-      })
-      .then(res => {
-        console.log(res.message);
-        enqueueSnackbar(res.data.message, {
-          variant: 'success',
+    if (password === rewrite) {
+      axios
+        .post(`api/users/sign-up`, {
+          name: `${firstName} ${lastName}`,
+          username: username,
+          password: password,
+          type: type,
+        })
+        .then(res => {
+          enqueueSnackbar(res.data.message, {
+            variant: 'success',
+          });
+          setTimeout(closeSnackbar, 2000);
+          history.push('/sign-in');
+        })
+        .catch(err => {
+          enqueueSnackbar(err.response.data.message, {
+            variant: 'error',
+          });
+          setTimeout(closeSnackbar, 2000);
         });
-        setTimeout(closeSnackbar, 2000);
-        history.push('/sign-in');
-      })
-      .catch(err => {
-        console.log()
-        enqueueSnackbar(err.response.data.message, {
-          variant: 'error',
-        });
-        setTimeout(closeSnackbar, 2000);
-      });
-    }else{
-      console.log()
+    } else {
       enqueueSnackbar('passwords do not match', {
         variant: 'error',
       });
       setTimeout(closeSnackbar, 2000);
     }
- 
   };
   return (
     <Container component='main' maxWidth='xs'>
@@ -299,11 +301,5 @@ const SignUp = props => {
     </Container>
   );
 };
-
-const CustomRouterLink = forwardRef((props, ref) => (
-  <div ref={ref} style={{ flexGrow: 1 }}>
-    <RouterLink {...props} />
-  </div>
-));
 
 export default withRouter(SignUp);
