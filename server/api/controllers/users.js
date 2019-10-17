@@ -97,14 +97,15 @@ exports.signIn = (req, res, next) => {
               expiresIn: '1h',
             },
           );
-          return res.status(200).json({
-            message: 'Auth successful',
-            token: token,
+          // message: 'Auth successful',
+          // token: token,
+          return res.cookie('restaToken', token, { httpOnly: true }).sendStatus(200);
+        }else{
+          res.status(401).json({
+            message: 'Auth failed',
           });
         }
-        res.status(401).json({
-          message: 'Auth failed',
-        });
+       
       });
     })
     .catch(err => {
