@@ -10,11 +10,13 @@ const usersRoutes = require('./api/routes/users');
 const clientsRoutes = require('./api/routes/clients');
 const categoriesRoutes = require('./api/routes/categories');
 const productsRoutes = require('./api/routes/products');
+const cookieParser = require('cookie-parser');
 
 app.use(morgan('dev'));
 app.use('/api/uploads', express.static('uploads'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(cors());
 
 //Routes
@@ -25,7 +27,7 @@ app.use('/api/categories', categoriesRoutes);
 app.use('/api/products', productsRoutes);
 
 app.use((req, res, next) => {
-  const error = new Error("Not found");
+  const error = new Error('Not found');
   error.status = 404;
   next(error);
 });
@@ -34,8 +36,8 @@ app.use((error, req, res, next) => {
   res.status(error.status || 500);
   res.json({
     error: {
-      message: error.message
-    }
+      message: error.message,
+    },
   });
 });
 
