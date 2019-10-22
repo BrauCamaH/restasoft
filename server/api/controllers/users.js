@@ -8,8 +8,18 @@ const Users = db.users;
 
 exports.getUsers = (req, res) => {
   Users.findAll()
-    .then(tables => res.json(tables))
+    .then(users => res.json(users))
     .catch(e => res.json({ err: e }));
+};
+
+exports.getUserById = (req, res) => {
+  Users.findOne({ where: { id: req.params.id } })
+    .then(user => {
+      res.json(user);
+    })
+    .catch(e => {
+      res.json({ err: e });
+    });
 };
 
 exports.signUp = (req, res, next) => {
@@ -89,7 +99,7 @@ exports.signIn = (req, res, next) => {
         if (result) {
           const token = jwt.sign(
             {
-              email: user.username,
+              type: user.type,
               userId: user.id,
             },
             config.jwtSecret,
@@ -99,13 +109,14 @@ exports.signIn = (req, res, next) => {
           );
           // message: 'Auth successful',
           // token: token,
-          return res.cookie('restaToken', token, { httpOnly: true }).sendStatus(200);
-        }else{
+          return res
+            .cookie('restaToken', token, { httpOnly: true })
+            .sendStatus(200);
+        } else {
           res.status(401).json({
             message: 'Auth failed',
           });
         }
-       
       });
     })
     .catch(err => {

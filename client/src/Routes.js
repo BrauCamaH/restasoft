@@ -1,4 +1,10 @@
-import { SingIn, SingUp, Tables, Categories } from './components/views';
+import {
+  SingIn,
+  SingUp,
+  Tables,
+  Categories,
+  Account,
+} from './components/views';
 import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
 
@@ -22,15 +28,21 @@ const Routes = () => {
         path='/sign-in'
       />
       <RouteWithLayout
+        component={WithAuth(Account)}
+        exact
+        layout={WithAuth(MainLayout)}
+        path='/account'
+      />
+      <RouteWithLayout
         component={WithAuth(Tables)}
         exact
-        layout={MainLayout}
+        layout={WithAuth(MainLayout)}
         path='/tables'
       />
       <RouteWithLayout
         component={WithAuth(Categories)}
         exact
-        layout={MainLayout}
+        layout={WithAuth(MainLayout)}
         path='/products'
       />
     </Switch>

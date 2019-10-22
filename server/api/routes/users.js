@@ -12,8 +12,12 @@ router.delete('/:id', UsersController.deleteUser);
 
 router.get('/', UsersController.getUsers);
 
+router.get('/user/:id', UsersController.getUserById);
+
 router.get('/checkToken', checkAuth, (req, res) => {
-  res.sendStatus(200);
+  res.status(200).json({
+    user: req.userData
+  });
 });
 
 module.exports = router;

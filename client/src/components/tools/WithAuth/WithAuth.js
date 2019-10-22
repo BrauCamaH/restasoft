@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import UserContext from '../../../context/user-context';
+
+import axios from 'axios';
 export default function withAuth(ComponentToProtect) {
   return class extends Component {
+    static contextType = UserContext;
     constructor() {
       super();
       this.state = {
@@ -10,10 +14,13 @@ export default function withAuth(ComponentToProtect) {
       };
     }
     componentDidMount() {
-      fetch('api/users/checkToken')
+      axios
+        .get('api/users/checkToken')
         .then(res => {
           if (res.status === 200) {
             this.setState({ loading: false });
+            //console.log(res.data.user.userId);
+            this.context.setUserId(res.data.user.userId);
           } else {
             const error = new Error(res.error);
             throw error;
