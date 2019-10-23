@@ -3,6 +3,7 @@ import {
   SingUp,
   Tables,
   Categories,
+  Products,
   Account,
 } from './components/views';
 import React from 'react';
@@ -41,6 +42,12 @@ const Routes = () => {
       />
       <RouteWithLayout
         component={WithAuth(Categories)}
+        exact
+        layout={WithAuth(MainLayout)}
+        path='/categories'
+      />
+      <RouteWithLayout
+        component={WithAuth(Products)}
         exact
         layout={WithAuth(MainLayout)}
         path='/products'

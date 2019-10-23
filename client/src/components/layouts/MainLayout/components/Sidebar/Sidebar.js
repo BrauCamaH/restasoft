@@ -29,7 +29,7 @@ const pages = [
   },
   {
     title: 'Products',
-    href: '/products',
+    href: '/categories',
     icon: <FastfoodIcon />,
   },
   {
