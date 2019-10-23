@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
 
-import { SearchBar } from '../../../../tools';
+import SearchInput from '../../../../tools/SearchBar';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -15,15 +15,19 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(1),
   },
   spacer: {
-    flexGrow: 1,
+    flexGrow: 10,
+  },
+  addButton: {
+    marginRight: theme.spacing(1),
   },
   searchInput: {
     marginRight: theme.spacing(1),
   },
 }));
 
-const CategoriesToolbar = props => {
+const ProductsToolbar = props => {
   const { className, ...rest } = props;
+
   const classes = useStyles();
 
   return (
@@ -31,21 +35,21 @@ const CategoriesToolbar = props => {
       <div className={classes.row}>
         <span className={classes.spacer} />
         <Button color='primary' variant='contained'>
-          Add category
+          Add product
         </Button>
       </div>
       <div className={classes.row}>
-        <SearchBar
+        <SearchInput
           className={classes.searchInput}
-          placeholder='Search category'
+          placeholder='Search product'
         />
       </div>
     </div>
   );
 };
 
-CategoriesToolbar.propTypes = {
+ProductsToolbar.propTypes = {
   className: PropTypes.string,
 };
 
-export default CategoriesToolbar;
+export default ProductsToolbar;

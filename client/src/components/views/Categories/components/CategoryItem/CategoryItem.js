@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
   },
   imageMarked: {
     height: 3,
-    width: 18,
+    width: 5,
     backgroundColor: theme.palette.common.white,
     position: 'absolute',
     bottom: -2,
@@ -91,7 +91,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CategoryItem = props => {
-  const { image, ...rest } = props;
+  const { category, ...rest } = props;
   const classes = useStyles();
 
   return (
@@ -99,7 +99,7 @@ const CategoryItem = props => {
       <CardContent>
         <ButtonBase
           focusRipple
-          key={image.title}
+          key={category.id}
           className={classes.image}
           focusVisibleClassName={classes.focusVisible}
           style={{
@@ -109,7 +109,7 @@ const CategoryItem = props => {
           <span
             className={classes.imageSrc}
             style={{
-              backgroundImage: `url(${image.url})`,
+              backgroundImage: `url(${category.image.substring(8)})`,
             }}
           />
           <span className={classes.imageBackdrop} />
@@ -120,7 +120,7 @@ const CategoryItem = props => {
               color='inherit'
               className={classes.imageTitle}
             >
-              {image.title}
+              {category.name}
               <span className={classes.imageMarked} />
             </Typography>
           </span>
