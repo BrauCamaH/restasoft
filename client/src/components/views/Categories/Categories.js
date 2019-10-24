@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { CategoryItem, CategoriesToolbar } from './components';
 import Grid from '@material-ui/core/Grid';
@@ -27,6 +27,10 @@ import axios from 'axios';
 //     title: 'Drinks',
 //   },
 // ];
+const CategoriesContext = createContext({
+  categories: [],
+  addCategory : ()=>{}
+})
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -50,7 +54,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ButtonBases = () => {
+const Categories = () => {
   const classes = useStyles();
 
   const [categories, setCategories] = useState([]);
@@ -67,20 +71,29 @@ const ButtonBases = () => {
       });
   }, []);
 
+  const addCategory= () =>{
+    console.log(`adding category..`);
+  }
+
   return (
-    <div className={classes.root}>
-      <CategoriesToolbar />
-      <div className={classes.content}>
-        <Grid container spacing={3}>
-          {categories.map(category => (
-            <Grid className= {classes.gridItem} item key={category.id} lg={4} md={6} xs={12}>
-              <CategoryItem category={category}></CategoryItem>
-            </Grid>
-          ))}
-        </Grid>
+    <CategoriesContext.Provider value={{
+      addCategory : addCategory
+    }}>
+       <div className={classes.root}>
+        <CategoriesToolbar />
+        <div className={classes.content}>
+          <Grid container spacing={3}>
+            {categories.map(category => (
+              <Grid className= {classes.gridItem} item key={category.id} lg={4} md={6} xs={12}>
+                <CategoryItem category={category}></CategoryItem>
+              </Grid>
+            ))}
+          </Grid>
+        </div>
       </div>
-    </div>
+    </CategoriesContext.Provider>
   );
 };
 
-export default ButtonBases;
+export {CategoriesContext};
+export default Categories;
