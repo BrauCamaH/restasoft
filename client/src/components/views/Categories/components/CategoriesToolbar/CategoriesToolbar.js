@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 
-import CategoryForm  from '../CategoryForm';
-import FormDialogButton  from '../../../../tools/FormDialog';
+import CategoryFormDialog  from '../CategoryForm';
 
 import SearchInput from '../../../../tools/SearchBar';
 
@@ -42,7 +41,7 @@ const ProductsToolbar = props => {
   }
 
   const classes = useStyles();
-  const Form=<CategoryForm onClose={handleClose}></CategoryForm>
+  
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       <div className={classes.row}>
@@ -50,8 +49,7 @@ const ProductsToolbar = props => {
         <Button color='primary' variant='contained' onClick={handleOpen}>
           Add Category
         </Button>
-        <FormDialogButton title='Category'
-                  component={Form}
+        <CategoryFormDialog 
                   open = {open}
                   onClose = {handleClose}
         />

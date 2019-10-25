@@ -11,7 +11,8 @@ import axios from 'axios';
 const CategoriesContext = createContext({
   categories: [],
   addCategory: category => {},
-  deleteCategory : id => {}
+  deleteCategory : id => {},
+  editCategory : category =>{}
 });   
 
 const useStyles = makeStyles(theme => ({
@@ -114,11 +115,16 @@ const Categories = () => {
       })
   }
 
+  const editCategory = category =>{
+    console.log(`Category updated with id ${category.id}`);
+  }
+
   return (
     <CategoriesContext.Provider
       value={{
         addCategory: addCategory,
-        deleteCategory : deleteCategory
+        deleteCategory : deleteCategory,
+        editCategory : editCategory
       }}
     >
       <div className={classes.root}>

@@ -9,6 +9,8 @@ import { DropzoneArea } from 'material-ui-dropzone';
 import { Container, Divider, Grid, TextField, Button } from '@material-ui/core';
 import {CategoriesContext} from '../../Categories';
 
+import FormDialogButton  from '../../../../tools/FormDialog';
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -37,17 +39,21 @@ const schema = {
 };
 
 const CategoryForm = props => {
-  const { onClose, className, ...rest } = props;
+  const { open, category, isEditable, onClose, className, ...rest } = props;
   const classes = useStyles();
 
   const context = useContext(CategoriesContext);
 
+  const name = category ? category.name : '';
+  const description = category ? category.description : '';
+  const image = category ? category.image : '';
+
   const [formState, setFormState] = useState({
     isValid: false,
     values: {
-      name: '',
-      description: '',
-      image: '',
+      name: name,
+      description: description,
+      image: image,
     },
     touched: {},
     errors: {},
@@ -99,73 +105,84 @@ const CategoryForm = props => {
   const handleSubmit = event =>{
     event.preventDefault();
 
-    context.addCategory(formState.values);
+    if(isEditable){
+      context.editCategory(formState.values)
+    }{
+      context.addCategory(formState.values);
+    }
+    
     onClose();
   }
-    return (
-    <Container component='main' maxWidth='xs'>
-      <form
-        {...rest}
-        className={clsx(classes.root, className)}
-        autoComplete='off'
-        noValidate
-        onSubmit={handleSubmit}
-      >
-        <Divider />
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <TextField
-              error={hasError('name')}
-              fullWidth
-              helperText={hasError('name') ? formState.errors.name[0] : null}
-              label='Name'
-              margin='dense'
-              name='name'
-              onChange={handleChange}
-              required
-              value={formState.values.name}
-              variant='outlined'
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              multiline
-              error={hasError('description')}
-              fullWidth
-              helperText={
-                hasError('description') ? formState.errors.description[0] : null
-              }
-              label='Description'
-              margin='dense'
-              name='description'
-              onChange={handleChange}
-              value={formState.values.description}
-              variant='outlined'
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <DropzoneArea
-              required
-              filesLimit={1}
-              name='image'
-              onChange={handleImages}
-              acceptedfiles={['image/']}
-              showFileNamesInPreview = {true}
-              showAlerts={false}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button disabled={!formState.isValid} 
-                    fullWidth variant='contained' 
-                    type='submit'
-                    color='secondary' >
-              Agregar
-            </Button>
-          </Grid>
-        </Grid>
-        <Divider />
-      </form>
-    </Container>
+  const Form =  <Container component='main' maxWidth='xs'>
+                  <form
+                    {...rest}
+                    className={clsx(classes.root, className)}
+                    autoComplete='off'
+                    noValidate
+                    onSubmit={handleSubmit}
+                  >
+                    <Divider />
+                    <Grid container spacing={3}>
+                      <Grid item xs={12}>
+                        <TextField
+                          error={hasError('name')}
+                          fullWidth
+                          helperText={hasError('name') ? formState.errors.name[0] : null}
+                          label='Name'
+                          margin='dense'
+                          name='name'
+                          onChange={handleChange}
+                          required
+                          value={formState.values.name}
+                          variant='outlined'
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextField
+                          multiline
+                          error={hasError('description')}
+                          fullWidth
+                          helperText={
+                            hasError('description') ? formState.errors.description[0] : null
+                          }
+                          label='Description'
+                          margin='dense'
+                          name='description'
+                          onChange={handleChange}
+                          value={formState.values.description}
+                          variant='outlined'
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <DropzoneArea
+                          required
+                          filesLimit={1}
+                          name='image'
+                          onChange={handleImages}
+                          acceptedfiles={['image/']}
+                          showFileNamesInPreview = {true}
+                          showAlerts={false}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Button disabled={!formState.isValid} 
+                          fullWidth variant='contained' 
+                          type='submit'
+                          color='secondary' >
+                          {isEditable ? 'Save Changes' :'Add Category' }
+                        </Button>            
+                      </Grid>
+                    </Grid>
+                    <Divider />
+                  </form>
+              </Container>
+
+  return (
+      <FormDialogButton title='Category'
+      component={Form}
+      open = {open}
+      onClose = {onClose}
+      />
   );
 };
 
