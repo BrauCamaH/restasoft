@@ -31,14 +31,16 @@ const schema = {
       maximum: 200,
     },
   },
+  image: {
+    presence: { allowEmpty: false },
+  },
 };
 
 const CategoryForm = props => {
-  const { className, ...rest } = props;
+  const { onClose, className, ...rest } = props;
   const classes = useStyles();
 
   const context = useContext(CategoriesContext);
-
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -79,16 +81,35 @@ const CategoryForm = props => {
       },
     }));
   };
+  
+  const handleImages = (files)=>{
+    //setImages(files);
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        image : files[0],
+      },
+    }));
+  }
 
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
-  return (
+
+  const handleSubmit = event =>{
+    event.preventDefault();
+
+    context.addCategory(formState.values);
+    onClose();
+  }
+    return (
     <Container component='main' maxWidth='xs'>
       <form
         {...rest}
         className={clsx(classes.root, className)}
         autoComplete='off'
         noValidate
+        onSubmit={handleSubmit}
       >
         <Divider />
         <Grid container spacing={3}>
@@ -124,17 +145,20 @@ const CategoryForm = props => {
           </Grid>
           <Grid item xs={12}>
             <DropzoneArea
+              required
               filesLimit={1}
+              name='image'
+              onChange={handleImages}
               acceptedfiles={['image/']}
-              showFileNamesInPreview={true}
+              showFileNamesInPreview = {true}
               showAlerts={false}
             />
           </Grid>
           <Grid item xs={12}>
             <Button disabled={!formState.isValid} 
                     fullWidth variant='contained' 
-                    color='secondary' 
-                    onClick= {context.addCategory}>
+                    type='submit'
+                    color='secondary' >
               Agregar
             </Button>
           </Grid>

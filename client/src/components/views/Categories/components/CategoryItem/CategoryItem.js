@@ -125,6 +125,14 @@ const CategoryItem = props => {
             </Typography>
           </span>
         </ButtonBase>
+          { category.description ? 
+            <CardContent>
+             <Typography variant="h6" color="textSecondary" component="p">
+             {category.description}
+             </Typography>
+             </CardContent>
+            : null
+          }
       </CardContent>
       <Divider></Divider>
       <CardActions>

@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
 import {
-  Button,
   IconButton,
   Dialog,
   DialogContent,
@@ -31,43 +30,28 @@ const useStyles = makeStyles(theme => ({
 export default function FormDialog(props) {
   const {
     title,
-    action,
-    onSubmit,
-    SubmitButton,
     className,
     component: Component,
-    isValid,
+    open,
+    onClose,
     ...rest
   } = props;
 
   const classes = useStyles();
 
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     <div className={clsx(classes.root, className)}>
       <div className={classes.row}>
         <span className={classes.spacer} />
-        <Button color='primary' variant='contained' onClick={handleClickOpen}>
-          {action}
-        </Button>
       </div>
       <Dialog
         {...rest}
         open={open}
-        onClose={handleClose}
+        onClose={onClose}
         aria-labelledby='form-dialog-title'
       >
         <DialogTitle  aria-labelledby="customized-dialog-title">{title ? title : ''}
-          <IconButton className= {classes.closeButton}  onClick={handleClose} color='primary'>
+          <IconButton className= {classes.closeButton}  onClick={onClose} color='primary'>
             <EditIcon />
           </IconButton>
         </DialogTitle>
