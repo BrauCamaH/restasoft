@@ -1,6 +1,11 @@
-import React from 'react';
+import React, {useState, useContext} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+
+import AlertDialog from '../../../../tools/AlertDialog';
+
+import {CategoriesContext} from '../../Categories';
+
 import {
   Card,
   CardContent,
@@ -94,8 +99,25 @@ const CategoryItem = props => {
   const { category, ...rest } = props;
   const classes = useStyles();
 
+  const context = useContext(CategoriesContext);
+
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const handleOpenAlert = () =>{
+    setOpenAlert(true);
+  }
+
+  const handleCloseAlert = () =>{
+    setOpenAlert(false);
+  }
+
+  const handleDelete = () =>{
+    context.deleteCategory(category.id);
+  }
+
   return (
-    <Card {...rest}>
+    <div>
+        <Card {...rest}>
       <CardContent>
         <ButtonBase
           focusRipple
@@ -138,10 +160,19 @@ const CategoryItem = props => {
       <CardActions>
         <ButtonGroup fullWidth>
           <Button color='primary'>Edit</Button>
-          <Button className={classes.deleteButton}>Delete</Button>
+          <Button className={classes.deleteButton} onClick={handleOpenAlert}>Delete</Button>
         </ButtonGroup>
       </CardActions>
     </Card>
+    <div>
+      <AlertDialog open={openAlert} 
+                   title = 'Are you sure?' 
+                   contentText={'The action will delete the current category and its products'} 
+                   onClose= {handleCloseAlert}
+                   onAgree = {handleDelete}
+                   ></AlertDialog>
+    </div>
+    </div>
   );
 };
 

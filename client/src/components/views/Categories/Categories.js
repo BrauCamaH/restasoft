@@ -10,7 +10,8 @@ import axios from 'axios';
 
 const CategoriesContext = createContext({
   categories: [],
-  addCategory: () => {},
+  addCategory: category => {},
+  deleteCategory : id => {}
 });   
 
 const useStyles = makeStyles(theme => ({
@@ -47,7 +48,7 @@ const Categories = () => {
       .get(`api/categories`)
       .then(res => {
         setCategories(res.data);
-        console.log(res.data);
+        //console.log(res.data);
       })
       .catch(err => {
         console.error(err);
@@ -78,9 +79,9 @@ const Categories = () => {
       )
       .then( res=> {
         //console.log(res.data);
-        const updatedCart = [...categories];
-        updatedCart.push(res.data);
-        setCategories(updatedCart);
+        const updatedCategories = [...categories];
+        updatedCategories.push(res.data);
+        setCategories(updatedCategories);
 
         enqueueSnackbar('Category Added', {
           variant: 'success',
@@ -92,10 +93,32 @@ const Categories = () => {
       });
   };
 
+  const deleteCategory = id =>{
+    //console.log(`Deleting category with id ${id}`);
+    const updatedCategories = [...categories] ;
+    const updatedItemIndex = updatedCategories.findIndex(item => item.id === id );
+
+    updatedCategories.splice(updatedItemIndex, 1);
+    
+    setCategories(updatedCategories);
+
+    axios.delete(`api/categories/${id}`)
+      .then(res =>{
+        enqueueSnackbar('Category Eliminated', {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+      })
+      .catch(err =>{
+        console.log(err);
+      })
+  }
+
   return (
     <CategoriesContext.Provider
       value={{
         addCategory: addCategory,
+        deleteCategory : deleteCategory
       }}
     >
       <div className={classes.root}>
