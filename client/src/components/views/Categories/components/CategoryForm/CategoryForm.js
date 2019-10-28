@@ -44,6 +44,8 @@ const CategoryForm = props => {
 
   const context = useContext(CategoriesContext);
 
+  const id = category ? category.id : 0;
+
   const name = category ? category.name : '';
   const description = category ? category.description : '';
   const image = category ? category.image : '';
@@ -51,14 +53,15 @@ const CategoryForm = props => {
   const [formState, setFormState] = useState({
     isValid: false,
     values: {
-      name: name,
+      id: id,
+      name : name,
       description: description,
       image: image,
     },
     touched: {},
     errors: {},
   });
-
+  
   // console.log(context.userId);
 
   // console.log(context.user);
@@ -105,9 +108,9 @@ const CategoryForm = props => {
   const handleSubmit = event =>{
     event.preventDefault();
 
-    if(isEditable){
+    if(isEditable){   
       context.editCategory(formState.values)
-    }{
+    }else{
       context.addCategory(formState.values);
     }
     

@@ -64,7 +64,10 @@ exports.updateCategory = (req, res) => {
       },
     )
       .then(() => {
-        res.status(200).send(`Product updated with ID: ${id}`);
+        res.status(200).json({
+          message: `Product updated with ID: ${id}`,
+          image : imagePath
+        });
       })
       .catch(err => {
         res.status(500).json({

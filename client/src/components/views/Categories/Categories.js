@@ -12,7 +12,8 @@ const CategoriesContext = createContext({
   categories: [],
   addCategory: category => {},
   deleteCategory : id => {},
-  editCategory : category =>{}
+  editCategory : category =>{},
+  setCategories : categories => {}
 });   
 
 const useStyles = makeStyles(theme => ({
@@ -57,7 +58,7 @@ const Categories = () => {
   }, []);
 
   const addCategory = category => {
-    console.log('Adding Category ', category);
+    //console.log('Adding Category ', category);
     const data = new FormData()
 
     const image = category.image !== '' ? category.image : './category-default.png' ;
@@ -69,7 +70,7 @@ const Categories = () => {
     data.append('image', image);
   
 
-    console.log(image);
+    //console.log(image);
 
     axios
       .post(`api/categories`, data, {
@@ -116,12 +117,64 @@ const Categories = () => {
   }
 
   const editCategory = category =>{
-    console.log(`Category updated with id ${category.id}`);
+    //console.log(category);
+    const data = new FormData()
+
+    const id = category.id;
+
+    const image = category.image;
+    const name = category.name;
+    const description = category.description;
+
+    data.append('name', name );
+    data.append('description', description );
+
+    data.append('image', image);
+    
+    //console.log(image);
+
+    axios
+    .put(`api/categories/${id}`, data, {
+      headers : {
+        'content-type': 'multipart/form-data'
+      }
+    }
+    )
+    .then( res => {
+      category.name = name;
+      category.description = description;
+      category.image = res.data.image;
+
+      //console.log(res.data.image);
+
+      const updatedCategories = [...categories] ;
+      const updatedItemIndex = updatedCategories.findIndex(item => item.id === id );
+
+      updatedCategories[updatedItemIndex] = category;
+
+      console.log('Updated Category', category);
+
+      setCategories(updatedCategories);
+
+      enqueueSnackbar('Category Updated', {
+        variant: 'success',
+      });
+      setTimeout(closeSnackbar, 2000);
+    })
+    .catch( err => {
+      console.log(err);
+      enqueueSnackbar('Error Ocurred', {
+        variant: 'error',
+      });
+      setTimeout(closeSnackbar, 2000);
+    });
   }
 
   return (
     <CategoriesContext.Provider
       value={{
+        categories : categories,
+        setCategories : setCategories,
         addCategory: addCategory,
         deleteCategory : deleteCategory,
         editCategory : editCategory

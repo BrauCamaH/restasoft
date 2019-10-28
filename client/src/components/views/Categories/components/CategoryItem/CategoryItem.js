@@ -6,6 +6,8 @@ import AlertDialog from '../../../../tools/AlertDialog';
 
 import {CategoriesContext} from '../../Categories';
 
+import CategoryFormDialog from '../CategoryForm';
+
 import {
   Card,
   CardContent,
@@ -101,7 +103,17 @@ const CategoryItem = props => {
 
   const context = useContext(CategoriesContext);
 
+  const [openEdit, setOpenEdit] = useState(false);
+
   const [openAlert, setOpenAlert] = useState(false);
+
+  const handleOpenEdit = () =>{
+    setOpenEdit(true);
+  }
+
+  const handleCloseEdit = () =>{
+    setOpenEdit(false);
+  }
 
   const handleOpenAlert = () =>{
     setOpenAlert(true);
@@ -159,18 +171,22 @@ const CategoryItem = props => {
       <Divider></Divider>
       <CardActions>
         <ButtonGroup fullWidth>
-          <Button color='primary'>Edit</Button>
+          <Button color='primary' onClick={handleOpenEdit} >Edit</Button>
           <Button className={classes.deleteButton} onClick={handleOpenAlert}>Delete</Button>
         </ButtonGroup>
       </CardActions>
     </Card>
     <div>
+      <CategoryFormDialog 
+                  category = {category}
+                  isEditable = {true}
+                  open = {openEdit}
+                  onClose = {handleCloseEdit} />
       <AlertDialog open={openAlert} 
                    title = 'Are you sure?' 
                    contentText={'The action will delete the current category and its products'} 
                    onClose= {handleCloseAlert}
-                   onAgree = {handleDelete}
-                   ></AlertDialog>
+                   onAgree = {handleDelete} />
     </div>
     </div>
   );
