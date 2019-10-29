@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { CategoryItem, CategoriesToolbar } from './components';
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 
 import { useSnackbar } from 'notistack';
 
@@ -18,7 +18,6 @@ const CategoriesContext = createContext({
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3),
-    marginTop: theme.spacing(6),
   },
   content: {
     marginTop: theme.spacing(2),
@@ -29,12 +28,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
-  gridItem: {
-    minWidth: 350,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
+  gridItem: {},
 }));
 
 const Categories = () => {
@@ -188,13 +182,7 @@ const Categories = () => {
         <div className={classes.content}>
           <Grid container spacing={3}>
             {categories.map(category => (
-              <Grid
-                className={classes.gridItem}
-                item
-                key={category.id}
-                lg={4}
-                md={6}
-                xs={12}>
+              <Grid item key={category.id} lg={4} md={6} xs={12}>
                 <CategoryItem category={category}></CategoryItem>
               </Grid>
             ))}

@@ -1,93 +1,95 @@
 import React from 'react';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import ReceiptIcon from '@material-ui/icons/Receipt';
-import FastfoodIcon from '@material-ui/icons/Fastfood';
-import EventSeatIcon from '@material-ui/icons/EventSeat';
-import AssignmentInd from '@material-ui/icons/AssignmentInd';
-import { makeStyles } from '@material-ui/core/styles';
-import { SidebarNav, Profile } from './components';
+import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/styles';
+import { Divider, Drawer } from '@material-ui/core';
+import {
+  Dashboard,
+  Receipt,
+  Fastfood,
+  EventSeat,
+  AssignmentInd,
+} from '@material-ui/icons';
+
+import { Profile, SidebarNav } from './components';
 
 const useStyles = makeStyles(theme => ({
+  drawer: {
+    width: 240,
+    [theme.breakpoints.up('lg')]: {
+      marginTop: 64,
+      height: 'calc(100% - 64px)',
+    },
+  },
+  root: {
+    backgroundColor: theme.palette.white,
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    padding: theme.spacing(2),
+  },
   divider: {
     margin: theme.spacing(2, 0),
   },
+  nav: {
+    marginBottom: theme.spacing(2),
+  },
 }));
 
-const pages = [
-  {
-    title: 'Sales',
-    href: '/sales',
-    icon: <DashboardIcon />,
-  },
-  {
-    title: 'Orders',
-    href: '/orders',
-    icon: <ReceiptIcon />,
-  },
-  {
-    title: 'Products',
-    href: '/categories',
-    icon: <FastfoodIcon />,
-  },
-  {
-    title: 'Tables',
-    href: '/tables',
-    icon: <EventSeatIcon />,
-  },
-  {
-    title: 'Clients',
-    href: '/clients',
-    icon: <AssignmentInd />,
-  },
-];
+const Sidebar = props => {
+  const { open, variant, onClose, className, ...rest } = props;
 
-export default function Sidebar(props) {
-  const { mobileOpen, container, classes, onDrawerToggle } = props;
-  const style = useStyles();
+  const classes = useStyles();
 
-  const drawer = (
-    <div>
-      <div className={classes.toolbar} />
-      <Profile />
-      <Divider className={style.divider} />
-      <SidebarNav pages={pages}></SidebarNav>
-    </div>
-  );
+  const pages = [
+    {
+      title: 'Sales',
+      href: '/sales',
+      icon: <Dashboard />,
+    },
+    {
+      title: 'Orders',
+      href: '/orders',
+      icon: <Receipt />,
+    },
+    {
+      title: 'Products',
+      href: '/categories',
+      icon: <Fastfood />,
+    },
+    {
+      title: 'Tables',
+      href: '/tables',
+      icon: <EventSeat />,
+    },
+    {
+      title: 'Clients',
+      href: '/clients',
+      icon: <AssignmentInd />,
+    },
+  ];
 
   return (
-    <nav className={classes.drawer} aria-label='mailbox folders'>
-      {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-      <Hidden smUp implementation='css'>
-        <Drawer
-          container={container}
-          variant='temporary'
-          anchor={'left'}
-          open={mobileOpen}
-          onClose={onDrawerToggle}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </Hidden>
-      <Hidden xsDown implementation='css'>
-        <Drawer
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          variant='permanent'
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Hidden>
-    </nav>
+    <Drawer
+      anchor='left'
+      classes={{ paper: classes.drawer }}
+      onClose={onClose}
+      open={open}
+      variant={variant}>
+      <div {...rest} className={clsx(classes.root, className)}>
+        <Profile />
+        <Divider className={classes.divider} />
+        <SidebarNav className={classes.nav} pages={pages} />
+      </div>
+    </Drawer>
   );
-}
+};
+
+Sidebar.propTypes = {
+  className: PropTypes.string,
+  onClose: PropTypes.func,
+  open: PropTypes.bool.isRequired,
+  variant: PropTypes.string.isRequired,
+};
+
+export default Sidebar;

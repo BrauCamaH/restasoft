@@ -7,7 +7,6 @@ import { Settings, Profile } from './components';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3),
-    marginTop: theme.spacing(6),
   },
 }));
 

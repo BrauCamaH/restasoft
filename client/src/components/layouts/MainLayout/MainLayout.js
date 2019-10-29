@@ -1,70 +1,67 @@
-import React from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
+import { makeStyles, useTheme } from '@material-ui/styles';
+import { useMediaQuery } from '@material-ui/core';
 
 import { Sidebar, Topbar } from './components';
 
-const drawerWidth = 240;
-
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex',
-  },
-  drawer: {
+    paddingTop: 56,
+    height: '100%',
     [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
-      flexShrink: 0,
+      paddingTop: 64,
     },
   },
-  appBar: {
-    marginLeft: drawerWidth,
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-    },
-    fontWeight: theme.typography.fontWeightMedium,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
-  },
-  toolbar: theme.mixins.toolbar,
-  drawerPaper: {
-    width: drawerWidth,
+  shiftContent: {
+    paddingLeft: 240,
   },
   content: {
     height: '100%',
   },
 }));
 
-const MainLayout = props => {
-  const classes = useStyles();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+const Main = props => {
   const { children } = props;
 
-  function handleDrawerToggle() {
-    setMobileOpen(!mobileOpen);
-  }
+  const classes = useStyles();
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('lg'), {
+    defaultMatches: true,
+  });
+
+  const [openSidebar, setOpenSidebar] = useState(false);
+
+  const handleSidebarOpen = () => {
+    setOpenSidebar(true);
+  };
+
+  const handleSidebarClose = () => {
+    setOpenSidebar(false);
+  };
+
+  const shouldOpenSidebar = isDesktop ? true : openSidebar;
 
   return (
-    <div className={classes.root}>
-      <CssBaseline>
-        <Topbar classes={classes} onDrawerToggle={handleDrawerToggle}></Topbar>
-        <Sidebar
-          classes={classes}
-          onDrawerToggle={handleDrawerToggle}
-          mobileOpen={mobileOpen}
-        ></Sidebar>
-        <main className='classes content'>{children}</main>
-      </CssBaseline>
+    <div
+      className={clsx({
+        [classes.root]: true,
+        [classes.shiftContent]: isDesktop,
+      })}>
+      <Topbar onSidebarOpen={handleSidebarOpen} />
+      <Sidebar
+        onClose={handleSidebarClose}
+        open={shouldOpenSidebar}
+        variant={isDesktop ? 'persistent' : 'temporary'}
+      />
+      <main className={classes.content}>{children}</main>
     </div>
   );
 };
 
-MainLayout.propTypes= {
-  children : PropTypes.node
+Main.propTypes = {
+  children: PropTypes.node,
 };
 
-export default MainLayout;
+export default Main;

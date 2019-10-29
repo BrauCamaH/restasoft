@@ -14,7 +14,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles({
   card: {
-    minWidth: 250,
+    //width: 250,
+    //height: 300,
   },
   media: {
     height: 0,
@@ -44,7 +45,7 @@ const Product = props => {
       <CardHeader
         action={<EditAndDelete></EditAndDelete>}
         title={product.name}
-        subheader={`Price: ${product.price}$`}></CardHeader>
+        subheader={`Price: $${product.price}`}></CardHeader>
       <CardMedia
         className={classes.media}
         image={`/${product.image.substring(8)}`}

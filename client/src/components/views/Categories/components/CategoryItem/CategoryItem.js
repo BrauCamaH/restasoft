@@ -23,7 +23,8 @@ const useStyles = makeStyles(theme => ({
   root: {},
   image: {
     position: 'relative',
-    height: 200,
+    widt: '100%',
+    height: 250,
     margin: '0 auto',
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: '5px',
@@ -34,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     '&:hover, &$focusVisible': {
       zIndex: 1,
       '& $imageBackdrop': {
-        opacity: 0.15,
+        opacity: 0.6,
       },
       '& $imageMarked': {
         opacity: 0,
@@ -81,17 +82,13 @@ const useStyles = makeStyles(theme => ({
       6}px`,
   },
   imageMarked: {
-    height: 3,
-    width: 5,
-    backgroundColor: theme.palette.common.white,
-    position: 'absolute',
-    bottom: -2,
-    left: 'calc(50% - 9px)',
-    transition: theme.transitions.create('opacity'),
-  },
-  gridItem: {
-    display: 'flex',
-    alignItems: 'center',
+    // height: 3,
+    // width: 5,
+    // backgroundColor: theme.palette.common.white,
+    // position: 'absolute',
+    // bottom: -2,
+    // left: 'calc(50% - 9px)',
+    // transition: theme.transitions.create('opacity'),
   },
   deleteButton: {
     color: theme.palette.error.main,

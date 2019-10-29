@@ -17,19 +17,12 @@ const ProductsContext = createContext({
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3),
-    marginTop: theme.spacing(6),
   },
   content: {
     marginTop: theme.spacing(2),
   },
   pagination: {
     marginTop: theme.spacing(3),
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  gridItem: {
-    minWidth: 300,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -118,13 +111,7 @@ const Products = ({ match }) => {
         <div className={classes.content}>
           <Grid container spacing={3}>
             {products.map(product => (
-              <Grid
-                className={classes.gridItem}
-                item
-                key={product.id}
-                lg={4}
-                md={6}
-                xs={12}>
+              <Grid item key={product.id} lg={4} md={6} xs={12}>
                 <ProductCard product={product}></ProductCard>
               </Grid>
             ))}

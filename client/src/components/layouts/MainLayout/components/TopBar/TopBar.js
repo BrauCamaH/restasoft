@@ -1,32 +1,53 @@
 import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
+import { Link as RouterLink } from 'react-router-dom';
+import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/styles';
+import { AppBar, Toolbar, Hidden, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import InputIcon from '@material-ui/icons/Input';
 
-export default function TopBar(props) {
-  const { classes } = props;
+const useStyles = makeStyles(theme => ({
+  root: {
+    boxShadow: 'none',
+  },
+  flexGrow: {
+    flexGrow: 1,
+  },
+  signOutButton: {
+    marginLeft: theme.spacing(1),
+  },
+}));
+
+const Topbar = props => {
+  const { className, onSidebarOpen, ...rest } = props;
+
+  const classes = useStyles();
 
   return (
-    <div className={props.classes.root}>S
-      <AppBar position='fixed' className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            color='inherit'
-            aria-label='open drawer'
-            edge='start'
-            onClick={props.onDrawerToggle}
-            className={classes.menuButton}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant='h6' noWrap>
-            RestaSotf
-          </Typography>
-          
-        </Toolbar>
-      </AppBar>
-    </div>
+    <AppBar {...rest} className={clsx(classes.root, className)}>
+      <Toolbar>
+        <RouterLink to='/'>
+          {/* <img alt='Logo' src='/images/logos/logo--white.svg' /> */}
+        </RouterLink>
+        <div className={classes.flexGrow}>
+          <Hidden lgUp>
+            <IconButton color='inherit' onClick={onSidebarOpen}>
+              <MenuIcon />
+            </IconButton>
+          </Hidden>
+        </div>
+        <IconButton className={classes.signOutButton} color='inherit'>
+          <InputIcon />
+        </IconButton>
+      </Toolbar>
+    </AppBar>
   );
-}
+};
+
+Topbar.propTypes = {
+  className: PropTypes.string,
+  onSidebarOpen: PropTypes.func,
+};
+
+export default Topbar;

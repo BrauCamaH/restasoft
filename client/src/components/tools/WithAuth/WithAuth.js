@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import UserContext from '../../../context/user-context';
 
+import { MainLayout } from '../../layouts';
 import axios from 'axios';
 export default function withAuth(ComponentToProtect) {
   return class extends Component {
@@ -33,11 +34,13 @@ export default function withAuth(ComponentToProtect) {
     }
     render() {
       const { loading, redirect } = this.state;
-      if (loading) {
-        return null;
-      }
+
       if (redirect) {
         return <Redirect to='/sign-in' />;
+      } else {
+        if (loading) {
+          return <MainLayout></MainLayout>;
+        }
       }
       return (
         <React.Fragment>
