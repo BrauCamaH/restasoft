@@ -1,4 +1,5 @@
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext, forwardRef } from 'react';
+import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
@@ -96,6 +97,11 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.error.main,
   },
 }));
+const CustomRouterLink = forwardRef((props, ref) => (
+  <div ref={ref} style={{ flexGrow: 1 }}>
+    <RouterLink {...props} />
+  </div>
+));
 
 const CategoryItem = props => {
   const { category, ...rest } = props;
@@ -139,6 +145,8 @@ const CategoryItem = props => {
           style={{
             width: 300,
           }}
+          component={CustomRouterLink}
+          to={`/products/${category.id}`}
         >
           <span
             className={classes.imageSrc}

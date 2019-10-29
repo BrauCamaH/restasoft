@@ -50,7 +50,7 @@ const Routes = () => {
         component={WithAuth(Products)}
         exact
         layout={WithAuth(MainLayout)}
-        path='/products'
+        path='/products/:category'
       />
     </Switch>
   );

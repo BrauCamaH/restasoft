@@ -2,8 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import {
-  Menu,
-  MenuItem,
   Card,
   CardHeader,
   CardMedia,
@@ -16,7 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles({
   card: {
-    maxWidth: 345,
+    minWidth: 250,
   },
   media: {
     height: 0,
@@ -46,22 +44,17 @@ const Product = props => {
       <CardHeader
         action={<EditAndDelete></EditAndDelete>}
         title={product.name}
-        subheader={`Price: ${product.price}$`}
-      ></CardHeader>
-      <CardMedia className={classes.media} image={product.image} />
+        subheader={`Price: ${product.price}$`}></CardHeader>
+      <CardMedia
+        className={classes.media}
+        image={`/${product.image.substring(8)}`}
+      />
       <CardContent>
         <Typography variant='body2' color='textSecondary' component='p'>
           {product.description}
         </Typography>
       </CardContent>
-      <CardActions>
-        <div>
-          <Menu>
-            <MenuItem>Edit</MenuItem>
-            <MenuItem>Delete</MenuItem>
-          </Menu>
-        </div>
-      </CardActions>
+      <CardActions></CardActions>
     </Card>
   );
 };
