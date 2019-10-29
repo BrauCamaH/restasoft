@@ -13,6 +13,7 @@ import {
   Card,
   CardContent,
   CardActions,
+  Box,
   Divider,
   ButtonBase,
   Button,
@@ -23,8 +24,7 @@ const useStyles = makeStyles(theme => ({
   root: {},
   image: {
     position: 'relative',
-    widt: '100%',
-    height: 250,
+    height: 300,
     margin: '0 auto',
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: '5px',
@@ -81,14 +81,9 @@ const useStyles = makeStyles(theme => ({
     padding: `${theme.spacing(2)}px ${theme.spacing(4)}px ${theme.spacing(1) +
       6}px`,
   },
-  imageMarked: {
-    // height: 3,
-    // width: 5,
-    // backgroundColor: theme.palette.common.white,
-    // position: 'absolute',
-    // bottom: -2,
-    // left: 'calc(50% - 9px)',
-    // transition: theme.transitions.create('opacity'),
+  description: {
+    padding: 5,
+    marginTop: theme.spacing(2),
   },
   deleteButton: {
     color: theme.palette.error.main,
@@ -139,40 +134,39 @@ const CategoryItem = props => {
     <div>
       <Card {...rest}>
         <CardContent>
-          <ButtonBase
-            focusRipple
-            key={category.id}
-            className={classes.image}
-            focusVisibleClassName={classes.focusVisible}
-            style={{
-              width: 300,
-            }}
-            component={CustomRouterLink}
-            to={`/products/${category.id}`}>
-            <span
-              className={classes.imageSrc}
-              style={{
-                backgroundImage: `${image}`,
-              }}
-            />
-            <span className={classes.imageBackdrop} />
-            <span className={classes.imageButton}>
-              <Typography
-                component='span'
-                variant='subtitle1'
-                color='inherit'
-                className={classes.imageTitle}>
-                {category.name}
-                <span className={classes.imageMarked} />
-              </Typography>
-            </span>
-          </ButtonBase>
+          <Card>
+            <ButtonBase
+              focusRipple
+              key={category.id}
+              className={classes.image}
+              focusVisibleClassName={classes.focusVisible}
+              component={CustomRouterLink}
+              to={`/products/${category.id}`}>
+              <span
+                className={classes.imageSrc}
+                style={{
+                  backgroundImage: `${image}`,
+                }}
+              />
+              <span className={classes.imageBackdrop} />
+              <span className={classes.imageButton}>
+                <Typography
+                  component='span'
+                  variant='subtitle1'
+                  color='inherit'
+                  className={classes.imageTitle}>
+                  {category.name}
+                  <span className={classes.imageMarked} />
+                </Typography>
+              </span>
+            </ButtonBase>
+          </Card>
           {category.description ? (
-            <CardContent>
-              <Typography variant='h6' color='textSecondary' component='p'>
+            <Box boxShadow={1} className={classes.description}>
+              <Typography variant='h6' color='initial' component='p'>
                 {category.description}
               </Typography>
-            </CardContent>
+            </Box>
           ) : null}
         </CardContent>
         <Divider></Divider>
