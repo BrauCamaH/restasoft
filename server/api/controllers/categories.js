@@ -14,7 +14,9 @@ function deleteImageByPath(path) {
 }
 
 exports.getCategories = (req, res) => {
-  Categories.findAll()
+  Categories.findAll({
+    order: ['id'],
+  })
     .then(Category => res.json(Category))
     .catch(e => res.json({ err: e }));
 };
@@ -23,8 +25,10 @@ exports.addCategory = (req, res) => {
   const { name, description } = req.body;
   //console.log(req.file);
 
+  const imagePath = req.file ? req.file.path : '';
+
   const Category = Categories.build({
-    image: req.file.path,
+    image: imagePath,
     name: name,
     description: description,
   });
@@ -44,11 +48,15 @@ exports.updateCategory = (req, res) => {
 
   let imagePath = '';
 
-  Categories.findOne({ where: { id: id } }).then(product => {
+  Categories.findOne({ where: { id: id } }).then(category => {
     if (!req.file) {
-      imagePath = product.image;
+      imagePath = category.image;
     } else {
-      deleteImageByPath(product.image);
+      if (category.image === '' || category.image === null) {
+        imagePath = req.file.path;
+      } else {
+        deleteImageByPath(category.image);
+      }
       imagePath = req.file.path;
     }
     Categories.update(
@@ -65,8 +73,8 @@ exports.updateCategory = (req, res) => {
     )
       .then(() => {
         res.status(200).json({
-          message: `Product updated with ID: ${id}`,
-          image : imagePath
+          message: `Category updated with ID: ${id}`,
+          image: imagePath,
         });
       })
       .catch(err => {

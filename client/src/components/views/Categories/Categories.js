@@ -5,16 +5,15 @@ import Grid from '@material-ui/core/Grid';
 
 import { useSnackbar } from 'notistack';
 
-
 import axios from 'axios';
 
 const CategoriesContext = createContext({
   categories: [],
   addCategory: category => {},
-  deleteCategory : id => {},
-  editCategory : category =>{},
-  setCategories : categories => {}
-});   
+  deleteCategory: id => {},
+  editCategory: category => {},
+  setCategories: categories => {},
+});
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -59,27 +58,26 @@ const Categories = () => {
 
   const addCategory = category => {
     //console.log('Adding Category ', category);
-    const data = new FormData()
+    const data = new FormData();
 
-    const image = category.image !== '' ? category.image : './category-default.png' ;
+    const image =
+      category.image !== '' ? category.image : './category-default.png';
     const name = category.name;
     const description = category.description;
 
-    data.append('name', name );
-    data.append('description', description )
+    data.append('name', name);
+    data.append('description', description);
     data.append('image', image);
-  
 
     //console.log(image);
 
     axios
       .post(`api/categories`, data, {
-        headers : {
-          'content-type': 'multipart/form-data'
-        }
-      }
-      )
-      .then( res=> {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then(res => {
         //console.log(res.data);
         const updatedCategories = [...categories];
         updatedCategories.push(res.data);
@@ -90,35 +88,38 @@ const Categories = () => {
         });
         setTimeout(closeSnackbar, 2000);
       })
-      .catch( err => {
+      .catch(err => {
         console.log(err);
       });
   };
 
-  const deleteCategory = id =>{
+  const deleteCategory = id => {
     //console.log(`Deleting category with id ${id}`);
-    const updatedCategories = [...categories] ;
-    const updatedItemIndex = updatedCategories.findIndex(item => item.id === id );
+    const updatedCategories = [...categories];
+    const updatedItemIndex = updatedCategories.findIndex(
+      item => item.id === id,
+    );
 
     updatedCategories.splice(updatedItemIndex, 1);
-    
+
     setCategories(updatedCategories);
 
-    axios.delete(`api/categories/${id}`)
-      .then(res =>{
+    axios
+      .delete(`api/categories/${id}`)
+      .then(res => {
         enqueueSnackbar('Category Eliminated', {
           variant: 'success',
         });
         setTimeout(closeSnackbar, 2000);
       })
-      .catch(err =>{
+      .catch(err => {
         console.log(err);
-      })
-  }
+      });
+  };
 
-  const editCategory = category =>{
+  const editCategory = category => {
     //console.log(category);
-    const data = new FormData()
+    const data = new FormData();
 
     const id = category.id;
 
@@ -126,62 +127,64 @@ const Categories = () => {
     const name = category.name;
     const description = category.description;
 
-    data.append('name', name );
-    data.append('description', description );
+    data.append('name', name);
+    data.append('description', description);
 
     data.append('image', image);
-    
+
     //console.log(image);
 
     axios
-    .put(`api/categories/${id}`, data, {
-      headers : {
-        'content-type': 'multipart/form-data'
-      }
-    }
-    )
-    .then( res => {
-      category.name = name;
-      category.description = description;
-      category.image = res.data.image;
+      .put(`api/categories/${id}`, data, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then(res => {
+        category.name = name;
+        category.description = description;
+        category.image = res.data.image;
 
-      //console.log(res.data.image);
+        //console.log(res.data.image);
 
-      const updatedCategories = [...categories] ;
-      const updatedItemIndex = updatedCategories.findIndex(item => item.id === id );
+        const updatedCategories = [...categories];
+        const updatedItemIndex = updatedCategories.findIndex(
+          item => item.id === id,
+        );
 
-      updatedCategories[updatedItemIndex] = category;
+        updatedCategories[updatedItemIndex] = category;
 
-      console.log('Updated Category', category);
+        console.log('Updated Category', category);
 
-      setCategories(updatedCategories);
+        setCategories(updatedCategories);
 
-      enqueueSnackbar('Category Updated', {
-        variant: 'success',
+        enqueueSnackbar('Category Updated', {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+      })
+      .catch(err => {
+        console.log(err);
+        enqueueSnackbar('Error Ocurred', {
+          variant: 'error',
+        });
+        setTimeout(closeSnackbar, 2000);
       });
-      setTimeout(closeSnackbar, 2000);
-    })
-    .catch( err => {
-      console.log(err);
-      enqueueSnackbar('Error Ocurred', {
-        variant: 'error',
-      });
-      setTimeout(closeSnackbar, 2000);
-    });
-  }
+  };
 
   return (
     <CategoriesContext.Provider
       value={{
-        categories : categories,
-        setCategories : setCategories,
+        categories: categories,
+        setCategories: setCategories,
         addCategory: addCategory,
-        deleteCategory : deleteCategory,
-        editCategory : editCategory
-      }}
-    >
+        deleteCategory: deleteCategory,
+        editCategory: editCategory,
+      }}>
       <div className={classes.root}>
-        <CategoriesToolbar />
+        <div>
+          <CategoriesToolbar />
+        </div>
         <div className={classes.content}>
           <Grid container spacing={3}>
             {categories.map(category => (
@@ -191,8 +194,7 @@ const Categories = () => {
                 key={category.id}
                 lg={4}
                 md={6}
-                xs={12}
-              >
+                xs={12}>
                 <CategoryItem category={category}></CategoryItem>
               </Grid>
             ))}

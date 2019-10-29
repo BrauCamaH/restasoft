@@ -1,11 +1,11 @@
 import React, { useState, useContext, forwardRef } from 'react';
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import AlertDialog from '../../../../tools/AlertDialog';
 
-import {CategoriesContext} from '../../Categories';
+import { CategoriesContext } from '../../Categories';
 
 import CategoryFormDialog from '../CategoryForm';
 
@@ -107,95 +107,106 @@ const CategoryItem = props => {
   const { category, ...rest } = props;
   const classes = useStyles();
 
+  const image =
+    category.image === 0 || category.image === ''
+      ? 'url(https://live.staticflickr.com/65535/40681390113_f02aa47381_b.jpg)'
+      : `url(/${category.image.substring(8)})`;
+
   const context = useContext(CategoriesContext);
 
   const [openEdit, setOpenEdit] = useState(false);
 
   const [openAlert, setOpenAlert] = useState(false);
 
-  const handleOpenEdit = () =>{
+  const handleOpenEdit = () => {
     setOpenEdit(true);
-  }
+  };
 
-  const handleCloseEdit = () =>{
+  const handleCloseEdit = () => {
     setOpenEdit(false);
-  }
+  };
 
-  const handleOpenAlert = () =>{
+  const handleOpenAlert = () => {
     setOpenAlert(true);
-  }
+  };
 
-  const handleCloseAlert = () =>{
+  const handleCloseAlert = () => {
     setOpenAlert(false);
-  }
+  };
 
-  const handleDelete = () =>{
+  const handleDelete = () => {
     context.deleteCategory(category.id);
-  }
+  };
 
   return (
     <div>
-        <Card {...rest}>
-      <CardContent>
-        <ButtonBase
-          focusRipple
-          key={category.id}
-          className={classes.image}
-          focusVisibleClassName={classes.focusVisible}
-          style={{
-            width: 300,
-          }}
-          component={CustomRouterLink}
-          to={`/products/${category.id}`}
-        >
-          <span
-            className={classes.imageSrc}
+      <Card {...rest}>
+        <CardContent>
+          <ButtonBase
+            focusRipple
+            key={category.id}
+            className={classes.image}
+            focusVisibleClassName={classes.focusVisible}
             style={{
-              backgroundImage: `url(${category.image.substring(8)})`,
+              width: 300,
             }}
-          />
-          <span className={classes.imageBackdrop} />
-          <span className={classes.imageButton}>
-            <Typography
-              component='span'
-              variant='subtitle1'
-              color='inherit'
-              className={classes.imageTitle}
-            >
-              {category.name}
-              <span className={classes.imageMarked} />
-            </Typography>
-          </span>
-        </ButtonBase>
-          { category.description ? 
+            component={CustomRouterLink}
+            to={`/products/${category.id}`}>
+            <span
+              className={classes.imageSrc}
+              style={{
+                backgroundImage: `${image}`,
+              }}
+            />
+            <span className={classes.imageBackdrop} />
+            <span className={classes.imageButton}>
+              <Typography
+                component='span'
+                variant='subtitle1'
+                color='inherit'
+                className={classes.imageTitle}>
+                {category.name}
+                <span className={classes.imageMarked} />
+              </Typography>
+            </span>
+          </ButtonBase>
+          {category.description ? (
             <CardContent>
-             <Typography variant="h6" color="textSecondary" component="p">
-             {category.description}
-             </Typography>
-             </CardContent>
-            : null
+              <Typography variant='h6' color='textSecondary' component='p'>
+                {category.description}
+              </Typography>
+            </CardContent>
+          ) : null}
+        </CardContent>
+        <Divider></Divider>
+        <CardActions>
+          <ButtonGroup fullWidth>
+            <Button color='primary' onClick={handleOpenEdit}>
+              Edit
+            </Button>
+            <Button className={classes.deleteButton} onClick={handleOpenAlert}>
+              Delete
+            </Button>
+          </ButtonGroup>
+        </CardActions>
+      </Card>
+      <div>
+        <CategoryFormDialog
+          category={category}
+          isEditable={true}
+          open={openEdit}
+          onClose={handleCloseEdit}
+        />
+        <AlertDialog
+          open={openAlert}
+          title='Are you sure?'
+          contentText={
+            'The action will delete the current category and its products'
           }
-      </CardContent>
-      <Divider></Divider>
-      <CardActions>
-        <ButtonGroup fullWidth>
-          <Button color='primary' onClick={handleOpenEdit} >Edit</Button>
-          <Button className={classes.deleteButton} onClick={handleOpenAlert}>Delete</Button>
-        </ButtonGroup>
-      </CardActions>
-    </Card>
-    <div>
-      <CategoryFormDialog 
-                  category = {category}
-                  isEditable = {true}
-                  open = {openEdit}
-                  onClose = {handleCloseEdit} />
-      <AlertDialog open={openAlert} 
-                   title = 'Are you sure?' 
-                   contentText={'The action will delete the current category and its products'} 
-                   onClose= {handleCloseAlert}
-                   onAgree = {handleDelete} />
-    </div>
+          onClose={handleCloseAlert}
+          onAgree={handleDelete}
+        />
+      </div>
     </div>
   );
 };
