@@ -10,6 +10,7 @@ const usersRoutes = require('./api/routes/users');
 const clientsRoutes = require('./api/routes/clients');
 const categoriesRoutes = require('./api/routes/categories');
 const productsRoutes = require('./api/routes/products');
+const authRoutes = require('./api/routes/auth');
 const cookieParser = require('cookie-parser');
 
 app.use(morgan('dev'));
@@ -25,6 +26,7 @@ app.use('/api/users', usersRoutes);
 app.use('/api/clients', clientsRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/products', productsRoutes);
+app.use('/api/auth', authRoutes);
 
 app.use((req, res, next) => {
   const error = new Error('Not found');

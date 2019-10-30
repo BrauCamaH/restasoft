@@ -138,9 +138,8 @@ const MTable = props => {
         <Skeleton
           variant='rect'
           className={classes.root}
-          width={400}
-          height={400}
-        ></Skeleton>
+          width={'90%'}
+          height={320}></Skeleton>
       ) : (
         <MaterialTable
           icons={tableIcons}

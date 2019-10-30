@@ -1,11 +1,19 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, withRouter } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { AppBar, Toolbar, Hidden, IconButton } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  Hidden,
+  IconButton,
+  Tooltip,
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import InputIcon from '@material-ui/icons/Input';
+
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,6 +29,18 @@ const useStyles = makeStyles(theme => ({
 
 const Topbar = props => {
   const { className, onSidebarOpen, ...rest } = props;
+  const { history } = props;
+  const handleSignOut = () => {
+    axios
+      .delete('/api/auth//sign-out')
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    history.push('/sign-in');
+  };
 
   const classes = useStyles();
 
@@ -37,9 +57,14 @@ const Topbar = props => {
             </IconButton>
           </Hidden>
         </div>
-        <IconButton className={classes.signOutButton} color='inherit'>
-          <InputIcon />
-        </IconButton>
+        <Tooltip title='SignOut'>
+          <IconButton
+            className={classes.signOutButton}
+            onClick={handleSignOut}
+            color='inherit'>
+            <InputIcon />
+          </IconButton>
+        </Tooltip>
       </Toolbar>
     </AppBar>
   );
@@ -50,4 +75,4 @@ Topbar.propTypes = {
   onSidebarOpen: PropTypes.func,
 };
 
-export default Topbar;
+export default withRouter(Topbar);

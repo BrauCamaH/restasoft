@@ -8,16 +8,17 @@ router.post('/sign-up', UsersController.signUp);
 
 router.post('/sign-in', UsersController.signIn);
 
+router.delete('/delete/', checkAuth, (req, res) => {
+  res.clearCookie('restaToke ');
+  res.status(200).json({
+    user: req.userData,
+  });
+});
+
 router.delete('/:id', UsersController.deleteUser);
 
 router.get('/', UsersController.getUsers);
 
 router.get('/user/:id', UsersController.getUserById);
-
-router.get('/checkToken', checkAuth, (req, res) => {
-  res.status(200).json({
-    user: req.userData
-  });
-});
 
 module.exports = router;
