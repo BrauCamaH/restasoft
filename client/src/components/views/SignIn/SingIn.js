@@ -105,9 +105,9 @@ const SignIn = props => {
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
-  const handleSubmit = () => {
+  const handleSubmit = event => {
     const { history } = props;
-
+    event.preventDefault();
     const { username, password } = formState.values;
     axios
       .post(`api/users/sign-in`, {
@@ -116,7 +116,7 @@ const SignIn = props => {
       })
       .then(res => {
         if (res.status === 200) {
-          history.push('/products');
+          history.push('/categories');
         } else {
           const error = new Error(res.error);
           throw error;
@@ -140,7 +140,7 @@ const SignIn = props => {
         <Typography component='h1' variant='h5'>
           Sign in
         </Typography>
-        <form className={classes.form}>
+        <form className={classes.form} onSubmit={handleSubmit}>
           <Grid item xs={12}>
             <TextField
               error={hasError('username')}
@@ -177,13 +177,11 @@ const SignIn = props => {
             label='Remember me'
           />
           <Button
-            //type='submit'
+            type='submit'
             fullWidth
             variant='contained'
             className={classes.submit}
-            disabled={!formState.isValid}
-            onClick={handleSubmit}
-          >
+            disabled={!formState.isValid}>
             Sign In
           </Button>
           <Grid container>
