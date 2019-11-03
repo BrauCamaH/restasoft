@@ -6,7 +6,9 @@ import {
   IconButton,
   Dialog,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  DialogActions,
+  Button,
 } from '@material-ui/core';
 
 import EditIcon from '@material-ui/icons/Clear';
@@ -25,6 +27,9 @@ const useStyles = makeStyles(theme => ({
     top: theme.spacing(1),
     color: theme.palette.grey[500],
   },
+  cancelButton: {
+    marginRight: theme.spacing(2),
+  },
 }));
 
 export default function FormDialog(props) {
@@ -34,6 +39,7 @@ export default function FormDialog(props) {
     component: Component,
     open,
     onClose,
+    submitButton,
     ...rest
   } = props;
 
@@ -48,27 +54,30 @@ export default function FormDialog(props) {
         {...rest}
         open={open}
         onClose={onClose}
-        aria-labelledby='form-dialog-title'
-      >
-        <DialogTitle  aria-labelledby="customized-dialog-title">{title ? title : ''}
-          <IconButton className= {classes.closeButton}  onClick={onClose} color='primary'>
+        aria-labelledby='form-dialog-title'>
+        <DialogTitle aria-labelledby='customized-dialog-title'>
+          {title ? title : ''}
+          <IconButton
+            className={classes.closeButton}
+            onClick={onClose}
+            color='primary'>
             <EditIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent>{Component}
-        </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={handleClose} color='primary'>
-            Cancel
-          </Button>
-          {SubmitButton ? (
-            SubmitButton
-          ) : (
-            <Button onClick={onSubmit}  color='primary'>
-              Submit
-            </Button>
-          )}
-        </DialogActions> */}
+        <DialogContent>{Component}</DialogContent>
+        <DialogActions>
+          {submitButton ? (
+            <div>
+              <Button
+                className={classes.cancelButton}
+                onClick={onClose}
+                color='primary'>
+                Cancel
+              </Button>
+              {submitButton}
+            </div>
+          ) : null}
+        </DialogActions>
       </Dialog>
     </div>
   );

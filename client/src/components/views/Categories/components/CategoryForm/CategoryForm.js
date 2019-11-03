@@ -177,26 +177,29 @@ const CategoryForm = props => {
               showAlerts={false}
             />
           </Grid>
-          <Grid item xs={12}>
-            <Button
-              disabled={!formState.isValid}
-              fullWidth
-              variant='contained'
-              type='submit'
-              color='secondary'>
-              {isEditable ? 'Save Changes' : 'Add Category'}
-            </Button>
-          </Grid>
         </Grid>
         <Divider />
       </form>
     </Container>
   );
 
+  const SubmitButton = (
+    <Button
+      disabled={!formState.isValid}
+      //fullWidth
+      variant='contained'
+      type='submit'
+      onClick={handleSubmit}
+      color='secondary'>
+      {isEditable ? 'Save Changes' : 'Add Category'}
+    </Button>
+  );
+
   return (
     <FormDialogButton
       title='Category'
       component={Form}
+      submitButton={SubmitButton}
       open={open}
       onClose={handleClose}
     />

@@ -4,19 +4,18 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import validate from 'validate.js';
 import { DropzoneArea } from 'material-ui-dropzone';
-//import { useSnackbar } from 'notistack';
 
 import { Container, Divider, Grid, TextField, Button } from '@material-ui/core';
-import {ProductsContext} from '../../Products';
+import { ProductsContext } from '../../Products';
 
-import FormDialogButton  from '../../../../tools/FormDialog';
+import FormDialog from '../../../../tools/FormDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginBottom : theme.spacing(4)
+    marginBottom: theme.spacing(4),
   },
 }));
 
@@ -39,12 +38,9 @@ const schema = {
       maximum: 200,
     },
   },
-  image: {
-    presence: { allowEmpty: false },
-  },
 };
 
-const CategoryForm = props => {
+const ProductFormDialog = props => {
   const { open, product, isEditable, onClose, className, ...rest } = props;
   const classes = useStyles();
 
@@ -53,6 +49,7 @@ const CategoryForm = props => {
   const id = product ? product.id : 0;
 
   const name = product ? product.name : '';
+  const price = product ? product.price : 0;
   const description = product ? product.description : '';
   const image = product ? product.image : '';
 
@@ -60,15 +57,15 @@ const CategoryForm = props => {
     isValid: false,
     values: {
       id: id,
-      name : name,
-      price : 0,
+      name: name,
+      price: price,
       description: description,
       image: image,
     },
     touched: {},
     errors: {},
   });
-  
+
   // console.log(context.userId);
 
   // console.log(context.user);
@@ -97,126 +94,144 @@ const CategoryForm = props => {
       },
     }));
   };
-  
-  const handleImages = (files)=>{
+
+  const handleImages = files => {
     //setImages(files);
     setFormState(formState => ({
       ...formState,
       values: {
         ...formState.values,
-        image : files[0],
+        image: files[0],
       },
     }));
-  }
+  };
 
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
-  const handleSubmit = event =>{
+  const handleClose = () => {
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        name: name,
+        price: price,
+        description: description,
+        image: image,
+      },
+    }));
+
+    onClose();
+  };
+
+  const handleSubmit = event => {
     event.preventDefault();
 
-    if(isEditable){   
-      context.editProduct(formState.values)
-    }else{
+    if (isEditable) {
+      context.editProduct(formState.values);
+    } else {
       context.addProduct(formState.values);
     }
-    
-    onClose();
-  }
-  const Form =  <Container component='main' maxWidth='xs'>
-                  <form
-                    {...rest}
-                    className={clsx(classes.root, className)}
-                    autoComplete='off'
-                    noValidate
-                    onSubmit={handleSubmit}
-                  >
-                    <Divider />
-                    <Grid container spacing={3}>
-                      <Grid item xs={12}>
-                        <TextField
-                          error={hasError('name')}
-                          fullWidth
-                          helperText={hasError('name') ? formState.errors.name[0] : null}
-                          label='Name'
-                          margin='dense'
-                          name='name'
-                          onChange={handleChange}
-                          required
-                          value={formState.values.name}
-                          variant='outlined'
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <TextField
-                          error={hasError('price')}
-                          fullWidth
-                          helperText={hasError('price') ? formState.errors.price[0] : null}
-                          label='Price'
-                          margin='dense'
-                          name='price'
-                          onChange={handleChange}
-                          required
-                          type='number'
-                          value={formState.values.price}
-                          variant='outlined'
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <TextField
-                          multiline
-                          error={hasError('description')}
-                          fullWidth
-                          helperText={
-                            hasError('description') ? formState.errors.description[0] : null
-                          }
-                          label='Description'
-                          margin='dense'
-                          name='description'
-                          onChange={handleChange}
-                          value={formState.values.description}
-                          variant='outlined'
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <DropzoneArea
-                          required
-                          filesLimit={1}
-                          name='image'
-                          onChange={handleImages}
-                          acceptedfiles={['image/']}
-                          showFileNamesInPreview = {true}
-                          showAlerts={false}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Button disabled={!formState.isValid} 
-                          fullWidth variant='contained' 
-                          type='submit'
-                          color='secondary' >
-                          {isEditable ? 'Save Changes' :'Add Product' }
-                        </Button>            
-                      </Grid>
-                    </Grid>
-                    <Divider />
-                  </form>
-              </Container>
+
+    handleClose();
+  };
+  const Form = (
+    <Container component='main' maxWidth='xs'>
+      <form
+        {...rest}
+        className={clsx(classes.root, className)}
+        autoComplete='off'
+        noValidate
+        onSubmit={handleSubmit}>
+        <Divider />
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField
+              error={hasError('name')}
+              fullWidth
+              helperText={hasError('name') ? formState.errors.name[0] : null}
+              label='Name'
+              margin='dense'
+              name='name'
+              onChange={handleChange}
+              required
+              value={formState.values.name}
+              variant='outlined'
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              error={hasError('price')}
+              fullWidth
+              helperText={hasError('price') ? formState.errors.price[0] : null}
+              label='Price'
+              margin='dense'
+              name='price'
+              type='number'
+              onFocus={e => e.target.select()}
+              value={formState.values.price}
+              onChange={handleChange}
+              variant='outlined'
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              multiline
+              error={hasError('description')}
+              fullWidth
+              helperText={
+                hasError('description') ? formState.errors.description[0] : null
+              }
+              label='Description'
+              margin='dense'
+              name='description'
+              onChange={handleChange}
+              value={formState.values.description}
+              variant='outlined'
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <DropzoneArea
+              required
+              filesLimit={1}
+              name='image'
+              onChange={handleImages}
+              acceptedfiles={['image/']}
+              showFileNamesInPreview={true}
+              showAlerts={false}
+            />
+          </Grid>
+        </Grid>
+        <Divider />
+      </form>
+    </Container>
+  );
+
+  const SubmitButton = (
+    <Button
+      disabled={!formState.isValid}
+      //fullWidth
+      variant='contained'
+      type='submit'
+      onClick={handleSubmit}
+      color='secondary'>
+      {isEditable ? 'Save Changes' : 'Add Product'}
+    </Button>
+  );
 
   return (
-      <FormDialogButton title='Product'
+    <FormDialog
+      title='Product'
       component={Form}
-      open = {open}
-      onClose = {onClose}
-      />
+      submitButton={SubmitButton}
+      open={open}
+      onClose={handleClose}
+    />
   );
 };
 
-
-
-
-
-CategoryForm.propTypes = {
+ProductFormDialog.propTypes = {
   className: PropTypes.string,
 };
 
-export default CategoryForm;
+export default ProductFormDialog;
