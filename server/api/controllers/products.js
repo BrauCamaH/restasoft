@@ -28,10 +28,12 @@ exports.getProductsByCategory = (req, res) => {
 exports.addProduct = (req, res) => {
   const { name, description, price, category } = req.body;
 
+  const imagePath = req.file ? req.file.path : '';
+
   const Product = Products.build({
     name: name,
     description: description,
-    image: req.file.path,
+    image: imagePath,
     price: price,
     category: category,
   });
@@ -55,7 +57,11 @@ exports.updateProduct = (req, res) => {
     if (!req.file) {
       imagePath = product.image;
     } else {
-      deleteImageByPath(product.image);
+      if (product.image == '' || product.image === null) {
+        imagePath = product.image;
+      } else {
+        deleteImageByPath(product.image);
+      }
       imagePath = req.file.path;
     }
 
@@ -74,7 +80,10 @@ exports.updateProduct = (req, res) => {
       },
     )
       .then(() => {
-        res.status(200).send(`Product updated with ID: ${id}`);
+        res.status(200).json({
+          message: `Product updated with ID: ${id}`,
+          image: imagePath,
+        });
       })
       .catch(err => {
         res.status(500).json({

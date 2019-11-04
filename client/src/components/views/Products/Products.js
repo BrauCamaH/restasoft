@@ -10,7 +10,7 @@ const ProductsContext = createContext({
   products: [],
   addProduct: product => {},
   deleteProduct: id => {},
-  editProduct: product => {},
+  updateProduct: product => {},
   setProducts: products => {},
 });
 
@@ -115,7 +115,61 @@ const Products = ({ match }) => {
       });
   };
 
-  const updateProduct = product => {};
+  const updateProduct = product => {
+    const data = new FormData();
+
+    const id = product.id;
+
+    const image = product.image;
+    const name = product.name;
+    const price = product.price;
+    const description = product.description;
+
+    data.append('name', name);
+    data.append('price', price);
+    data.append('description', description);
+    data.append('image', image);
+
+    //console.log(image);
+
+    axios
+      .put(`/api/products/${id}`, data, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then(res => {
+        product.name = name;
+        product.description = description;
+        product.price = price;
+        product.image = res.data.image;
+
+        console.log(res.data.image);
+
+        const updatedProducts = [...products];
+        const updatedItemIndex = updatedProducts.findIndex(
+          item => item.id === id,
+        );
+
+        updatedProducts[updatedItemIndex] = product;
+
+        //console.log('Updated Product', product);
+
+        setProducts(updatedProducts);
+
+        enqueueSnackbar('Category Updated', {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+      })
+      .catch(err => {
+        console.log(err);
+        enqueueSnackbar('Error Ocurred', {
+          variant: 'error',
+        });
+        setTimeout(closeSnackbar, 2000);
+      });
+  };
 
   return (
     <ProductsContext.Provider

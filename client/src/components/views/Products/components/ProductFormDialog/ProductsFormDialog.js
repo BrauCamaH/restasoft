@@ -128,7 +128,7 @@ const ProductFormDialog = props => {
     event.preventDefault();
 
     if (isEditable) {
-      context.editProduct(formState.values);
+      context.updateProduct(formState.values);
     } else {
       context.addProduct(formState.values);
     }

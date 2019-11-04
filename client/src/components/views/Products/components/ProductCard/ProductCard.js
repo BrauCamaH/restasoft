@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import AlertDialog from '../../../../tools/AlertDialog';
 
 import { ProductsContext } from '../../Products';
+import ProductFormDialog from '../ProductFormDialog';
 
 import {
   Card,
@@ -32,7 +33,21 @@ const Product = props => {
   const classes = useStyles();
   const context = useContext(ProductsContext);
 
+  const image =
+    product.image === ''
+      ? 'https://live.staticflickr.com/65535/40681390113_f02aa47381_b.jpg'
+      : `/${product.image.substring(8)}`;
+
+  const [openEdit, setOpenEdit] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
+
+  const handleOpenEdit = () => {
+    setOpenEdit(true);
+  };
+
+  const handleCloseEdit = () => {
+    setOpenEdit(false);
+  };
 
   const handleOpenAlert = () => {
     setOpenAlert(true);
@@ -50,7 +65,7 @@ const Product = props => {
     const isAdmind = true;
     return isAdmind ? (
       <div>
-        <IconButton>
+        <IconButton onClick={handleOpenEdit}>
           <EditIcon />
         </IconButton>
         <IconButton onClick={handleOpenAlert}>
@@ -69,10 +84,7 @@ const Product = props => {
           action={<EditAndDelete></EditAndDelete>}
           title={product.name}
           subheader={`Price: $${product.price}`}></CardHeader>
-        <CardMedia
-          className={classes.media}
-          image={`/${product.image.substring(8)}`}
-        />
+        <CardMedia className={classes.media} image={`${image}`} />
         <CardContent>
           <Typography variant='body2' color='textSecondary' component='p'>
             {product.description}
@@ -81,6 +93,12 @@ const Product = props => {
       </Card>
 
       <div>
+        <ProductFormDialog
+          product={product}
+          isEditable={true}
+          open={openEdit}
+          onClose={handleCloseEdit}
+        />
         <AlertDialog
           open={openAlert}
           title='Are you sure?'
