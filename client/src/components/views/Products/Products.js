@@ -11,7 +11,7 @@ const ProductsContext = createContext({
   addProduct: product => {},
   deleteProduct: id => {},
   editProduct: product => {},
-  setProducts: categories => {},
+  setProducts: products => {},
 });
 
 const useStyles = makeStyles(theme => ({
@@ -93,7 +93,27 @@ const Products = ({ match }) => {
       });
   };
 
-  const deleteProduct = id => {};
+  const deleteProduct = id => {
+    //console.log(`Deleting category with id ${id}`);
+    const updatedProducts = [...products];
+    const updatedItemIndex = updatedProducts.findIndex(item => item.id === id);
+
+    updatedProducts.splice(updatedItemIndex, 1);
+
+    setProducts(updatedProducts);
+
+    axios
+      .delete(`/api/products/${id}`)
+      .then(res => {
+        enqueueSnackbar('Product Eliminated', {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   const updateProduct = product => {};
 
