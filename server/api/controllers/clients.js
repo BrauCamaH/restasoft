@@ -3,7 +3,9 @@ const db = require('../models');
 const Clients = db.clients;
 
 exports.getClients = (req, res) => {
-  Clients.findAll()
+  Clients.findAll({
+    order: ['id'],
+  })
     .then(client => res.json(client))
     .catch(e => res.json({ err: e }));
 };
