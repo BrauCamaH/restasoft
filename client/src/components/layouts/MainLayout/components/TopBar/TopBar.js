@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Topbar = props => {
-  const { className, onSidebarOpen, ...rest } = props;
+  const { className, onSidebarOpen } = props;
   const { history } = props;
   const handleSignOut = () => {
     axios
@@ -45,7 +45,7 @@ const Topbar = props => {
   const classes = useStyles();
 
   return (
-    <AppBar {...rest} className={clsx(classes.root, className)}>
+    <AppBar className={clsx(classes.root, className)}>
       <Toolbar>
         <RouterLink to='/'>
           {/* <img alt='Logo' src='/images/logos/logo--white.svg' /> */}
