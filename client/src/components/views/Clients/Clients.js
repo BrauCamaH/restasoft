@@ -46,15 +46,16 @@ const Clients = () => {
 
   const addClient = client => {
     //console.log(`Adding client `, client);
+    const { name, rfc, city, address, zipcode, colony, phone } = client;
     axios
       .post(`/api/clients`, {
-        name: client.name,
-        rfc: client.rfc,
-        city: client.city,
-        address: client.address,
-        zipcode: client.zipcode,
-        colony: client.colony,
-        phone: client.phone,
+        name: name,
+        rfc: rfc,
+        city: city,
+        address: address,
+        zipcode: zipcode,
+        colony: colony,
+        phone: phone,
       })
       .then(res => {
         //console.log(res.data);
@@ -73,6 +74,38 @@ const Clients = () => {
   };
   const editClient = client => {
     console.log(`Editing client `, client);
+
+    const id = client.id;
+    const { name, rfc, city, address, zipcode, colony, phone } = client;
+    axios
+      .put(`/api/clients/${id}`, {
+        name: name,
+        rfc: rfc,
+        city: city,
+        address: address,
+        zipcode: zipcode,
+        colony: colony,
+        phone: phone,
+      })
+      .then(res => {
+        //console.log(res.data);
+        const updatedClients = [...clients];
+        const updatedItemIndex = updatedClients.findIndex(
+          item => item.id === id,
+        );
+
+        updatedClients[updatedItemIndex] = client;
+
+        setClients(updatedClients);
+
+        enqueueSnackbar('Client Edited', {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
   const deleteClient = id => {
     console.log(`Client Deleted with id ${id}`);

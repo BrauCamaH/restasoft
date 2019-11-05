@@ -65,7 +65,7 @@ const MTable = props => {
     setOpen(false);
   };
 
-  const handleOpen = rowData => {
+  const handleOpen = () => {
     setOpen(true);
   };
 
@@ -122,21 +122,35 @@ const MTable = props => {
               icon: 'add',
               tooltip: 'Add Client',
               isFreeAction: true,
-              onClick: (event, rowData) => handleOpen(rowData),
+              onClick: event => handleOpen(),
             },
-            {
-              icon: 'edit',
-              tooltip: 'Delete Client',
-              onClick: (event, rowData) =>
-                alert('You want to edit ' + rowData.name),
-            },
-            {
-              icon: 'delete',
-              tooltip: 'Delete Client',
-              onClick: (event, rowData) =>
-                alert('You want to delete ' + rowData),
-            },
+            // {
+            //   icon: 'edit',
+            //   tooltip: 'Delete Client',
+            //   onClick: (event, rowData) => handleOpenEdit(rowData),
+            // },
+            // {
+            //   icon: 'delete',
+            //   tooltip: 'Delete Client',
+            //   onClick: (event, rowData) =>
+            //     alert('You want to delete ' + rowData),
+            // },
           ]}
+          editable={{
+            onRowUpdate: (newData, oldData) =>
+              new Promise(resolve => {
+                newData.id = oldData.id;
+                console.log(newData);
+                context.editClient(newData);
+
+                resolve();
+              }),
+            onRowDelete: oldData =>
+              new Promise(resolve => {
+                resolve();
+                context.deleteClient(oldData.id);
+              }),
+          }}
         />
       )}
       <React.Fragment>
