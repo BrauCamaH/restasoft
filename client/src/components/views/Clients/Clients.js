@@ -2,6 +2,7 @@ import React, { useState, useEffect, createContext } from 'react';
 import { ClientsTable } from './components';
 
 import { makeStyles } from '@material-ui/core/styles';
+import { useSnackbar } from 'notistack';
 import axios from 'axios';
 
 const ClientsContext = createContext({
@@ -24,6 +25,8 @@ const Clients = () => {
 
   const [clients, setClients] = useState([]);
 
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -33,7 +36,7 @@ const Clients = () => {
       .then(res => {
         setClients(res.data);
         setIsLoading(false);
-        console.log(res.data);
+        //console.log(res.data);
       })
       .catch(err => {
         setIsLoading(false);
@@ -42,7 +45,31 @@ const Clients = () => {
   }, []);
 
   const addClient = client => {
-    console.log(`Adding client `, client);
+    //console.log(`Adding client `, client);
+    axios
+      .post(`/api/clients`, {
+        name: client.name,
+        rfc: client.rfc,
+        city: client.city,
+        address: client.address,
+        zipcode: client.zipcode,
+        colony: client.colony,
+        phone: client.phone,
+      })
+      .then(res => {
+        //console.log(res.data);
+        const updatedClients = [...clients];
+        updatedClients.push(res.data);
+        setClients(updatedClients);
+
+        enqueueSnackbar('Client Added', {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
   const editClient = client => {
     console.log(`Editing client `, client);

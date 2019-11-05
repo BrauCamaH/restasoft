@@ -21,6 +21,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
 import { ClientsContext } from '../../Clients';
+import { ClientFormDialog } from '../index';
 
 // import { makeStyles } from '@material-ui/core/styles';
 
@@ -57,6 +58,16 @@ const tableIcons = {
 
 const MTable = props => {
   const context = useContext(ClientsContext);
+
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = rowData => {
+    setOpen(true);
+  };
 
   const [state] = useState({
     columns: [
@@ -111,8 +122,7 @@ const MTable = props => {
               icon: 'add',
               tooltip: 'Add Client',
               isFreeAction: true,
-              onClick: (event, rowData) =>
-                alert('You want to add a client ' + rowData.name),
+              onClick: (event, rowData) => handleOpen(rowData),
             },
             {
               icon: 'edit',
@@ -124,11 +134,14 @@ const MTable = props => {
               icon: 'delete',
               tooltip: 'Delete Client',
               onClick: (event, rowData) =>
-                alert('You want to delete ' + rowData.name),
+                alert('You want to delete ' + rowData),
             },
           ]}
         />
       )}
+      <React.Fragment>
+        <ClientFormDialog open={open} onClose={handleClose} />
+      </React.Fragment>
     </React.Fragment>
   );
 };

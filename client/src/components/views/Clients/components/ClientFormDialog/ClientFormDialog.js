@@ -3,11 +3,10 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import validate from 'validate.js';
-import { DropzoneArea } from 'material-ui-dropzone';
 //import { useSnackbar } from 'notistack';
 
 import { Container, Divider, Grid, TextField, Button } from '@material-ui/core';
-import { CategoriesContext } from '../../Categories';
+import { ClientsContext } from '../../Clients';
 
 import FormDialogButton from '../../../../tools/FormDialog';
 
@@ -27,7 +26,37 @@ const schema = {
       maximum: 32,
     },
   },
-  description: {
+  rfc: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 32,
+    },
+  },
+  city: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 32,
+    },
+  },
+  address: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 100,
+    },
+  },
+  zipcode: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 32,
+    },
+  },
+  colony: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 32,
+    },
+  },
+  phone: {
     presence: { allowEmpty: true },
     length: {
       maximum: 200,
@@ -35,25 +64,32 @@ const schema = {
   },
 };
 
-const CategoryForm = props => {
-  const { open, category, isEditable, onClose, className, ...rest } = props;
+const ClientForm = props => {
+  const { open, client, isEditable, onClose, className, ...rest } = props;
   const classes = useStyles();
 
-  const context = useContext(CategoriesContext);
+  const context = useContext(ClientsContext);
 
-  const id = category ? category.id : 0;
+  const id = client ? client.id : 0;
 
-  const name = category && isEditable ? category.name : '';
-  const description = category && isEditable ? category.description : '';
-  const image = category && isEditable ? category.image : '';
+  const name = client && isEditable ? client.name : '';
+  const rfc = client && isEditable ? client.rfc : '';
+  const city = client && isEditable ? client.city : '';
+  const address = client && isEditable ? client.address : '';
+  const zipcode = client && isEditable ? client.zipcode : '';
+  const colony = client && isEditable ? client.colony : '';
+  const phone = client && isEditable ? client.phone : '';
 
   const [formState, setFormState] = useState({
     isValid: false,
     values: {
-      id: id,
       name: name,
-      description: description,
-      image: image,
+      rfc: rfc,
+      city: city,
+      address: address,
+      zipcode: zipcode,
+      colony: colony,
+      phone: phone,
     },
     touched: {},
     errors: {},
@@ -88,28 +124,12 @@ const CategoryForm = props => {
     }));
   };
 
-  const handleImages = files => {
-    //setImages(files);
-    setFormState(formState => ({
-      ...formState,
-      values: {
-        ...formState.values,
-        image: files[0],
-      },
-    }));
-  };
-
   const hasError = field => (formState.errors[field] ? true : false);
 
   const handleClose = () => {
     setFormState(formState => ({
       ...formState,
-      values: {
-        ...formState.values,
-        name: name,
-        description: description,
-        image: image,
-      },
+      values: {},
     }));
 
     onClose();
@@ -119,9 +139,9 @@ const CategoryForm = props => {
     event.preventDefault();
 
     if (isEditable) {
-      context.editCategory(formState.values);
+      context.editClient(formState.values);
     } else {
-      context.addCategory(formState.values);
+      context.addClient(formState.values);
     }
 
     handleClose();
@@ -138,43 +158,106 @@ const CategoryForm = props => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
-              //error={hasError('name')}
+              error={hasError('name')}
               fullWidth
               helperText={hasError('name') ? formState.errors.name[0] : null}
               label='Name'
               margin='dense'
               name='name'
+              type='text'
               onChange={handleChange}
-              required
-              value={formState.values.name}
+              value={formState.values.name || ''}
               variant='outlined'
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
-              multiline
-              error={hasError('description')}
+              error={hasError('rfc')}
               fullWidth
-              helperText={
-                hasError('description') ? formState.errors.description[0] : null
-              }
-              label='Description'
+              helperText={hasError('rfc') ? formState.errors.rfc[0] : null}
+              label='Rfc'
               margin='dense'
-              name='description'
+              name='rfc'
+              type='text'
               onChange={handleChange}
-              value={formState.values.description}
+              value={formState.values.rfc || ''}
               variant='outlined'
             />
           </Grid>
           <Grid item xs={12}>
-            <DropzoneArea
-              required
-              filesLimit={1}
-              name='image'
-              onChange={handleImages}
-              acceptedfiles={['image/']}
-              showFileNamesInPreview={true}
-              showAlerts={false}
+            <TextField
+              error={hasError('city')}
+              fullWidth
+              helperText={hasError('city') ? formState.errors.city[0] : null}
+              label='city'
+              margin='dense'
+              name='city'
+              type='text'
+              onChange={handleChange}
+              value={formState.values.city || ''}
+              variant='outlined'
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              error={hasError('address')}
+              fullWidth
+              helperText={
+                hasError('address') ? formState.errors.address[0] : null
+              }
+              label='Address'
+              margin='dense'
+              name='address'
+              type='text'
+              onChange={handleChange}
+              value={formState.values.address || ''}
+              variant='outlined'
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              error={hasError('zipcode')}
+              fullWidth
+              helperText={
+                hasError('zipcode') ? formState.errors.zipcode[0] : null
+              }
+              label='Zipcode'
+              margin='dense'
+              name='zipcode'
+              type='text'
+              onChange={handleChange}
+              value={formState.values.zipcode || ''}
+              variant='outlined'
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              error={hasError('colony')}
+              fullWidth
+              helperText={
+                hasError('colony') ? formState.errors.colony[0] : null
+              }
+              label='Colony'
+              margin='dense'
+              name='colony'
+              onChange={handleChange}
+              type='text'
+              value={formState.values.colony || ''}
+              variant='outlined'
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              error={hasError('phone')}
+              fullWidth
+              helperText={hasError('phone') ? formState.errors.phone[0] : null}
+              label='Phone'
+              margin='dense'
+              name='phone'
+              type='text'
+              onChange={handleChange}
+              value={formState.values.phone || ''}
+              variant='outlined'
             />
           </Grid>
         </Grid>
@@ -191,13 +274,13 @@ const CategoryForm = props => {
       type='submit'
       onClick={handleSubmit}
       color='secondary'>
-      {isEditable ? 'Save Changes' : 'Add Category'}
+      {isEditable ? 'Save Changes' : 'Add client'}
     </Button>
   );
 
   return (
     <FormDialogButton
-      title='Category'
+      title='client'
       component={Form}
       submitButton={SubmitButton}
       open={open}
@@ -206,8 +289,8 @@ const CategoryForm = props => {
   );
 };
 
-CategoryForm.propTypes = {
+ClientForm.propTypes = {
   className: PropTypes.string,
 };
 
-export default CategoryForm;
+export default ClientForm;
