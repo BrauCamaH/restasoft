@@ -68,28 +68,20 @@ const ClientForm = props => {
   const { open, client, isEditable, onClose, className, ...rest } = props;
   const classes = useStyles();
 
+  console.log(client);
+
   const context = useContext(ClientsContext);
-
-  const id = client ? client.id : 0;
-
-  const name = client && isEditable ? client.name : '';
-  const rfc = client && isEditable ? client.rfc : '';
-  const city = client && isEditable ? client.city : '';
-  const address = client && isEditable ? client.address : '';
-  const zipcode = client && isEditable ? client.zipcode : '';
-  const colony = client && isEditable ? client.colony : '';
-  const phone = client && isEditable ? client.phone : '';
 
   const [formState, setFormState] = useState({
     isValid: false,
     values: {
-      name: name,
-      rfc: rfc,
-      city: city,
-      address: address,
-      zipcode: zipcode,
-      colony: colony,
-      phone: phone,
+      name: client && isEditable ? client.name : '',
+      rfc: client && isEditable ? client.rfc : '',
+      city: client && isEditable ? client.city : '',
+      address: client && isEditable ? client.address : '',
+      zipcode: client && isEditable ? client.zipcode : '',
+      colony: client && isEditable ? client.colony : '',
+      phone: client && isEditable ? client.phone : '',
     },
     touched: {},
     errors: {},
