@@ -108,7 +108,25 @@ const Clients = () => {
       });
   };
   const deleteClient = id => {
-    console.log(`Client Deleted with id ${id}`);
+    //console.log(`Client Deleted with id ${id}`);
+    const updatedClients = [...clients];
+    const updatedItemIndex = updatedClients.findIndex(item => item.id === id);
+
+    updatedClients.splice(updatedItemIndex, 1);
+
+    setClients(updatedClients);
+
+    axios
+      .delete(`api/clients/${id}`)
+      .then(res => {
+        enqueueSnackbar('Client Eliminated', {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return (
