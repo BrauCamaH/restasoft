@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     {},
   );
   tables.associate = function(models) {
-    tables.hasMany(models.sales);
+    tables.hasMany(models.sales, { foreignKey: 'table' });
   };
   return tables;
 };

@@ -7,15 +7,18 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.TEXT,
       image: DataTypes.TEXT,
       price: DataTypes.DECIMAL(13, 2),
-      category: DataTypes.INTEGER,
     },
     {},
   );
+
   products.associate = function(models) {
+    // products.belongsTo(models.categories, {
+    //   foreignKey: 'category',
+    //   constraints: true,
+    // });
     products.belongsToMany(models.sales, {
       through: 'orders',
-      foreignKey: 'saleId',
-      as: 'sales',
+      foreignKey: 'product',
       constraints: true,
     });
   };

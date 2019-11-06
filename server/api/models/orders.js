@@ -5,21 +5,18 @@ module.exports = (sequelize, DataTypes) => {
     {
       price: DataTypes.DECIMAL(13, 2),
       quantity: DataTypes.INTEGER,
-      sale: DataTypes.INTEGER,
-      product: DataTypes.INTEGER,
     },
     {},
   );
   orders.associate = function(models) {
     orders.belongsTo(models.products, {
-      foreignKey: 'productId',
-      as: 'p',
+      foreignKey: 'product',
+      as: 'productId',
       constraints: true,
     });
-
     orders.belongsTo(models.sales, {
-      foreignKey: 'saleId',
-      as: 's',
+      foreignKey: 'sale',
+      as: 'saleId',
       constraints: true,
     });
   };

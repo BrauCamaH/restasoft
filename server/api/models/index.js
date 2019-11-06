@@ -48,10 +48,10 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-// sequelize.sync().then(err => {
-//   if (err) console.error('An error occured %j', err);
-//   else console.info('Database synchronized');
-// });
+sequelize.sync().then(err => {
+  if (err) console.error('An error occured %j', err);
+  else console.info('Database synchronized');
+});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
