@@ -6,6 +6,7 @@ import {
   Products,
   Account,
   Clients,
+  Sales,
 } from './components/views';
 import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
@@ -58,6 +59,12 @@ const Routes = () => {
         exact
         layout={WithAuth(MainLayout)}
         path='/clients'
+      />
+      <RouteWithLayout
+        component={WithAuth(Sales)}
+        exact
+        layout={WithAuth(MainLayout)}
+        path='/orders'
       />
     </Switch>
   );
