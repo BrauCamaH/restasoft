@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 
-//import ProductsFormDialog from '../ProductFormDialog';
+import SaleFormDialog from '../SaleFormDialog';
 
 import SearchInput from '../../../../tools/SearchBar';
 
@@ -51,7 +51,7 @@ const SalesToolbar = props => {
         <Button color='primary' variant='contained' onClick={handleOpen}>
           Add Sale
         </Button>
-        {/* <ProductsFormDialog open={open} onClose={handleClose} /> */}
+        <SaleFormDialog open={open} onClose={handleClose} />
       </div>
       <div className={classes.row}>
         <SearchInput

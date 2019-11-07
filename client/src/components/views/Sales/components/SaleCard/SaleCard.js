@@ -22,7 +22,7 @@ import EventSeatIcon from '@material-ui/icons/EventSeat';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    maxWidth: 500,
+    maxWidth: 600,
     height: '100%',
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
@@ -45,12 +45,11 @@ const useStyles = makeStyles(theme => ({
     width: 32,
   },
   options: {
+    padding: theme.spacing(0.5),
+    alignItems: 'center',
     display: 'flex',
-    justifyContent: 'right',
-    margin: theme.spacing(0.5),
   },
   chipIcon: {
-    backgroundColor: theme.palette.white,
     color: theme.palette.primary.light,
   },
   chips: {
@@ -69,17 +68,20 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SaleCard = props => {
-  const { className, ...rest } = props;
+  const { sale, className, ...rest } = props;
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
-  const handleOpen = () => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handleOpen = event => {
     setOpen(true);
+    setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setOpen(false);
+    setAnchorEl(null);
   };
 
   return (
@@ -95,7 +97,7 @@ const SaleCard = props => {
               TOTAL
             </Typography>
             <Typography color='inherit' variant='h3'>
-              $2,300
+              {`0`}
             </Typography>
           </Grid>
           <Grid item>
@@ -140,9 +142,23 @@ const SaleCard = props => {
         <IconButton onClick={handleOpen}>
           <MoreVertIcon />
         </IconButton>
-        <Menu open={open} onClose={handleClose} onClick={handleClose}>
+        <Menu
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}>
           <MenuItem>Edit</MenuItem>
           <MenuItem>Finish</MenuItem>
+          <MenuItem>Delete</MenuItem>
         </Menu>
       </Grid>
     </Card>
