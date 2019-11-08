@@ -11,7 +11,7 @@ import {
 import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
 
-import { RouteWithLayout, WithAuth } from './components/tools';
+import { RouteWithLayout } from './components/tools';
 import { MinimalLayout, MainLayout } from './components/layouts';
 
 const Routes = () => {
@@ -31,39 +31,45 @@ const Routes = () => {
         path='/sign-in'
       />
       <RouteWithLayout
-        component={WithAuth(Account)}
+        isRestricted
+        component={Account}
         exact
-        layout={WithAuth(MainLayout)}
+        layout={MainLayout}
         path='/account'
       />
       <RouteWithLayout
-        component={WithAuth(Tables)}
+        isRestricted
+        component={Tables}
         exact
-        layout={WithAuth(MainLayout)}
+        layout={MainLayout}
         path='/tables'
       />
       <RouteWithLayout
-        component={WithAuth(Categories)}
+        isRestricted
+        component={Categories}
         exact
-        layout={WithAuth(MainLayout)}
+        layout={MainLayout}
         path='/categories'
       />
       <RouteWithLayout
-        component={WithAuth(Products)}
+        isRestricted
+        component={Products}
         exact
-        layout={WithAuth(MainLayout)}
+        layout={MainLayout}
         path='/products/:category'
       />
       <RouteWithLayout
-        component={WithAuth(Clients)}
+        isRestricted
+        component={Clients}
         exact
-        layout={WithAuth(MainLayout)}
+        layout={MainLayout}
         path='/clients'
       />
       <RouteWithLayout
-        component={WithAuth(Sales)}
+        isRestricted
+        component={Sales}
         exact
-        layout={WithAuth(MainLayout)}
+        layout={MainLayout}
         path='/orders'
       />
     </Switch>
