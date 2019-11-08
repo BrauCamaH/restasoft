@@ -10,6 +10,16 @@ exports.getClients = (req, res) => {
     .catch(e => res.json({ err: e }));
 };
 
+exports.getClientById = (req, res) => {
+  Clients.findOne({ where: { id: req.params.id } })
+    .then(client => {
+      res.json(client);
+    })
+    .catch(e => {
+      res.json({ err: e });
+    });
+};
+
 exports.addClient = (req, res) => {
   const { rfc, name, city, address, zipcode, colony, phone } = req.body;
 
