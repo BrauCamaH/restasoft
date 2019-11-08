@@ -11,7 +11,7 @@ const SalesContext = createContext({
   isLoanding: false,
   sales: [],
   addSale: sale => {},
-  deleteSale: sale => {},
+  deleteSale: id => {},
   editSale: sale => {},
   setSales: sales => {},
 });
@@ -39,7 +39,6 @@ const Sales = () => {
       .then(res => {
         setSales(res.data);
         setIsLoading(false);
-        console.log(res.data);
       })
       .catch(err => {
         setIsLoading(false);
@@ -73,7 +72,27 @@ const Sales = () => {
         console.log(err);
       });
   };
-  const deleteSale = sale => {};
+  const deleteSale = id => {
+    //console.log(`Sale Deleted with id ${id}`);
+    const updatedSales = [...sales];
+    const updatedItemIndex = updatedSales.findIndex(item => item.id === id);
+
+    updatedSales.splice(updatedItemIndex, 1);
+
+    setSales(updatedSales);
+
+    axios
+      .delete(`api/sales/${id}`)
+      .then(res => {
+        enqueueSnackbar('Sale Eliminated', {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   const editSale = sale => {};
 
   return (

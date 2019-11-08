@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -21,6 +21,9 @@ import FaceIcon from '@material-ui/icons/Face';
 import EventSeatIcon from '@material-ui/icons/EventSeat';
 
 import useAxios from 'axios-hooks';
+
+import { SalesContext } from '../../Sales';
+import { AlertDialog } from '../../../../tools';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -71,6 +74,7 @@ const useStyles = makeStyles(theme => ({
 
 const SaleCard = props => {
   const { sale, className, ...rest } = props;
+  const context = useContext(SalesContext);
 
   const [{ data: client, error: clientError }, refetchClient] = useAxios(
     `/api/clients/${sale.client}`,
@@ -87,6 +91,7 @@ const SaleCard = props => {
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleOpen = event => {
@@ -98,6 +103,20 @@ const SaleCard = props => {
     setOpen(false);
     setAnchorEl(null);
   };
+
+  const handleDelete = () => {
+    context.deleteSale(sale.id);
+  };
+
+  const alert = (
+    <AlertDialog
+      title='Are you sure?'
+      contentText='The action will delete the current sale'
+      open={openAlert}
+      onClose={() => setOpenAlert(false)}
+      onAgree={handleDelete}
+    />
+  );
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
@@ -173,8 +192,14 @@ const SaleCard = props => {
           onClick={handleClose}>
           <MenuItem>Edit</MenuItem>
           <MenuItem>Finish</MenuItem>
-          <MenuItem>Delete</MenuItem>
+          <MenuItem
+            onClick={() => {
+              setOpenAlert(true);
+            }}>
+            Delete
+          </MenuItem>
         </Menu>
+        {alert}
       </Grid>
     </Card>
   );
