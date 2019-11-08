@@ -8,6 +8,16 @@ exports.getTables = (req, res) => {
     .catch(e => res.json({ err: e }));
 };
 
+exports.getTableById = (req, res) => {
+  Tables.findOne({ where: { id: req.params.id } })
+    .then(table => {
+      res.json(table);
+    })
+    .catch(e => {
+      res.json({ err: e });
+    });
+};
+
 exports.addTable = (req, res) => {
   const { code, observations } = req.body;
 
