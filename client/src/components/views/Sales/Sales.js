@@ -4,10 +4,7 @@ import { SaleCard, SalesToolbar } from './components';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 
-import UserContext from '../../../context/user-context';
-
 import axios from 'axios';
-import useAxios from 'axios-hooks';
 import userContext from '../../../context/user-context';
 
 const SalesContext = createContext({
@@ -95,7 +92,7 @@ const Sales = () => {
           <Grid container spacing={3}>
             {sales.map(sale => (
               <Grid item key={sale.id} lg={4} md={6} xs={12}>
-                <SaleCard></SaleCard>
+                <SaleCard sale={sale}></SaleCard>
               </Grid>
             ))}
           </Grid>

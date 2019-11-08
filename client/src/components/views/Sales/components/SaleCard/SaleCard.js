@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -19,6 +19,8 @@ import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import FaceIcon from '@material-ui/icons/Face';
 import EventSeatIcon from '@material-ui/icons/EventSeat';
+
+import useAxios from 'axios-hooks';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -70,6 +72,19 @@ const useStyles = makeStyles(theme => ({
 const SaleCard = props => {
   const { sale, className, ...rest } = props;
 
+  const [{ data: client, error: clientError }, refetchClient] = useAxios(
+    `/api/clients/${sale.client}`,
+  );
+
+  const [{ data: table, error: tableError }, refetchTable] = useAxios(
+    `/api/tables/${sale.table}`,
+  );
+
+  useEffect(() => {
+    refetchClient();
+    refetchTable();
+  }, []);
+
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
@@ -97,7 +112,7 @@ const SaleCard = props => {
               TOTAL
             </Typography>
             <Typography color='inherit' variant='h3'>
-              {`0`}
+              {sale.total}
             </Typography>
           </Grid>
           <Grid item>
@@ -110,14 +125,14 @@ const SaleCard = props => {
           <Grid item>
             <Chip
               icon={<FaceIcon className={classes.chipIcon} />}
-              label='Client'
+              label={client ? client.name : ''}
               variant='outlined'
             />
           </Grid>
           <Grid item>
             <Chip
               icon={<EventSeatIcon className={classes.chipIcon} />}
-              label='Table'
+              label={table ? table.code : ''}
               variant='outlined'
             />
           </Grid>
