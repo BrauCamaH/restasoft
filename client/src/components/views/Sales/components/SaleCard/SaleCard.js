@@ -139,6 +139,12 @@ const SaleCard = props => {
     />
   );
 
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+  });
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardContent>
@@ -152,7 +158,7 @@ const SaleCard = props => {
               TOTAL
             </Typography>
             <Typography color='inherit' variant='h3'>
-              {sale.total}
+              {formatter.format(ordersContext.getTotalBySale(sale.id))}
             </Typography>
           </Grid>
           <Grid item>

@@ -32,6 +32,7 @@ const OrdersContext = createContext({
   getProductById: () => {
     return {};
   },
+  getTotalBySale: id => {},
 });
 
 const useStyles = makeStyles(theme => ({
@@ -193,6 +194,16 @@ const Sales = () => {
   };
   const editOrder = order => {};
 
+  const getTotalBySale = id => {
+    let total = 0;
+
+    getOrdersBySale(id).forEach(item => {
+      total += item.price * item.quantity;
+    });
+
+    return total;
+  };
+
   return (
     <SalesContext.Provider
       value={{
@@ -211,6 +222,7 @@ const Sales = () => {
           deleteOrder: deleteOrder,
           editOrder: editOrder,
           getProductById: getProductById,
+          getTotalBySale: getTotalBySale,
         }}>
         <div className={classes.root}>
           <SalesToolbar></SalesToolbar>
