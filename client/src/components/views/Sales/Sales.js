@@ -10,10 +10,14 @@ import userContext from '../../../context/user-context';
 const SalesContext = createContext({
   isLoanding: false,
   sales: [],
+  orders: [],
+  products: [],
+  setOrders: [],
   addSale: sale => {},
   deleteSale: id => {},
   editSale: sale => {},
   setSales: sales => {},
+  getOrdersBySale: id => {},
 });
 
 const useStyles = makeStyles(theme => ({
@@ -31,17 +35,40 @@ const Sales = () => {
   const context = useContext(userContext);
 
   const [sales, setSales] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`/api/sales`)
+      .get(`/api/orders`)
       .then(res => {
-        setSales(res.data);
-        setIsLoading(false);
+        setOrders(res.data);
+        // console.log(res.data);
+        axios
+          .get(`/api/sales`)
+          .then(res => {
+            setSales(res.data);
+            setIsLoading(false);
+          })
+          .catch(err => {
+            setIsLoading(false);
+            console.error(err);
+          });
       })
       .catch(err => {
-        setIsLoading(false);
+        console.error(err);
+      });
+  }, []);
+
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`/api/products`)
+      .then(res => {
+        setProducts(res.data);
+        //console.log(res.data);
+      })
+      .catch(err => {
         console.error(err);
       });
   }, []);
@@ -95,6 +122,10 @@ const Sales = () => {
   };
   const editSale = sale => {};
 
+  const getOrdersBySale = id => {
+    return orders.filter(order => order.sale === id);
+  };
+
   return (
     <SalesContext.Provider
       value={{
@@ -104,6 +135,10 @@ const Sales = () => {
         deleteSale: deleteSale,
         editSale: editSale,
         setSales: setSales,
+        orders: orders,
+        setOrders: setOrders,
+        products: products,
+        getOrdersBySale: getOrdersBySale,
       }}>
       <div className={classes.root}>
         <SalesToolbar></SalesToolbar>

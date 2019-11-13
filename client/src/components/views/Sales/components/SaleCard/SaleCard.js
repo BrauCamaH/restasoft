@@ -19,6 +19,8 @@ import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import FaceIcon from '@material-ui/icons/Face';
 import EventSeatIcon from '@material-ui/icons/EventSeat';
+import FormDialog from '../../../../tools/FormDialog';
+import Orders from '../Orders';
 
 import useAxios from 'axios-hooks';
 
@@ -75,16 +77,19 @@ const useStyles = makeStyles(theme => ({
 const SaleCard = props => {
   const { sale, className, ...rest } = props;
   const context = useContext(SalesContext);
+  const [orders, setOrders] = useState([]);
 
   const [{ data: client, error: clientError }, refetchClient] = useAxios(
-    `/api/clients/${sale.client}`,
+    `/api/clients/${sale.client}`
   );
 
   const [{ data: table, error: tableError }, refetchTable] = useAxios(
-    `/api/tables/${sale.table}`,
+    `/api/tables/${sale.table}`
   );
 
   useEffect(() => {
+    setOrders(context.getOrdersBySale(sale.id));
+
     refetchClient();
     refetchTable();
   }, []);
@@ -92,6 +97,7 @@ const SaleCard = props => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
+  const [openFormDialog, setOpenFormDialog] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleOpen = event => {
@@ -115,6 +121,17 @@ const SaleCard = props => {
       open={openAlert}
       onClose={() => setOpenAlert(false)}
       onAgree={handleDelete}
+    />
+  );
+
+  const formDialog = (
+    <FormDialog
+      title='Orders'
+      component={<Orders orders={orders} />}
+      open={openFormDialog}
+      onClose={() => {
+        setOpenFormDialog(false);
+      }}
     />
   );
 
@@ -161,9 +178,14 @@ const SaleCard = props => {
             <Badge
               style={{ width: '100%' }}
               color='secondary'
-              badgeContent={4}
+              badgeContent={orders.length}
               className={classes.margin}>
-              <Button fullWidth variant='contained'>
+              <Button
+                fullWidth
+                variant='contained'
+                onClick={() => {
+                  setOpenFormDialog(true);
+                }}>
                 <Typography color='inherit' color='primary' variant='subtitle1'>
                   Orders
                 </Typography>
@@ -200,6 +222,7 @@ const SaleCard = props => {
           </MenuItem>
         </Menu>
         {alert}
+        {formDialog}
       </Grid>
     </Card>
   );

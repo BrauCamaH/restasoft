@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import validate from 'validate.js';
 
@@ -10,7 +9,6 @@ import {
   Grid,
   Button,
   Typography,
-  Box,
 } from '@material-ui/core';
 
 import Select from 'react-select';
@@ -44,7 +42,6 @@ const schema = {
 const SaleFormDialog = props => {
   const { open, sale, isEditable, onClose, className, ...rest } = props;
   const classes = useStyles();
-
   const context = useContext(SalesContext);
 
   const [clients, setClients] = useState([]);
