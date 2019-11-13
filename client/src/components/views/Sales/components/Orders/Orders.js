@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import MaterialTable from 'material-table';
-//import useAxios from 'axios-hooks';
-import axios from 'axios';
+
 import Skeleton from '@material-ui/lab/Skeleton';
 import { forwardRef } from 'react';
 import AddOrder from './AddOrder';
@@ -26,7 +25,7 @@ import TextField from '@material-ui/core/TextField';
 
 import Select from 'react-select';
 
-import { SalesContext } from '../../Sales';
+import { OrdersContext } from '../../Sales';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -53,8 +52,8 @@ const tableIcons = {
 };
 
 const Orders = props => {
-  const { orders, classes } = props;
-  const context = useContext(SalesContext);
+  const { sale, classes } = props;
+  const context = useContext(OrdersContext);
   // const [{ data: products, error }, refetchProducts] = useAxios(
   //   `/api/products`,
   // );
@@ -79,13 +78,7 @@ const Orders = props => {
       {
         title: 'Price',
         field: 'price',
-        editComponent: props => (
-          <TextField
-            type='number'
-            value={props.value || ''}
-            onChange={e => props.onChange(e.target.value)}
-          />
-        ),
+        editable: 'never',
       },
       {
         title: 'Quantity',
@@ -101,45 +94,16 @@ const Orders = props => {
     ],
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const updateOrder = order => {
-    // const {id,product, quantity}
-    // axios
-    //   .put(`api/tables/${id}`, {
-    //     code: code,
-    //     observations: observations,
-    //   })
-    //   .then(res => {
-    //     console.log(res.data);
-    //   })
-    //   .catch(err => {
-    //     console.log(err.response);
-    //   });
-  };
-
-  const deleteOrder = id => {
-    // axios
-    //   .delete(`api/tables/${id}`)
-    //   .then(res => {
-    //     console.log(res.data);
-    //   })
-    //   .catch(err => {
-    //     console.log(err.response);
-    //   });
-  };
-
-  const getProductById = id => {
-    return context.products.find(product => product.id === id);
-  };
-  const getOrders = () => {
+  const getOrders = orders => {
     return orders.map(order => ({
-      id: getProductById(order.product).id,
-      name: getProductById(order.product).name,
-      price: getProductById(order.product).price,
+      id: order.id,
+      name: context.getProductById(order.product).name,
+      price: order.price,
       quantity: order.quantity,
     }));
   };
+
+  const [isLoading] = useState(false);
 
   return (
     <div>
@@ -150,15 +114,15 @@ const Orders = props => {
           width={'90%'}
           height={320}></Skeleton>
       ) : (
-        <div>
-          <AddOrder products={context.products}></AddOrder>
+        <div className={classes}>
+          <AddOrder products={context.products} sale={sale}></AddOrder>
           <MaterialTable
             icons={tableIcons}
             width='100%'
             heigth='100%'
             title=''
             columns={state.columns}
-            data={getOrders()}
+            data={getOrders(context.getOrdersBySale(sale.id))}
             editable={{
               onRowUpdate: (newData, oldData) =>
                 new Promise(resolve => {
@@ -166,17 +130,11 @@ const Orders = props => {
                   const data = [...state.data];
                   data[data.indexOf(oldData)] = newData;
                   setState({ ...state, data });
-
-                  updateOrder(newData);
                 }),
               onRowDelete: oldData =>
                 new Promise(resolve => {
                   resolve();
-                  const data = [...state.data];
-                  data.splice(data.indexOf(oldData), 1);
-                  setState({ ...state, data });
-
-                  deleteOrder(oldData.id);
+                  context.deleteOrder(oldData.id);
                 }),
             }}
           />

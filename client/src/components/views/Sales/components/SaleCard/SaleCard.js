@@ -14,6 +14,8 @@ import {
   Chip,
   Badge,
   Button,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -24,7 +26,7 @@ import Orders from '../Orders';
 
 import useAxios from 'axios-hooks';
 
-import { SalesContext } from '../../Sales';
+import { SalesContext, OrdersContext } from '../../Sales';
 import { AlertDialog } from '../../../../tools';
 
 const useStyles = makeStyles(theme => ({
@@ -76,23 +78,21 @@ const useStyles = makeStyles(theme => ({
 
 const SaleCard = props => {
   const { sale, className, ...rest } = props;
-  const context = useContext(SalesContext);
-  const [orders, setOrders] = useState([]);
+  const ordersContext = useContext(OrdersContext);
+  const salesContext = useContext(SalesContext);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const [{ data: client, error: clientError }, refetchClient] = useAxios(
+  const [{ data: client }, refetchClient] = useAxios(
     `/api/clients/${sale.client}`
   );
 
-  const [{ data: table, error: tableError }, refetchTable] = useAxios(
-    `/api/tables/${sale.table}`
-  );
+  const [{ data: table }, refetchTable] = useAxios(`/api/tables/${sale.table}`);
 
   useEffect(() => {
-    setOrders(context.getOrdersBySale(sale.id));
-
     refetchClient();
     refetchTable();
-  }, []);
+  }, [refetchClient, refetchTable]);
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -111,7 +111,7 @@ const SaleCard = props => {
   };
 
   const handleDelete = () => {
-    context.deleteSale(sale.id);
+    salesContext.deleteSale(sale.id);
   };
 
   const alert = (
@@ -124,10 +124,14 @@ const SaleCard = props => {
     />
   );
 
+  const [scroll] = React.useState('body');
+
   const formDialog = (
     <FormDialog
+      scroll={scroll}
+      fullScreen={fullScreen}
       title='Orders'
-      component={<Orders orders={orders} />}
+      component={<Orders sale={sale} />}
       open={openFormDialog}
       onClose={() => {
         setOpenFormDialog(false);
@@ -178,7 +182,7 @@ const SaleCard = props => {
             <Badge
               style={{ width: '100%' }}
               color='secondary'
-              badgeContent={orders.length}
+              badgeContent={ordersContext.getOrdersBySale(sale.id).length}
               className={classes.margin}>
               <Button
                 fullWidth
@@ -186,7 +190,7 @@ const SaleCard = props => {
                 onClick={() => {
                   setOpenFormDialog(true);
                 }}>
-                <Typography color='inherit' color='primary' variant='subtitle1'>
+                <Typography color='primary' variant='subtitle1'>
                   Orders
                 </Typography>
               </Button>

@@ -10,14 +10,28 @@ import userContext from '../../../context/user-context';
 const SalesContext = createContext({
   isLoanding: false,
   sales: [],
-  orders: [],
   products: [],
-  setOrders: [],
   addSale: sale => {},
   deleteSale: id => {},
   editSale: sale => {},
   setSales: sales => {},
-  getOrdersBySale: id => {},
+  getTotal: () => {
+    return 0;
+  },
+});
+
+const OrdersContext = createContext({
+  orders: [],
+  products: [],
+  addOrder: (sale, orders) => {},
+  deleteOrder: id => {},
+  editOrder: order => {},
+  getOrdersBySale: id => {
+    return [];
+  },
+  getProductById: () => {
+    return {};
+  },
 });
 
 const useStyles = makeStyles(theme => ({
@@ -126,35 +140,95 @@ const Sales = () => {
     return orders.filter(order => order.sale === id);
   };
 
+  const getProductById = id => {
+    return products.find(product => product.id === id);
+  };
+
+  //const setOrdersBySale = (sale, orders) => {};
+  const addOrder = (sale, order) => {
+    const { product, quantity } = order;
+
+    const { price } = getProductById(product);
+
+    axios
+      .post(`/api/orders`, {
+        price: price,
+        quantity: quantity,
+        sale: sale.id,
+        product: product,
+      })
+      .then(res => {
+        //console.log(res.data);
+        const updatedOrders = [...orders];
+        updatedOrders.push(res.data);
+
+        setOrders(updatedOrders);
+      })
+      .catch(err => {
+        //console.log(err);
+        enqueueSnackbar('The order already exist', {
+          variant: 'error',
+        });
+        setTimeout(closeSnackbar, 2000);
+      });
+  };
+  const deleteOrder = id => {
+    //alert(`order deleted with id ${id}`);
+    axios
+      .delete(`/api/orders/${id}`)
+      .then(res => {
+        //console.log(res.data);
+        const updatedOrders = [...orders];
+        const updatedItemIndex = updatedOrders.findIndex(
+          item => item.id === id
+        );
+
+        updatedOrders.splice(updatedItemIndex, 1);
+
+        setOrders(updatedOrders);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const editOrder = order => {};
+
   return (
     <SalesContext.Provider
       value={{
         isLoanding: isLoading,
         sales: sales,
+        setSales: setSales,
         addSale: addSale,
         deleteSale: deleteSale,
         editSale: editSale,
-        setSales: setSales,
-        orders: orders,
-        setOrders: setOrders,
-        products: products,
-        getOrdersBySale: getOrdersBySale,
       }}>
-      <div className={classes.root}>
-        <SalesToolbar></SalesToolbar>
-        <div className={classes.content}>
-          <Grid container spacing={3}>
-            {sales.map(sale => (
-              <Grid item key={sale.id} lg={4} md={6} xs={12}>
-                <SaleCard sale={sale}></SaleCard>
-              </Grid>
-            ))}
-          </Grid>
+      <OrdersContext.Provider
+        value={{
+          products: products,
+          getOrdersBySale: getOrdersBySale,
+          addOrder: addOrder,
+          deleteOrder: deleteOrder,
+          editOrder: editOrder,
+          getProductById: getProductById,
+        }}>
+        <div className={classes.root}>
+          <SalesToolbar></SalesToolbar>
+          <div className={classes.content}>
+            <Grid container spacing={3}>
+              {sales.map(sale => (
+                <Grid item key={sale.id} lg={4} md={6} xs={12}>
+                  <SaleCard sale={sale}></SaleCard>
+                </Grid>
+              ))}
+            </Grid>
+          </div>
         </div>
-      </div>
+      </OrdersContext.Provider>
     </SalesContext.Provider>
   );
 };
 
 export { SalesContext };
+export { OrdersContext };
 export default Sales;

@@ -5,6 +5,7 @@ import validate from 'validate.js';
 
 import { TextField, Button, Grid } from '@material-ui/core';
 import Select from 'react-select';
+import { OrdersContext } from '../../../Sales';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,8 +26,9 @@ const schema = {
 };
 
 const AddOrder = props => {
-  const { products, className, ...rest } = props;
+  const { sale, products, className, ...rest } = props;
   const classes = useStyles();
+  const context = useContext(OrdersContext);
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -46,6 +48,8 @@ const AddOrder = props => {
 
   const handleSubmit = event => {
     event.preventDefault();
+
+    context.addOrder(sale, formState.values);
 
     console.log(formState.values);
     setFormState(formState => ({
@@ -91,6 +95,7 @@ const AddOrder = props => {
 
   return (
     <form
+      {...rest}
       className={clsx(classes.root, className)}
       autoComplete='off'
       noValidate
