@@ -3,10 +3,16 @@ module.exports = (sequelize, DataTypes) => {
   const orders = sequelize.define(
     'orders',
     {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
       price: DataTypes.DECIMAL(13, 2),
       quantity: DataTypes.INTEGER,
     },
-    {},
+    {}
   );
   orders.associate = function(models) {
     orders.belongsTo(models.products, {
