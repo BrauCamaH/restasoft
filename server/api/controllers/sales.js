@@ -8,6 +8,18 @@ exports.getSales = (req, res) => {
     .catch(e => res.json({ err: e }));
 };
 
+exports.getSalesByUser = (req, res) => {
+  Sales.findAll({
+    order: ['id'],
+    where: {
+      user: req.params.user,
+      finish: null,
+    },
+  })
+    .then(Sale => res.json(Sale))
+    .catch(e => res.json({ err: e }));
+};
+
 exports.addSale = (req, res) => {
   const { pay, total, start, finish, user, client, table } = req.body;
 
