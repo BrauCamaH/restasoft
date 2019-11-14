@@ -192,7 +192,31 @@ const Sales = () => {
         console.log(err);
       });
   };
-  const editOrder = order => {};
+  const editOrder = order => {
+    const { id, price, quantity, sale, product } = order;
+    console.log(`order edited`, order);
+    const updatedOrders = [...orders];
+    const updatedItemIndex = updatedOrders.findIndex(item => item.id === id);
+
+    updatedOrders[updatedItemIndex] = order;
+    setOrders(updatedOrders);
+    axios
+      .put(`/api/orders/${id}`, {
+        price: price,
+        quantity: quantity,
+        sale: sale,
+        product: product,
+      })
+      .then(res => {
+        //console.log(res.data);
+      })
+      .catch(err => {
+        //console.log(err);
+        enqueueSnackbar('Someting went wrong', {
+          variant: 'error',
+        });
+      });
+  };
 
   const getTotalBySale = id => {
     let total = 0;

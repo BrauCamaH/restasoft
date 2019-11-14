@@ -58,20 +58,31 @@ const Orders = props => {
   //   `/api/products`,
   // );
 
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const handleProduct = selectedProduct => {
+    setSelectedProduct(selectedProduct);
+    // return selectedProduct.label;
+  };
+
   const [state, setState] = useState({
     columns: [
       {
         title: 'Product',
         field: 'name',
-        headerStyle: { width: 150 },
+        editable: 'never',
         editComponent: props => (
           <Select
             className='basic-single'
+            value={{
+              value: `${props.rowData.product} $${props.rowData.price}`,
+              label: props.rowData.name,
+            }}
             options={context.products.map(product => ({
               value: product.id,
               label: `${product.name}  $${product.price}`,
             }))}
-            onChange={e => props.onChange(e.label)}
+            onChange={e => props.onChange(handleProduct)}
           />
         ),
       },
@@ -87,6 +98,7 @@ const Orders = props => {
           <TextField
             type='number'
             value={props.value || ''}
+            onFocus={event => event.target.select()}
             onChange={e => props.onChange(e.target.value)}
           />
         ),
@@ -97,6 +109,8 @@ const Orders = props => {
   const getOrders = orders => {
     return orders.map(order => ({
       id: order.id,
+      product: order.product,
+      sale: order.sale,
       name: context.getProductById(order.product).name,
       price: order.price,
       quantity: order.quantity,
@@ -127,9 +141,7 @@ const Orders = props => {
               onRowUpdate: (newData, oldData) =>
                 new Promise(resolve => {
                   resolve();
-                  const data = [...state.data];
-                  data[data.indexOf(oldData)] = newData;
-                  setState({ ...state, data });
+                  context.editOrder(newData);
                 }),
               onRowDelete: oldData =>
                 new Promise(resolve => {
