@@ -30,6 +30,8 @@ const AddOrder = props => {
   const classes = useStyles();
   const context = useContext(OrdersContext);
 
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   const [formState, setFormState] = useState({
     isValid: false,
     values: { quantity: 1 },
@@ -51,7 +53,7 @@ const AddOrder = props => {
 
     context.addOrder(sale, formState.values);
 
-    console.log(formState.values);
+    //console.log(formState.values);
     setFormState(formState => ({
       ...formState,
       values: {
@@ -59,6 +61,8 @@ const AddOrder = props => {
         quantity: 1,
       },
     }));
+
+    setSelectedProduct(null);
   };
 
   const handleChange = event => {
@@ -78,6 +82,8 @@ const AddOrder = props => {
   };
 
   const handleProduct = event => {
+    setSelectedProduct(event);
+
     setFormState(formState => ({
       ...formState,
       values: {
@@ -122,7 +128,7 @@ const AddOrder = props => {
           <Select
             required
             className='basic-single'
-            label={formState.values.product}
+            value={selectedProduct}
             onChange={handleProduct}
             options={products.map(product => ({
               value: product.id,
