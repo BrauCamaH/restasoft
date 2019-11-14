@@ -1,29 +1,28 @@
 import React, { useState, useContext } from 'react';
 import MaterialTable from 'material-table';
-
 import Skeleton from '@material-ui/lab/Skeleton';
 import { forwardRef } from 'react';
 import AddOrder from './AddOrder';
 
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import ViewColumn from '@material-ui/icons/ViewColumn';
+import {
+  AddBox,
+  ArrowUpward,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Clear,
+  DeleteOutline,
+  Edit,
+  FilterList,
+  FirstPage,
+  LastPage,
+  Remove,
+  SaveAlt,
+  Search,
+  ViewColumn,
+} from '@material-ui/icons';
 
 import TextField from '@material-ui/core/TextField';
-
-import Select from 'react-select';
 
 import { OrdersContext } from '../../Sales';
 
@@ -54,57 +53,31 @@ const tableIcons = {
 const Orders = props => {
   const { sale, classes } = props;
   const context = useContext(OrdersContext);
-  // const [{ data: products, error }, refetchProducts] = useAxios(
-  //   `/api/products`,
-  // );
 
-  const [selectedProduct, setSelectedProduct] = useState(null);
-
-  const handleProduct = selectedProduct => {
-    setSelectedProduct(selectedProduct);
-    // return selectedProduct.label;
-  };
-
-  const [state, setState] = useState({
-    columns: [
-      {
-        title: 'Product',
-        field: 'name',
-        editable: 'never',
-        editComponent: props => (
-          <Select
-            className='basic-single'
-            value={{
-              value: `${props.rowData.product} $${props.rowData.price}`,
-              label: props.rowData.name,
-            }}
-            options={context.products.map(product => ({
-              value: product.id,
-              label: `${product.name}  $${product.price}`,
-            }))}
-            onChange={e => props.onChange(handleProduct)}
-          />
-        ),
-      },
-      {
-        title: 'Price',
-        field: 'price',
-        editable: 'never',
-      },
-      {
-        title: 'Quantity',
-        field: 'quantity',
-        editComponent: props => (
-          <TextField
-            type='number'
-            value={props.value || ''}
-            onFocus={event => event.target.select()}
-            onChange={e => props.onChange(e.target.value)}
-          />
-        ),
-      },
-    ],
-  });
+  const [columns] = useState([
+    {
+      title: 'Product',
+      field: 'name',
+      editable: 'never',
+    },
+    {
+      title: 'Price',
+      field: 'price',
+      editable: 'never',
+    },
+    {
+      title: 'Quantity',
+      field: 'quantity',
+      editComponent: props => (
+        <TextField
+          type='number'
+          value={props.value || ''}
+          onFocus={event => event.target.select()}
+          onChange={e => props.onChange(e.target.value)}
+        />
+      ),
+    },
+  ]);
 
   const getOrders = orders => {
     return orders.map(order => ({
@@ -122,11 +95,10 @@ const Orders = props => {
   return (
     <div>
       {isLoading ? (
-        <Skeleton
-          variant='rect'
-          //className={classes.root}
+        <Skeleton variant='rect' className={classes}>
           width={'90%'}
-          height={320}></Skeleton>
+          height={320}>
+        </Skeleton>
       ) : (
         <div className={classes}>
           <AddOrder products={context.products} sale={sale}></AddOrder>
@@ -135,7 +107,7 @@ const Orders = props => {
             width='100%'
             heigth='100%'
             title=''
-            columns={state.columns}
+            columns={columns}
             data={getOrders(context.getOrdersBySale(sale.id))}
             editable={{
               onRowUpdate: (newData, oldData) =>
