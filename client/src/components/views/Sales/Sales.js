@@ -135,10 +135,44 @@ const Sales = () => {
         console.log(err);
       });
   };
-  const editSale = sale => {};
+  const editSale = sale => {
+    //console.log(`Sale Updated with id ${id}`, sale);
+    const { id, client, table } = sale;
+
+    const updatedSales = [...sales];
+    const updatedItemIndex = updatedSales.findIndex(item => item.id === id);
+
+    updatedSales[updatedItemIndex] = sale;
+
+    setSales(updatedSales);
+
+    axios
+      .put(`api/sales/${id}`, {
+        user: context.userId,
+        client: client,
+        table: table,
+        total: 0,
+      })
+      .then(res => {
+        enqueueSnackbar('Sale Eliminated', {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   const getOrdersBySale = id => {
-    return orders.filter(order => order.sale === id);
+    return orders
+      .filter(order => order.sale === id)
+      .map(order => ({
+        sale: order.sale,
+        product: products.find(product => product.id === order.product),
+        price: order.price,
+        quantity: order.quantity,
+      }));
   };
 
   const getProductById = id => {
@@ -193,8 +227,8 @@ const Sales = () => {
       });
   };
   const editOrder = order => {
+    //console.log(`order edited`, order);
     const { id, price, quantity, sale, product } = order;
-    console.log(`order edited`, order);
     const updatedOrders = [...orders];
     const updatedItemIndex = updatedOrders.findIndex(item => item.id === id);
 

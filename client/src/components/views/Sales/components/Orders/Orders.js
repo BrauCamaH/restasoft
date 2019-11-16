@@ -84,7 +84,7 @@ const Orders = props => {
       id: order.id,
       product: order.product,
       sale: order.sale,
-      name: context.getProductById(order.product).name,
+      name: order.product.name,
       price: order.price,
       quantity: order.quantity,
     }));

@@ -28,6 +28,8 @@ import useAxios from 'axios-hooks';
 
 import { SalesContext, OrdersContext } from '../../Sales';
 import { AlertDialog } from '../../../../tools';
+import SaleFormDialog from '../SaleFormDialog';
+import FinishSaleDialog from '../FinishSaleDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -98,6 +100,8 @@ const SaleCard = props => {
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [openFormDialog, setOpenFormDialog] = useState(false);
+  const [openEditFormDialog, setOpenEditFormDialog] = useState(false);
+  const [openFinishDialog, setOpenFinishDialog] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleOpen = event => {
@@ -135,6 +139,29 @@ const SaleCard = props => {
       open={openFormDialog}
       onClose={() => {
         setOpenFormDialog(false);
+      }}
+    />
+  );
+
+  const editSaleFormdialog = (
+    <SaleFormDialog
+      isEditable
+      table={table ? table : null}
+      client={client ? client : null}
+      open={openEditFormDialog}
+      onClose={() => {
+        setOpenEditFormDialog(false);
+      }}
+    />
+  );
+
+  const finishDialog = (
+    <FinishSaleDialog
+      sale={sale}
+      orders={ordersContext.getOrdersBySale(sale.id)}
+      open={openFinishDialog}
+      onClose={() => {
+        setOpenFinishDialog(false);
       }}
     />
   );
@@ -222,8 +249,18 @@ const SaleCard = props => {
           open={open}
           onClose={handleClose}
           onClick={handleClose}>
-          <MenuItem>Edit</MenuItem>
-          <MenuItem>Finish</MenuItem>
+          <MenuItem
+            onClick={() => {
+              setOpenEditFormDialog(true);
+            }}>
+            Edit
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setOpenFinishDialog(true);
+            }}>
+            Finish
+          </MenuItem>
           <MenuItem
             onClick={() => {
               setOpenAlert(true);
@@ -233,6 +270,8 @@ const SaleCard = props => {
         </Menu>
         {alert}
         {formDialog}
+        {editSaleFormdialog}
+        {finishDialog}
       </Grid>
     </Card>
   );
