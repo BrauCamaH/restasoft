@@ -79,17 +79,6 @@ const Orders = props => {
     },
   ]);
 
-  const getOrders = orders => {
-    return orders.map(order => ({
-      id: order.id,
-      product: order.product,
-      sale: order.sale,
-      name: order.product.name,
-      price: order.price,
-      quantity: order.quantity,
-    }));
-  };
-
   const [isLoading] = useState(false);
 
   return (
@@ -108,7 +97,14 @@ const Orders = props => {
             heigth='100%'
             title=''
             columns={columns}
-            data={getOrders(context.getOrdersBySale(sale.id))}
+            data={context.getOrdersBySale(sale.id).map(order => ({
+              id: order.id,
+              product: order.product.id,
+              sale: order.sale,
+              name: order.product.name,
+              price: order.price,
+              quantity: order.quantity,
+            }))}
             editable={{
               onRowUpdate: (newData, oldData) =>
                 new Promise(resolve => {
