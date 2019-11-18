@@ -9,6 +9,8 @@ import {
   DialogTitle,
   DialogActions,
   Button,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 
 import EditIcon from '@material-ui/icons/Clear';
@@ -43,6 +45,9 @@ export default function FormDialog(props) {
     ...rest
   } = props;
 
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
+
   const classes = useStyles();
 
   return (
@@ -52,6 +57,7 @@ export default function FormDialog(props) {
       </div>
       <Dialog
         {...rest}
+        fullScreen={fullScreen}
         open={open}
         onClose={onClose}
         aria-labelledby='form-dialog-title'>
