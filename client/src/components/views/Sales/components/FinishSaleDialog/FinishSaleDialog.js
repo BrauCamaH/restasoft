@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import FormDialog from '../../../../tools/FormDialog';
 
@@ -13,6 +13,8 @@ import {
   Typography,
   Button,
 } from '@material-ui/core';
+
+import { OrdersContext } from '../../Sales';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -114,13 +116,14 @@ export function SpanningTable(props) {
 }
 
 const FinishSaleDialog = props => {
-  const { open, onClose, sale, orders, ...rest } = props;
+  const { open, onClose, sale, ...rest } = props;
+  const context = useContext(OrdersContext);
 
   const [pay, setPay] = useState(0);
 
-  const rows = orders.map(item =>
-    createRow(item.product.name, item.quantity, item.price)
-  );
+  const rows = context
+    .getOrdersBySale(sale.id)
+    .map(item => createRow(item.product.name, item.quantity, item.price));
 
   const getTotal = rows => {
     let total = 0;
