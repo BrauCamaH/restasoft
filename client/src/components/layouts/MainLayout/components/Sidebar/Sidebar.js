@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { Divider, Drawer } from '@material-ui/core';
+import { Divider, SwipeableDrawer } from '@material-ui/core';
 import {
   Dashboard,
   Receipt,
@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Sidebar = props => {
-  const { open, variant, onClose, className, ...rest } = props;
+  const { open, variant, onOpen, onClose, className, ...rest } = props;
 
   const classes = useStyles();
 
@@ -70,18 +70,19 @@ const Sidebar = props => {
   ];
 
   return (
-    <Drawer
+    <SwipeableDrawer
       anchor='left'
       classes={{ paper: classes.drawer }}
       onClose={onClose}
       open={open}
+      onOpen={onOpen}
       variant={variant}>
       <div {...rest} className={clsx(classes.root, className)}>
         <Profile />
         <Divider className={classes.divider} />
         <SidebarNav className={classes.nav} pages={pages} />
       </div>
-    </Drawer>
+    </SwipeableDrawer>
   );
 };
 
