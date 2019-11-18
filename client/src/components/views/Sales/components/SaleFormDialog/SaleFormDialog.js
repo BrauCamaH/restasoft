@@ -15,8 +15,6 @@ import Select from 'react-select';
 
 import FormDialog from '../../../../tools/FormDialog';
 
-//import useAxios from 'axios-hooks';
-import axios from 'axios';
 import { SalesContext } from '../../Sales';
 
 const useStyles = makeStyles(theme => ({
@@ -40,40 +38,27 @@ const schema = {
   },
 };
 const SaleFormDialog = props => {
-  const { open, sale, isEditable, onClose, className, ...rest } = props;
+  const {
+    open,
+    sale,
+    client,
+    table,
+    isEditable,
+    onClose,
+    className,
+    ...rest
+  } = props;
   const classes = useStyles();
   const context = useContext(SalesContext);
 
-  const [clients, setClients] = useState([]);
-  useEffect(() => {
-    axios
-      .get(`api/clients`)
-      .then(res => {
-        setClients(res.data);
-        // console.log(res.data);
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  }, []);
-
-  const [tables, setTables] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get(`api/tables`)
-      .then(res => {
-        setTables(res.data);
-        //console.log(res.data);
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  }, []);
+  const currentTable = table ? { value: table.id, label: table.code } : null;
+  const currentClient = client
+    ? { value: client.id, label: `${client.name}/${client.city}` }
+    : null;
 
   const [formState, setFormState] = useState({
     isValid: false,
-    values: {},
+    values: { table: currentTable, client: currentClient },
     touched: {},
     erroes: {},
   });
@@ -93,7 +78,7 @@ const SaleFormDialog = props => {
       ...formState,
       values: {
         ...formState.values,
-        client: selectedOption.value,
+        client: selectedOption,
       },
       touched: {
         ...formState.touched,
@@ -107,7 +92,7 @@ const SaleFormDialog = props => {
       ...formState,
       values: {
         ...formState.values,
-        table: selectedOption.value,
+        table: selectedOption,
       },
       touched: {
         ...formState.touched,
@@ -125,13 +110,21 @@ const SaleFormDialog = props => {
     onClose();
   };
 
+  const id = isEditable ? sale.id : 0;
+
   const handleSubmit = event => {
     event.preventDefault();
 
+    const values = {
+      id: id,
+      client: formState.values.client.value,
+      table: formState.values.table.value,
+    };
+
     if (isEditable) {
-      context.editSale(formState.values);
+      context.editSale(values);
     } else {
-      context.addSale(formState.values);
+      context.addSale(values);
     }
 
     handleClose();
@@ -154,11 +147,16 @@ const SaleFormDialog = props => {
           <Select
             required
             className='basic-single'
+            value={formState.client}
             onChange={handleClient}
-            options={clients.map(client => ({
-              value: client.id,
-              label: `${client.name}/${client.city}`,
-            }))}></Select>
+            options={
+              context.clients
+                ? context.clients.map(client => ({
+                    value: client.id,
+                    label: `${client.name}/${client.city}`,
+                  }))
+                : []
+            }></Select>
         </Grid>
         <Grid item xs={12}>
           <Typography variant='h4'>Select a Table</Typography>
@@ -167,11 +165,16 @@ const SaleFormDialog = props => {
           <Select
             required
             className='basic-single'
+            value={formState.table}
             onChange={handleTable}
-            options={tables.map(table => ({
-              value: table.id,
-              label: table.code,
-            }))}></Select>
+            options={
+              context.tables
+                ? context.tables.map(table => ({
+                    value: table.id,
+                    label: table.code,
+                  }))
+                : []
+            }></Select>
         </Grid>
       </Grid>
     </Container>

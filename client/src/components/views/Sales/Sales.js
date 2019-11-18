@@ -10,7 +10,8 @@ import userContext from '../../../context/user-context';
 const SalesContext = createContext({
   isLoanding: false,
   sales: [],
-  products: [],
+  clients: [],
+  tables: [],
   addSale: sale => {},
   deleteSale: id => {},
   editSale: sale => {},
@@ -51,32 +52,34 @@ const Sales = () => {
 
   const [sales, setSales] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    setIsLoading(true);
+  const [tables, setTables] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [products, setProducts] = useState([]);
+
+  const getOrders = () => {
     axios
       .get(`/api/orders`)
       .then(res => {
         setOrders(res.data);
-        // console.log(res.data);
-        axios
-          .get(`/api/sales`)
-          .then(res => {
-            setSales(res.data);
-            setIsLoading(false);
-          })
-          .catch(err => {
-            setIsLoading(false);
-            console.error(err);
-          });
+        //console.log(res.data);
       })
       .catch(err => {
         console.error(err);
       });
-  }, []);
+  };
+  const getSales = () => {
+    axios
+      .get(`/api/sales`)
+      .then(res => {
+        setSales(res.data);
+        //console.log(res.data);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
 
-  const [products, setProducts] = useState([]);
-  useEffect(() => {
+  const getProducts = () => {
     axios
       .get(`/api/products`)
       .then(res => {
@@ -86,6 +89,37 @@ const Sales = () => {
       .catch(err => {
         console.error(err);
       });
+  };
+  const getTables = () => {
+    axios
+      .get(`/api/tables`)
+      .then(res => {
+        setTables(res.data);
+        //console.log(res.data);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+
+  const getClients = () => {
+    axios
+      .get(`/api/clients`)
+      .then(res => {
+        setClients(res.data);
+        //console.log(res.data);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+
+  useEffect(() => {
+    getProducts();
+    getClients();
+    getTables();
+    getSales();
+    getOrders();
   }, []);
 
   const addSale = sale => {
@@ -136,16 +170,12 @@ const Sales = () => {
       });
   };
   const editSale = sale => {
-    //console.log(`Sale Updated with id ${id}`, sale);
+    //console.log(`Sale Updated `, sale);
     const { id, client, table } = sale;
-
     const updatedSales = [...sales];
     const updatedItemIndex = updatedSales.findIndex(item => item.id === id);
-
     updatedSales[updatedItemIndex] = sale;
-
     setSales(updatedSales);
-
     axios
       .put(`api/sales/${id}`, {
         user: context.userId,
@@ -154,7 +184,7 @@ const Sales = () => {
         total: 0,
       })
       .then(res => {
-        enqueueSnackbar('Sale Eliminated', {
+        enqueueSnackbar('Sale Updated', {
           variant: 'success',
         });
         setTimeout(closeSnackbar, 2000);
@@ -168,6 +198,7 @@ const Sales = () => {
     return orders
       .filter(order => order.sale === id)
       .map(order => ({
+        id: order.id,
         sale: order.sale,
         product: products.find(product => product.id === order.product),
         price: order.price,
@@ -227,11 +258,10 @@ const Sales = () => {
       });
   };
   const editOrder = order => {
-    //console.log(`order edited`, order);
+    console.log(`order edited`, order);
     const { id, price, quantity, sale, product } = order;
     const updatedOrders = [...orders];
     const updatedItemIndex = updatedOrders.findIndex(item => item.id === id);
-
     updatedOrders[updatedItemIndex] = order;
     setOrders(updatedOrders);
     axios
@@ -241,9 +271,7 @@ const Sales = () => {
         sale: sale,
         product: product,
       })
-      .then(res => {
-        //console.log(res.data);
-      })
+      .then(res => {})
       .catch(err => {
         //console.log(err);
         enqueueSnackbar('Someting went wrong', {
@@ -265,8 +293,9 @@ const Sales = () => {
   return (
     <SalesContext.Provider
       value={{
-        isLoanding: isLoading,
         sales: sales,
+        clients: clients,
+        tables: tables,
         setSales: setSales,
         addSale: addSale,
         deleteSale: deleteSale,
@@ -288,7 +317,12 @@ const Sales = () => {
             <Grid container spacing={3}>
               {sales.map(sale => (
                 <Grid item key={sale.id} lg={4} md={6} xs={12}>
-                  <SaleCard sale={sale}></SaleCard>
+                  <SaleCard
+                    sale={sale}
+                    table={tables.find(table => table.id == sale.table)}
+                    client={clients.find(
+                      client => client.id == sale.client
+                    )}></SaleCard>
                 </Grid>
               ))}
             </Grid>

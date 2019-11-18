@@ -79,24 +79,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SaleCard = props => {
-  const { sale, className, ...rest } = props;
+  const { sale, table, client, className, ...rest } = props;
   const ordersContext = useContext(OrdersContext);
   const salesContext = useContext(SalesContext);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
-
-  const [{ data: client }, refetchClient] = useAxios(
-    `/api/clients/${sale.client}`
-  );
-
-  const [{ data: table }, refetchTable] = useAxios(`/api/tables/${sale.table}`);
-
-  useEffect(() => {
-    refetchClient();
-    refetchTable();
-  }, [refetchClient, refetchTable]);
-
   const classes = useStyles();
+
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [openFormDialog, setOpenFormDialog] = useState(false);
@@ -133,7 +120,6 @@ const SaleCard = props => {
   const formDialog = (
     <FormDialog
       scroll={scroll}
-      fullScreen={fullScreen}
       title='Orders'
       component={<Orders sale={sale} />}
       open={openFormDialog}
@@ -146,8 +132,9 @@ const SaleCard = props => {
   const editSaleFormdialog = (
     <SaleFormDialog
       isEditable
-      table={table ? table : null}
-      client={client ? client : null}
+      sale={sale}
+      table={table}
+      client={client}
       open={openEditFormDialog}
       onClose={() => {
         setOpenEditFormDialog(false);
