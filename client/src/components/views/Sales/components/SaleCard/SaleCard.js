@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,8 +14,6 @@ import {
   Chip,
   Badge,
   Button,
-  useMediaQuery,
-  useTheme,
 } from '@material-ui/core';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -79,7 +77,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SaleCard = props => {
-  const { sale, table, client, className, ...rest } = props;
+  const { sale, className, ...rest } = props;
   const ordersContext = useContext(OrdersContext);
   const salesContext = useContext(SalesContext);
   const classes = useStyles();
@@ -133,8 +131,6 @@ const SaleCard = props => {
     <SaleFormDialog
       isEditable
       sale={sale}
-      table={table}
-      client={client}
       open={openEditFormDialog}
       onClose={() => {
         setOpenEditFormDialog(false);
@@ -185,14 +181,14 @@ const SaleCard = props => {
           <Grid item>
             <Chip
               icon={<FaceIcon className={classes.chipIcon} />}
-              label={client ? client.name : ''}
+              label={sale.client ? sale.client.name : ''}
               variant='outlined'
             />
           </Grid>
           <Grid item>
             <Chip
               icon={<EventSeatIcon className={classes.chipIcon} />}
-              label={table ? table.code : ''}
+              label={sale.table ? sale.table.code : ''}
               variant='outlined'
             />
           </Grid>

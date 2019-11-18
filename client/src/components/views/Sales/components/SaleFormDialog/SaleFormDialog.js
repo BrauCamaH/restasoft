@@ -38,29 +38,23 @@ const schema = {
   },
 };
 const SaleFormDialog = props => {
-  const {
-    open,
-    sale,
-    client,
-    table,
-    isEditable,
-    onClose,
-    className,
-    ...rest
-  } = props;
+  const { open, sale, isEditable, onClose, className, ...rest } = props;
   const classes = useStyles();
   const context = useContext(SalesContext);
 
-  const currentTable = table ? { value: table.id, label: table.code } : null;
-  const currentClient = client
-    ? { value: client.id, label: `${client.name}/${client.city}` }
+  const table = sale ? { value: sale.table.id, label: sale.table.code } : null;
+  const client = sale
+    ? {
+        value: sale.client.id,
+        label: `${sale.client.name}/${sale.client.city}`,
+      }
     : null;
 
   const [formState, setFormState] = useState({
     isValid: false,
-    values: { table: currentTable, client: currentClient },
+    values: { table: table, client: client },
     touched: {},
-    erroes: {},
+    errors: {},
   });
 
   useEffect(() => {
@@ -102,19 +96,18 @@ const SaleFormDialog = props => {
   };
 
   const handleClose = () => {
-    setFormState(formState => ({
-      ...formState,
-      values: {},
-    }));
-
+    if (!isEditable) {
+      setFormState(formState => ({
+        ...formState,
+        values: {},
+      }));
+    }
     onClose();
   };
 
-  const id = isEditable ? sale.id : 0;
-
   const handleSubmit = event => {
     event.preventDefault();
-
+    const id = isEditable ? sale.id : 0;
     const values = {
       id: id,
       client: formState.values.client.value,
@@ -147,7 +140,7 @@ const SaleFormDialog = props => {
           <Select
             required
             className='basic-single'
-            value={formState.client}
+            value={formState.values.client}
             onChange={handleClient}
             options={
               context.clients
@@ -165,7 +158,7 @@ const SaleFormDialog = props => {
           <Select
             required
             className='basic-single'
-            value={formState.table}
+            value={formState.values.table}
             onChange={handleTable}
             options={
               context.tables

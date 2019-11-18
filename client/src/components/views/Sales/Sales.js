@@ -8,7 +8,7 @@ import axios from 'axios';
 import userContext from '../../../context/user-context';
 
 const SalesContext = createContext({
-  isLoanding: false,
+  isLoading: false,
   sales: [],
   clients: [],
   tables: [],
@@ -55,7 +55,7 @@ const Sales = () => {
   const [tables, setTables] = useState([]);
   const [clients, setClients] = useState([]);
   const [products, setProducts] = useState([]);
-
+  const [isLoading, setIsLoding] = useState(true);
   const getOrders = () => {
     axios
       .get(`/api/orders`)
@@ -318,11 +318,14 @@ const Sales = () => {
               {sales.map(sale => (
                 <Grid item key={sale.id} lg={4} md={6} xs={12}>
                   <SaleCard
-                    sale={sale}
-                    table={tables.find(table => table.id == sale.table)}
-                    client={clients.find(
-                      client => client.id == sale.client
-                    )}></SaleCard>
+                    isLoading={isLoading}
+                    sale={{
+                      id: sale.id,
+                      pay: sale.pay,
+                      total: sale.total,
+                      table: tables.find(table => table.id == sale.table),
+                      client: clients.find(client => client.id == sale.client),
+                    }}></SaleCard>
                 </Grid>
               ))}
             </Grid>
