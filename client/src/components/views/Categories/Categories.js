@@ -91,7 +91,7 @@ const Categories = () => {
     //console.log(`Deleting category with id ${id}`);
     const updatedCategories = [...categories];
     const updatedItemIndex = updatedCategories.findIndex(
-      item => item.id === id,
+      item => item.id === id
     );
 
     updatedCategories.splice(updatedItemIndex, 1);
@@ -126,8 +126,6 @@ const Categories = () => {
 
     data.append('image', image);
 
-    //console.log(image);
-
     axios
       .put(`api/categories/${id}`, data, {
         headers: {
@@ -135,23 +133,12 @@ const Categories = () => {
         },
       })
       .then(res => {
-        category.name = name;
-        category.description = description;
-        category.image = res.data.image;
-
-        //console.log(res.data.image);
-
         const updatedCategories = [...categories];
         const updatedItemIndex = updatedCategories.findIndex(
-          item => item.id === id,
+          item => item.id === id
         );
-
         updatedCategories[updatedItemIndex] = category;
-
-        console.log('Updated Category', category);
-
         setCategories(updatedCategories);
-
         enqueueSnackbar('Category Updated', {
           variant: 'success',
         });

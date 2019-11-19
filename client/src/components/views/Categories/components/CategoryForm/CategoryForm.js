@@ -102,16 +102,12 @@ const CategoryForm = props => {
   const hasError = field => (formState.errors[field] ? true : false);
 
   const handleClose = () => {
-    setFormState(formState => ({
-      ...formState,
-      values: {
-        ...formState.values,
-        name: name,
-        description: description,
-        image: image,
-      },
-    }));
-
+    if (!isEditable) {
+      setFormState(formState => ({
+        ...formState,
+        values: {},
+      }));
+    }
     onClose();
   };
 
