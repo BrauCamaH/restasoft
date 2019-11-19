@@ -36,9 +36,6 @@ const Products = ({ match }) => {
 
   const classes = useStyles();
 
-  //console.log(match);
-  //console.log(category);
-
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const [products, setProducts] = useState([]);
@@ -68,8 +65,6 @@ const Products = ({ match }) => {
     data.append('description', description);
     data.append('image', image);
     data.append('category', category);
-
-    //console.log(image);
 
     axios
       .post(`/api/products`, data, {
@@ -117,7 +112,6 @@ const Products = ({ match }) => {
 
   const updateProduct = product => {
     const data = new FormData();
-
     const id = product.id;
 
     const image = product.image;
@@ -130,8 +124,6 @@ const Products = ({ match }) => {
     data.append('description', description);
     data.append('image', image);
 
-    //console.log(image);
-
     axios
       .put(`/api/products/${id}`, data, {
         headers: {
@@ -139,24 +131,12 @@ const Products = ({ match }) => {
         },
       })
       .then(res => {
-        product.name = name;
-        product.description = description;
-        product.price = price;
-        product.image = res.data.image;
-
-        console.log(res.data.image);
-
         const updatedProducts = [...products];
         const updatedItemIndex = updatedProducts.findIndex(
-          item => item.id === id,
+          item => item.id === id
         );
-
         updatedProducts[updatedItemIndex] = product;
-
-        //console.log('Updated Product', product);
-
         setProducts(updatedProducts);
-
         enqueueSnackbar('Category Updated', {
           variant: 'success',
         });

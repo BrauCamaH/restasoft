@@ -110,17 +110,12 @@ const ProductFormDialog = props => {
     formState.touched[field] && formState.errors[field] ? true : false;
 
   const handleClose = () => {
-    setFormState(formState => ({
-      ...formState,
-      values: {
-        ...formState.values,
-        name: name,
-        price: price,
-        description: description,
-        image: image,
-      },
-    }));
-
+    if (!isEditable) {
+      setFormState(formState => ({
+        ...formState,
+        values: {},
+      }));
+    }
     onClose();
   };
 
