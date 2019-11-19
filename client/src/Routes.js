@@ -7,6 +7,7 @@ import {
   Account,
   Clients,
   Sales,
+  Dashboard,
 } from './components/views';
 import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
@@ -17,7 +18,7 @@ import { MinimalLayout, MainLayout } from './components/layouts';
 const Routes = () => {
   return (
     <Switch>
-      <Redirect exact from='/' to='/sign-in' />
+      <Redirect exact from='/' to='/dashboard' />
       <RouteWithLayout
         component={SingUp}
         exact
@@ -29,6 +30,13 @@ const Routes = () => {
         exact
         layout={MinimalLayout}
         path='/sign-in'
+      />
+      <RouteWithLayout
+        isRestricted
+        component={Dashboard}
+        exact
+        layout={MainLayout}
+        path='/dashboard'
       />
       <RouteWithLayout
         isRestricted
