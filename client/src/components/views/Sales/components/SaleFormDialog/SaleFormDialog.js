@@ -42,12 +42,18 @@ const SaleFormDialog = props => {
   const classes = useStyles();
   const context = useContext(SalesContext);
 
-  const table = sale ? { value: sale.table.id, label: sale.table.code } : null;
+  const table = sale
+    ? sale.table
+      ? { value: sale.table.id, label: sale.table.code }
+      : null
+    : null;
   const client = sale
-    ? {
-        value: sale.client.id,
-        label: `${sale.client.name}/${sale.client.city}`,
-      }
+    ? sale.client
+      ? {
+          value: sale.client.id,
+          label: `${sale.client.name}/${sale.client.city}`,
+        }
+      : null
     : null;
 
   const [formState, setFormState] = useState({
