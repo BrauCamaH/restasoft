@@ -14,6 +14,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import InputIcon from '@material-ui/icons/Input';
 
 import axios from 'axios';
+import logo from './resta_logo_texto.png';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,15 +48,15 @@ const Topbar = props => {
   return (
     <AppBar className={clsx(classes.root, className)}>
       <Toolbar>
-        <RouterLink to='/'>
-          {/* <img alt='Logo' src='/images/logos/logo--white.svg' /> */}
-        </RouterLink>
+        <Hidden lgUp>
+          <IconButton color='inherit' onClick={onSidebarOpen}>
+            <MenuIcon />
+          </IconButton>
+        </Hidden>
         <div className={classes.flexGrow}>
-          <Hidden lgUp>
-            <IconButton color='inherit' onClick={onSidebarOpen}>
-              <MenuIcon />
-            </IconButton>
-          </Hidden>
+          <RouterLink to='/'>
+            <img alt='Logo' width={125} height={50} src={logo} />
+          </RouterLink>
         </div>
         <Tooltip title='SignOut'>
           <IconButton
