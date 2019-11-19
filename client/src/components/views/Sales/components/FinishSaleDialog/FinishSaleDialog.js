@@ -45,7 +45,7 @@ function getChange(pay, total) {
 
 export function SpanningTable(props) {
   const classes = useStyles();
-  const { total, pay, handlePay, orders, sale } = props;
+  const { total, pay, handlePay, orders } = props;
 
   const invoiceChange = getChange(pay, total);
 

@@ -22,8 +22,6 @@ import EventSeatIcon from '@material-ui/icons/EventSeat';
 import FormDialog from '../../../../tools/FormDialog';
 import Orders from '../Orders';
 
-import useAxios from 'axios-hooks';
-
 import { SalesContext, OrdersContext } from '../../Sales';
 import { AlertDialog } from '../../../../tools';
 import SaleFormDialog from '../SaleFormDialog';
