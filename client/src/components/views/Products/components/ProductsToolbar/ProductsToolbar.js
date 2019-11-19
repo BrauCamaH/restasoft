@@ -1,16 +1,16 @@
 import React, { useState, useContext } from 'react';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
+import { IconButton } from '@material-ui/core';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import ProductsFormDialog from '../ProductFormDialog';
 import { ProductsContext } from '../../Products';
 
 import SearchInput from '../../../../tools/SearchBar';
-
 import { Button } from '@material-ui/core';
-
-//import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -32,17 +32,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ProductsToolbar = props => {
-  const { className, ...rest } = props;
+  const { className, history, ...rest } = props;
   const [open, setOpen] = useState(false);
 
-  const context = useContext(ProductsContext);
-
-  //const [currentList, setCurrentList] = useState([]);
-
+  const handleBack = () => {
+    history.goBack();
+  };
   const handleClose = () => {
     setOpen(false);
   };
-
   const handleOpen = () => {
     setOpen(true);
   };
@@ -54,6 +52,9 @@ const ProductsToolbar = props => {
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       <div className={classes.row}>
+        <IconButton onClick={handleBack}>
+          <ArrowBackIcon />
+        </IconButton>
         <span className={classes.spacer} />
         <Button color='primary' variant='contained' onClick={handleOpen}>
           Add Product
@@ -75,4 +76,4 @@ ProductsToolbar.propTypes = {
   className: PropTypes.string,
 };
 
-export default ProductsToolbar;
+export default withRouter(ProductsToolbar);
