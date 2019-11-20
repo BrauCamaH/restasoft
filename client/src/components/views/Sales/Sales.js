@@ -69,7 +69,7 @@ const Sales = () => {
   };
   const getSales = () => {
     axios
-      .get(`/api/sales`)
+      .get(`/api/sales/${context.userId}`)
       .then(res => {
         setSales(res.data);
         //console.log(res.data);
