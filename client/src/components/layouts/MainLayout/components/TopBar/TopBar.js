@@ -32,14 +32,9 @@ const Topbar = props => {
   const { className, onSidebarOpen } = props;
   const { history } = props;
   const handleSignOut = () => {
-    axios
-      .delete('/api/auth//sign-out')
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    axios.delete('/api/auth//sign-out').catch(err => {
+      console.log(err);
+    });
     history.push('/sign-in');
   };
 
