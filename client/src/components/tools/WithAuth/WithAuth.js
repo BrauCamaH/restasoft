@@ -1,17 +1,25 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import UserContext from '../../../context/user-context';
 
 import useAxios from 'axios-hooks';
-
+import axios from 'axios';
 const WithAuth = props => {
   const { ComponentToProtect, layout: Layout, matchProps } = props;
   const context = useContext(UserContext);
 
-  const [{ data, error, loading }] = useAxios(`/api/auth/checkToken`);
+  const [{ error, loading }] = useAxios(`/api/auth/checkToken`);
 
-  const userId = data !== undefined ? data.user.userId : 1;
-  context.setUserId(userId);
+  useEffect(() => {
+    axios
+      .get(`/api/auth/checkToken`)
+      .then(res => {
+        context.setUserId(res.data.user.userId);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
 
   return (
     <React.Fragment>
