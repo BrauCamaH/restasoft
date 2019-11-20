@@ -16,6 +16,7 @@ const SalesContext = createContext({
   deleteSale: id => {},
   editSale: sale => {},
   setSales: sales => {},
+  finishSale: (total, pay) => {},
   getTotal: () => {
     return 0;
   },
@@ -119,7 +120,7 @@ const Sales = () => {
     getClients();
     getTables();
     getSales();
-    getOrders();
+    getOrders(); // eslint-disable-next
   }, []);
 
   const addSale = sale => {
@@ -132,6 +133,7 @@ const Sales = () => {
         client: client,
         table: table,
         total: 0,
+        start: new Date().toJSON(),
       })
       .then(res => {
         //console.log(res.data);
@@ -191,6 +193,35 @@ const Sales = () => {
       })
       .catch(err => {
         console.log(err);
+      });
+  };
+
+  const finishSale = (sale, total, pay) => {
+    // console.log(
+    //   `finishing sale with total: ${total}, pay: ${pay}, finishDateTime: ${new Date().toJSON()} `
+    // );
+    const { id } = sale;
+    axios
+      .put(`/api/sales/finish/${id}`, {
+        pay: pay,
+        total: total,
+        finish: new Date().toJSON(),
+      })
+      .then(res => {
+        const updatedSales = [...sales];
+        const updatedItemIndex = updatedSales.findIndex(item => item.id === id);
+
+        updatedSales.splice(updatedItemIndex, 1);
+        setSales(updatedSales);
+        enqueueSnackbar('Sale has been finished', {
+          variant: 'success',
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        enqueueSnackbar('Someting went wrong', {
+          variant: 'error',
+        });
       });
   };
 
@@ -300,6 +331,7 @@ const Sales = () => {
         addSale: addSale,
         deleteSale: deleteSale,
         editSale: editSale,
+        finishSale: finishSale,
       }}>
       <OrdersContext.Provider
         value={{

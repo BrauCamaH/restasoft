@@ -20,6 +20,31 @@ exports.getSalesByUser = (req, res) => {
     .catch(e => res.json({ err: e }));
 };
 
+exports.finishSale = (req, res) => {
+  const { total, pay, finish } = req.body;
+  const id = req.params.id;
+  Sales.update(
+    {
+      total: total,
+      pay: pay,
+      finish: finish,
+    },
+    {
+      where: {
+        id: id,
+      },
+    }
+  )
+    .then(() => {
+      res.status(200).send(`Sale finished with ID: ${id}`);
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err,
+      });
+    });
+};
+
 exports.addSale = (req, res) => {
   const { pay, total, start, finish, user, client, table } = req.body;
 
@@ -59,7 +84,7 @@ exports.updateSale = (req, res) => {
       where: {
         id: id,
       },
-    },
+    }
   )
     .then(() => {
       res.status(200).send(`Sale updated with ID: ${id}`);

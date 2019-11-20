@@ -14,7 +14,7 @@ import {
   Button,
 } from '@material-ui/core';
 
-import { OrdersContext } from '../../Sales';
+import { OrdersContext, SalesContext } from '../../Sales';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -117,11 +117,12 @@ export function SpanningTable(props) {
 
 const FinishSaleDialog = props => {
   const { open, onClose, sale, ...rest } = props;
-  const context = useContext(OrdersContext);
+  const ordersContext = useContext(OrdersContext);
+  const salesContext = useContext(SalesContext);
 
   const [pay, setPay] = useState(0);
 
-  const rows = context
+  const rows = ordersContext
     .getOrdersBySale(sale.id)
     .map(item => createRow(item.product.name, item.quantity, item.price));
 
@@ -138,6 +139,10 @@ const FinishSaleDialog = props => {
 
   const handlePay = event => {
     setPay(event.target.value);
+  };
+  const handleSubmit = event => {
+    event.preventDefault();
+    salesContext.finishSale(sale, total, pay);
   };
   return (
     <div>
@@ -158,6 +163,7 @@ const FinishSaleDialog = props => {
             variant='contained'
             type='submit'
             color='secondary'
+            onClick={handleSubmit}
             disabled={pay < total}>
             Finish Sale
           </Button>
