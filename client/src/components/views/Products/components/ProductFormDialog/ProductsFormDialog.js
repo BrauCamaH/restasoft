@@ -150,7 +150,7 @@ const ProductFormDialog = props => {
               name='name'
               onChange={handleChange}
               required
-              value={formState.values.name}
+              value={formState.values.name || ''}
               variant='outlined'
             />
           </Grid>
@@ -181,7 +181,7 @@ const ProductFormDialog = props => {
               margin='dense'
               name='description'
               onChange={handleChange}
-              value={formState.values.description}
+              value={formState.values.description || ''}
               variant='outlined'
             />
           </Grid>
