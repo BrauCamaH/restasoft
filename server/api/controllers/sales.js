@@ -1,7 +1,8 @@
 const db = require('../models');
 
 const Sales = db.sales;
-
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 exports.getSales = (req, res) => {
   Sales.findAll()
     .then(Sale => res.json(Sale))
@@ -17,6 +18,18 @@ exports.getSalesByUser = (req, res) => {
     },
   })
     .then(Sale => res.json(Sale))
+    .catch(e => res.json({ err: e }));
+};
+
+exports.getLatestSales = (req, res) => {
+  Sales.findAll({
+    order: ['id'],
+    where: {
+      user: req.params.user,
+      [Op.not]: [{ finish: null }],
+    },
+  })
+    .then(sales => res.json(sales))
     .catch(e => res.json({ err: e }));
 };
 
