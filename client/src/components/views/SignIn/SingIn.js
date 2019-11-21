@@ -116,7 +116,7 @@ const SignIn = props => {
       })
       .then(res => {
         if (res.status === 200) {
-          history.push('/categories');
+          history.push('/');
         } else {
           const error = new Error(res.error);
           throw error;
