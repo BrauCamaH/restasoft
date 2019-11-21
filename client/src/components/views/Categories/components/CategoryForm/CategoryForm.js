@@ -28,7 +28,6 @@ const schema = {
     },
   },
   description: {
-    presence: { allowEmpty: true },
     length: {
       maximum: 200,
     },
@@ -134,7 +133,7 @@ const CategoryForm = props => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
-              //error={hasError('name')}
+              error={hasError('name')}
               fullWidth
               helperText={hasError('name') ? formState.errors.name[0] : null}
               label='Name'
@@ -142,7 +141,7 @@ const CategoryForm = props => {
               name='name'
               onChange={handleChange}
               required
-              value={formState.values.name}
+              value={formState.values.name || ''}
               variant='outlined'
             />
           </Grid>
@@ -158,7 +157,7 @@ const CategoryForm = props => {
               margin='dense'
               name='description'
               onChange={handleChange}
-              value={formState.values.description}
+              value={formState.values.description || ''}
               variant='outlined'
             />
           </Grid>
