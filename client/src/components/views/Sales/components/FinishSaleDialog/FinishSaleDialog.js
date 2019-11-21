@@ -124,7 +124,13 @@ const FinishSaleDialog = props => {
 
   const rows = ordersContext
     .getOrdersBySale(sale.id)
-    .map(item => createRow(item.product.name, item.quantity, item.price));
+    .map(item =>
+      createRow(
+        item.product ? item.product.name : '',
+        item.quantity,
+        item.price
+      )
+    );
 
   const getTotal = rows => {
     let total = 0;
