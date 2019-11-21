@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -7,8 +7,6 @@ import { IconButton } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import ProductsFormDialog from '../ProductFormDialog';
-import { ProductsContext } from '../../Products';
-
 import SearchInput from '../../../../tools/SearchBar';
 import { Button } from '@material-ui/core';
 
