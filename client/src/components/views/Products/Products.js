@@ -135,6 +135,7 @@ const Products = ({ match }) => {
         const updatedItemIndex = updatedProducts.findIndex(
           item => item.id === id
         );
+        product.image = res.data.image;
         updatedProducts[updatedItemIndex] = product;
         setProducts(updatedProducts);
         enqueueSnackbar('Category Updated', {

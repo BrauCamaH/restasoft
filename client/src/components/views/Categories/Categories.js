@@ -133,10 +133,12 @@ const Categories = () => {
         },
       })
       .then(res => {
+        category.image = res.data.image;
         const updatedCategories = [...categories];
         const updatedItemIndex = updatedCategories.findIndex(
           item => item.id === id
         );
+
         updatedCategories[updatedItemIndex] = category;
         setCategories(updatedCategories);
         enqueueSnackbar('Category Updated', {
