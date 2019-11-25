@@ -1,6 +1,9 @@
 const db = require('../models');
 
 const Sales = db.sales;
+const Clients = db.clients;
+const Tables = db.tables;
+
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 exports.getSales = (req, res) => {
@@ -31,6 +34,46 @@ exports.getLatestSales = (req, res) => {
   })
     .then(sales => res.json(sales))
     .catch(e => res.json({ err: e }));
+};
+
+exports.filterSales = (req, res) => {
+  const { page, pageSize } = req.query;
+  const from = decodeURIComponent(req.query.from);
+  const to = decodeURIComponent(req.query.to);
+  const offset = (page - 1) * pageSize;
+  const limit = offset + pageSize;
+
+  Clients.findAll().then(clients => {
+    Tables.findAll().then(tables => {
+      Sales.findAndCountAll({
+        order: ['createdAt'],
+        offset: offset,
+        limit: limit,
+        where: {
+          finish: {
+            [Op.between]: [
+              new Date(new Date(from) - 24 * 60 * 60 * 1000),
+              new Date(to),
+            ],
+          },
+        },
+      })
+        .then(sales =>
+          res.json({
+            rows: sales.rows.map(sale => ({
+              id: sale.id,
+              finish: sale.finish,
+              client: clients.find(client => client.id === sale.client),
+              table: tables.find(table => table.id === sale.table),
+              total: sale.total,
+            })),
+            totalCount: sales.count,
+            page: page,
+          })
+        )
+        .catch(e => res.json({ err: e }));
+    });
+  });
 };
 
 exports.finishSale = (req, res) => {
