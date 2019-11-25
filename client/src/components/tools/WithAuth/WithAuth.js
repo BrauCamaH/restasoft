@@ -14,7 +14,7 @@ const WithAuth = props => {
     axios
       .get(`/api/auth/checkToken`)
       .then(res => {
-        context.setUserId(res.data.user.userId);
+        context.setUser(res.data.user);
       })
       .catch(err => {
         console.log(err);

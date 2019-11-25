@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Typography } from '@material-ui/core';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+
+import UserContext from '../../../../../../../context/user-context';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,6 +28,8 @@ const Profile = props => {
   const { className, ...rest } = props;
   const classes = useStyles();
 
+  const context = useContext(UserContext);
+
   const user = {
     name: 'Braulio Camarena',
     avatar: <SupervisorAccountIcon color='primary' />,
@@ -33,13 +37,17 @@ const Profile = props => {
   };
   return (
     <div {...rest} className={clsx(classes.root, className)}>
-      <Avatar alt='Person' className={classes.avatar} component={RouterLink} to='/account'>
+      <Avatar
+        alt='Person'
+        className={classes.avatar}
+        component={RouterLink}
+        to='/account'>
         {user.avatar}
       </Avatar>
       <Typography className={classes.name} variant='h4'>
-        {user.name}
+        {context.user.name}
       </Typography>
-      <Typography variant='body2'>{user.type}</Typography>
+      <Typography variant='body2'>{`Restaurant ${context.user.type}`}</Typography>
     </div>
   );
 };

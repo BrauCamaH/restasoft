@@ -70,7 +70,7 @@ const Sales = () => {
   };
   const getSales = () => {
     axios
-      .get(`/api/sales/${context.userId}`)
+      .get(`/api/sales/${context.user.id}`)
       .then(res => {
         setSales(res.data);
         //console.log(res.data);
@@ -129,7 +129,7 @@ const Sales = () => {
 
     axios
       .post(`/api/sales`, {
-        user: context.userId,
+        user: context.user.id,
         client: client,
         table: table,
         total: 0,
@@ -180,7 +180,7 @@ const Sales = () => {
     setSales(updatedSales);
     axios
       .put(`api/sales/${id}`, {
-        user: context.userId,
+        user: context.user.id,
         client: client,
         table: table,
         total: 0,

@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import validate from 'validate.js';
 import UserContext from '../../../../../context/user-context';
-//import { useSnackbar } from 'notistack';
-
-import axios from 'axios';
 
 import {
   Card,
@@ -65,45 +62,20 @@ const AccountDetails = props => {
   const context = useContext(UserContext);
   const classes = useStyles();
 
+  const firstName = context.user.name.split(' ')[0];
+  const lastName = context.user.name.split(' ')[1];
+  const username = context.user.username;
+
   const [formState, setFormState] = useState({
     isValid: false,
     values: {
-      firstName: '',
-      lastName: '',
-      username: '',
-      email: '',
-      phone: '',
+      firstName: firstName,
+      lastName: lastName,
+      username: username,
     },
     touched: {},
     errors: {},
   });
-
-  // console.log(context.userId);
-
-  // console.log(context.user);
-
-  useEffect(() => {
-    axios
-      .get(`api/users/user/${context.userId}`)
-      .then(res => {
-        const email = res.data.email === undefined ? '' : res.data.email;
-        const phone = res.data.phone === undefined ? '' : res.data.email;
-        setFormState(formState => ({
-          ...formState,
-          values: {
-            ...formState.values,
-            firstName: res.data.name.split(' ')[0],
-            lastName: res.data.name.split(' ')[1],
-            username: res.data.username,
-            email: email,
-            phone: phone,
-          },
-        }));
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  }, [context.userId]);
   useEffect(() => {
     const errors = validate(formState.values, schema);
 
@@ -131,7 +103,7 @@ const AccountDetails = props => {
   };
 
   const [values, setValues] = React.useState({
-    type: 'Administrator',
+    type: context.user.type,
   });
   const handleSelect = event => {
     setValues(oldValues => ({
@@ -198,45 +170,12 @@ const AccountDetails = props => {
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                error={hasError('email')}
-                fullWidth
-                helperText={
-                  hasError('email') ? formState.errors.email[0] : null
-                }
-                label='Email Address'
-                margin='dense'
-                type='text'
-                name='email'
-                onChange={handleChange}
-                value={formState.values.email}
-                variant='outlined'
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                error={hasError('phone')}
-                fullWidth
-                helperText={
-                  hasError('phone') ? formState.errors.phone[0] : null
-                }
-                label='Phone Number'
-                margin='dense'
-                name='phone'
-                onChange={handleChange}
-                type='number'
-                value={formState.values.phone}
-                variant='outlined'
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
               <Select
                 fullWidth
                 value={values.type}
                 name={formState.values.type}
                 onChange={handleSelect}
-                type='text'
-              >
+                type='text'>
                 <MenuItem value={'Administrator'}>Administrator</MenuItem>
                 <MenuItem value={'Waiter'}>Waiter</MenuItem>
               </Select>
