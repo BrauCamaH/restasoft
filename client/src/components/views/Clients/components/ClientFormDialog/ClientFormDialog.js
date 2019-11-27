@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import validate from 'validate.js';
-//import { useSnackbar } from 'notistack';
 
 import { Container, Divider, Grid, TextField, Button } from '@material-ui/core';
 import { ClientsContext } from '../../Clients';
@@ -68,8 +67,6 @@ const ClientForm = props => {
   const { open, client, isEditable, onClose, className, ...rest } = props;
   const classes = useStyles();
 
-  console.log(client);
-
   const context = useContext(ClientsContext);
 
   const [formState, setFormState] = useState({
@@ -86,10 +83,6 @@ const ClientForm = props => {
     touched: {},
     errors: {},
   });
-
-  // console.log(context.userId);
-
-  // console.log(context.user);
   useEffect(() => {
     const errors = validate(formState.values, schema);
 
@@ -261,7 +254,6 @@ const ClientForm = props => {
   const SubmitButton = (
     <Button
       disabled={!formState.isValid}
-      //fullWidth
       variant='contained'
       type='submit'
       onClick={handleSubmit}
