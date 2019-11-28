@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ProductsToolbar = props => {
-  const { className, history, ...rest } = props;
+  const { className, staticContext, history, ...rest } = props;
   const [open, setOpen] = useState(false);
 
   const handleBack = () => {
