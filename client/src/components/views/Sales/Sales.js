@@ -205,7 +205,7 @@ const Sales = () => {
       .put(`/api/sales/finish/${id}`, {
         pay: pay,
         total: total,
-        finish: new Date().toJSON(),
+        finish: new Date().toDateString(),
       })
       .then(res => {
         const updatedSales = [...sales];
