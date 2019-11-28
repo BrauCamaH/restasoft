@@ -25,15 +25,15 @@ exports.getSalesByUser = (req, res) => {
 };
 
 exports.getLatestSales = (req, res) => {
-  Sales.findAll({
-    order: ['id'],
-    where: {
-      user: req.params.user,
-      [Op.not]: [{ finish: null }],
-    },
-  })
-    .then(sales => res.json(sales))
-    .catch(e => res.json({ err: e }));
+  db.sequelize
+    .query(
+      'SELECT finish, count(total), sum(total) FROM sales WHERE finish IS NOT NULL GROUP BY sales.finish ORDER BY finish'
+    )
+    .then(([results]) => {
+      res.status(200).json({
+        rows: results,
+      });
+    });
 };
 
 exports.filterSales = (req, res) => {
