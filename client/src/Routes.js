@@ -1,6 +1,5 @@
 import {
   SingIn,
-  SingUp,
   Tables,
   Categories,
   Products,
@@ -8,6 +7,7 @@ import {
   Clients,
   Sales,
   Dashboard,
+  UserList,
 } from './components/views';
 import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
@@ -20,12 +20,6 @@ const Routes = () => {
     <Switch>
       <Redirect exact from='/' to='/dashboard' />
       <RouteWithLayout
-        component={SingUp}
-        exact
-        layout={MinimalLayout}
-        path='/sign-up'
-      />
-      <RouteWithLayout
         component={SingIn}
         exact
         layout={MinimalLayout}
@@ -37,6 +31,13 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path='/dashboard'
+      />
+      <RouteWithLayout
+        isRestricted
+        component={UserList}
+        exact
+        layout={MainLayout}
+        path='/users'
       />
       <RouteWithLayout
         isRestricted

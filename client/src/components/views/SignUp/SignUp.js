@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Link from '@material-ui/core/Link';
-import { Link as RouterLink, withRouter } from 'react-router-dom';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -19,7 +17,9 @@ import {
   MenuItem,
   Select,
   FormControl,
+  IconButton,
 } from '@material-ui/core';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const schema = {
   firstName: {
@@ -61,7 +61,6 @@ const useStyles = makeStyles(theme => ({
     },
   },
   paper: {
-    marginTop: theme.spacing(3),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -86,6 +85,7 @@ const useStyles = makeStyles(theme => ({
 
 const SignUp = props => {
   const classes = useStyles();
+  const { onClose } = props;
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -137,7 +137,6 @@ const SignUp = props => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleSubmit = event => {
-    const { history } = props;
     //create user
     event.preventDefault();
     const {
@@ -161,7 +160,6 @@ const SignUp = props => {
             variant: 'success',
           });
           setTimeout(closeSnackbar, 2000);
-          history.push('/sign-in');
         })
         .catch(err => {
           enqueueSnackbar(err.response.data.message, {
@@ -179,6 +177,9 @@ const SignUp = props => {
   return (
     <Container component='main' maxWidth='xs'>
       <CssBaseline />
+      <IconButton onClick={onClose}>
+        <ArrowBackIcon />
+      </IconButton>
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
@@ -270,8 +271,7 @@ const SignUp = props => {
                   value={values.type}
                   name={formState.values.type}
                   onChange={handleSelect}
-                  type='text'
-                >
+                  type='text'>
                   <MenuItem value={'Administrator'}>Administrator</MenuItem>
                   <MenuItem value={'Waiter'}>Waiter</MenuItem>
                 </Select>
@@ -285,21 +285,13 @@ const SignUp = props => {
             fullWidth
             size='large'
             type='submit'
-            variant='contained'
-          >
-            Sign Up
+            variant='contained'>
+            Create Account
           </Button>
-          <Grid container justify='flex-end'>
-            <Grid item>
-              <Link to='/sign-in' component={RouterLink} variant='body2'>
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
         </form>
       </div>
     </Container>
   );
 };
 
-export default withRouter(SignUp);
+export default SignUp;

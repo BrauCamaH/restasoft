@@ -9,6 +9,7 @@ import {
   Fastfood,
   EventSeat,
   AssignmentInd,
+  People as PeopleIcon,
 } from '@material-ui/icons';
 
 import { Profile, SidebarNav } from './components';
@@ -46,6 +47,11 @@ const Sidebar = props => {
       title: 'Dashboard',
       href: '/dashboard',
       icon: <Dashboard />,
+    },
+    {
+      title: 'Users',
+      href: '/users',
+      icon: <PeopleIcon />,
     },
     {
       title: 'Orders',
