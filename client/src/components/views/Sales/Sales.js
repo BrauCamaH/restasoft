@@ -6,6 +6,9 @@ import { useSnackbar } from 'notistack';
 
 import axios from 'axios';
 import userContext from '../../../context/user-context';
+import { EmptyPlaceholder } from '../../tools';
+
+import { LinearProgress } from '@material-ui/core';
 
 const SalesContext = createContext({
   isLoading: false,
@@ -51,6 +54,7 @@ const Sales = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const context = useContext(userContext);
 
+  const [loading, setLoading] = useState(true);
   const [sales, setSales] = useState([]);
   const [orders, setOrders] = useState([]);
   const [tables, setTables] = useState([]);
@@ -69,14 +73,17 @@ const Sales = () => {
       });
   };
   const getSales = () => {
+    setLoading(true);
     axios
       .get(`/api/sales/${context.user.id}`)
       .then(res => {
         setSales(res.data);
         //console.log(res.data);
+        setLoading(false);
       })
       .catch(err => {
         console.error(err);
+        setLoading(false);
       });
   };
 
@@ -344,23 +351,33 @@ const Sales = () => {
           getTotalBySale: getTotalBySale,
         }}>
         <div className={classes.root}>
-          <SalesToolbar></SalesToolbar>
-          <div className={classes.content}>
-            <Grid container spacing={3}>
-              {sales.map(sale => (
-                <Grid item key={sale.id} lg={4} md={6} xs={12}>
-                  <SaleCard
-                    sale={{
-                      id: sale.id,
-                      pay: sale.pay,
-                      total: sale.total,
-                      table: tables.find(table => table.id === sale.table),
-                      client: clients.find(client => client.id === sale.client),
-                    }}></SaleCard>
+          <SalesToolbar loading={loading}></SalesToolbar>
+          {loading ? (
+            <LinearProgress className={classes.content}></LinearProgress>
+          ) : (
+            <div className={classes.content}>
+              {sales.length >= 1 ? (
+                <Grid container spacing={3}>
+                  {sales.map(sale => (
+                    <Grid item key={sale.id} lg={4} md={6} xs={12}>
+                      <SaleCard
+                        sale={{
+                          id: sale.id,
+                          pay: sale.pay,
+                          total: sale.total,
+                          table: tables.find(table => table.id === sale.table),
+                          client: clients.find(
+                            client => client.id === sale.client
+                          ),
+                        }}></SaleCard>
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
-          </div>
+              ) : (
+                <EmptyPlaceholder></EmptyPlaceholder>
+              )}
+            </div>
+          )}
         </div>
       </OrdersContext.Provider>
     </SalesContext.Provider>

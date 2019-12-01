@@ -8,6 +8,7 @@ import SaleFormDialog from '../SaleFormDialog';
 import SearchInput from '../../../../tools/SearchBar';
 
 import { Button } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -29,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SalesToolbar = props => {
-  const { className, ...rest } = props;
+  const { loading, className, ...rest } = props;
   const [open, setOpen] = useState(false);
 
   const handleClose = () => {
@@ -48,17 +49,25 @@ const SalesToolbar = props => {
     <div {...rest} className={clsx(classes.root, className)}>
       <div className={classes.row}>
         <span className={classes.spacer} />
-        <Button color='primary' variant='contained' onClick={handleOpen}>
-          Add Sale
-        </Button>
+        {loading ? (
+          <Skeleton width={100} height={40} />
+        ) : (
+          <Button color='primary' variant='contained' onClick={handleOpen}>
+            Add Sale
+          </Button>
+        )}
         <SaleFormDialog open={open} onClose={handleClose} />
       </div>
       <div className={classes.row}>
-        <SearchInput
-          className={classes.searchInput}
-          placeholder='Search product'
-          onChange={handleSearchChange}
-        />
+        {loading ? (
+          <Skeleton className={classes.searchInput} width={450} height={50} />
+        ) : (
+          <SearchInput
+            className={classes.searchInput}
+            placeholder='Search product'
+            onChange={handleSearchChange}
+          />
+        )}
       </div>
     </div>
   );
