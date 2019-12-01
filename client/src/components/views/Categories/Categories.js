@@ -4,8 +4,10 @@ import { CategoryItem, CategoriesToolbar } from './components';
 import { Grid } from '@material-ui/core';
 
 import { useSnackbar } from 'notistack';
-
 import axios from 'axios';
+
+import { EmptyPlaceholder } from '../../tools';
+import { LinearProgress } from '@material-ui/core';
 
 const CategoriesContext = createContext({
   categories: [],
@@ -36,17 +38,21 @@ const Categories = () => {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+  const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(`api/categories`)
       .then(res => {
         setCategories(res.data);
+        setLoading(false);
         //console.log(res.data);
       })
       .catch(err => {
         console.error(err);
+        setLoading(false);
       });
   }, []);
 
@@ -165,18 +171,24 @@ const Categories = () => {
         editCategory: editCategory,
       }}>
       <div className={classes.root}>
-        <div>
-          <CategoriesToolbar />
-        </div>
-        <div className={classes.content}>
-          <Grid container spacing={3}>
-            {categories.map(category => (
-              <Grid item key={category.id} lg={4} md={6} xs={12}>
-                <CategoryItem category={category}></CategoryItem>
+        <CategoriesToolbar loading={loading} />
+        {loading ? (
+          <LinearProgress className={classes.content} />
+        ) : (
+          <div className={classes.content}>
+            {categories.length >= 1 ? (
+              <Grid container spacing={3}>
+                {categories.map(category => (
+                  <Grid item key={category.id} lg={4} md={6} xs={12}>
+                    <CategoryItem category={category}></CategoryItem>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        </div>
+            ) : (
+              <EmptyPlaceholder />
+            )}
+          </div>
+        )}
       </div>
     </CategoriesContext.Provider>
   );

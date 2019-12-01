@@ -9,6 +9,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ProductsFormDialog from '../ProductFormDialog';
 import SearchInput from '../../../../tools/SearchBar';
 import { Button } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -30,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ProductsToolbar = props => {
-  const { className, staticContext, history, ...rest } = props;
+  const { loading, className, staticContext, history, ...rest } = props;
   const [open, setOpen] = useState(false);
 
   const handleBack = () => {
@@ -54,17 +55,25 @@ const ProductsToolbar = props => {
           <ArrowBackIcon />
         </IconButton>
         <span className={classes.spacer} />
-        <Button color='primary' variant='contained' onClick={handleOpen}>
-          Add Product
-        </Button>
+        {loading ? (
+          <Skeleton width={100} height={40} />
+        ) : (
+          <Button color='primary' variant='contained' onClick={handleOpen}>
+            Add Product
+          </Button>
+        )}
         <ProductsFormDialog open={open} onClose={handleClose} />
       </div>
       <div className={classes.row}>
-        <SearchInput
-          className={classes.searchInput}
-          placeholder='Search product'
-          onChange={handleSearchChange}
-        />
+        {loading ? (
+          <Skeleton className={classes.searchInput} width={450} height={50} />
+        ) : (
+          <SearchInput
+            className={classes.searchInput}
+            placeholder='Search product'
+            onChange={handleSearchChange}
+          />
+        )}
       </div>
     </div>
   );

@@ -6,6 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import axios from 'axios';
 
+import { EmptyPlaceholder } from '../../tools';
+import { LinearProgress } from '@material-ui/core';
+
 const ProductsContext = createContext({
   products: [],
   addProduct: product => {},
@@ -38,16 +41,20 @@ const Products = ({ match }) => {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+  const [loading, setIsloading] = useState(false);
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
+    setIsloading(true);
     axios
       .get(`/api/products/${category}`)
       .then(res => {
         setProducts(res.data);
+        setIsloading(false);
       })
       .catch(err => {
         console.error(err);
+        setIsloading(false);
       });
   }, [category]);
 
@@ -162,16 +169,24 @@ const Products = ({ match }) => {
         updateProduct: updateProduct,
       }}>
       <div className={classes.root}>
-        <ProductsToolbar></ProductsToolbar>
-        <div className={classes.content}>
-          <Grid container spacing={3}>
-            {products.map(product => (
-              <Grid item key={product.id} lg={4} md={6} xs={12}>
-                <ProductCard product={product}></ProductCard>
+        <ProductsToolbar loading={loading}></ProductsToolbar>
+        {loading ? (
+          <LinearProgress className={classes.content} />
+        ) : (
+          <div className={classes.content}>
+            {products.length >= 1 ? (
+              <Grid container spacing={3}>
+                {products.map(product => (
+                  <Grid item key={product.id} lg={4} md={6} xs={12}>
+                    <ProductCard product={product}></ProductCard>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        </div>
+            ) : (
+              <EmptyPlaceholder />
+            )}
+          </div>
+        )}
       </div>
     </ProductsContext.Provider>
   );

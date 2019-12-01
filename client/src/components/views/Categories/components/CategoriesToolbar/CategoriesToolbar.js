@@ -9,6 +9,7 @@ import { CategoriesContext } from '../../Categories';
 import SearchInput from '../../../../tools/SearchBar';
 
 import { Button } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 
 import axios from 'axios';
 
@@ -32,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ProductsToolbar = props => {
-  const { className, ...rest } = props;
+  const { loading, className, ...rest } = props;
   const [open, setOpen] = useState(false);
 
   const context = useContext(CategoriesContext);
@@ -85,17 +86,25 @@ const ProductsToolbar = props => {
     <div {...rest} className={clsx(classes.root, className)}>
       <div className={classes.row}>
         <span className={classes.spacer} />
-        <Button color='primary' variant='contained' onClick={handleOpen}>
-          Add Category
-        </Button>
+        {loading ? (
+          <Skeleton width={100} height={40} />
+        ) : (
+          <Button color='primary' variant='contained' onClick={handleOpen}>
+            Add Category
+          </Button>
+        )}
         <CategoryFormDialog open={open} onClose={handleClose} />
       </div>
       <div className={classes.row}>
-        <SearchInput
-          className={classes.searchInput}
-          placeholder='Search Categories'
-          onChange={handleSearchChange}
-        />
+        {loading ? (
+          <Skeleton className={classes.searchInput} width={450} height={50} />
+        ) : (
+          <SearchInput
+            className={classes.searchInput}
+            placeholder='Search Categories'
+            onChange={handleSearchChange}
+          />
+        )}
       </div>
     </div>
   );
