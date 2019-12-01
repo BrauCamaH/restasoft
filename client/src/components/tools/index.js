@@ -6,3 +6,4 @@ export { default as TextMaskCustom } from './TextMaskCustom';
 export { default as AlertDialog } from './AlertDialog';
 export { default as FormDialog } from './FormDialog';
 export { default as CustomMaterialTable } from './CustomMaterialTable';
+export { default as EmptyPlaceholder } from './EmptyPlaceholder';
