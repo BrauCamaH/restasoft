@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { CustomMaterialTable } from './../../../../tools';
 import { Card } from '@material-ui/core';
 
+import { AlertDialog } from '../../../../tools';
+
 const useStyles = makeStyles(theme => ({
   root: {},
   content: {
@@ -26,9 +28,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersTable = props => {
-  const { className, users, ...rest } = props;
-
+  const { deleteUser, className, users, ...rest } = props;
   const classes = useStyles();
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const [currentUserId, setCurrentUserId] = useState(0);
 
   const [columns] = useState([
     {
@@ -51,6 +55,32 @@ const UsersTable = props => {
         columns={columns}
         data={users}
         options={{ search: false }}
+        actions={[
+          {
+            icon: 'edit',
+            tooltip: 'Edit User',
+            onClick: () => {},
+          },
+          {
+            icon: 'delete',
+            tooltip: 'Delete User',
+            onClick: (event, rowData) => {
+              setCurrentUserId(rowData.id);
+              setOpenAlert(true);
+            },
+          },
+        ]}
+      />
+      <AlertDialog
+        open={openAlert}
+        title='Are you sure?'
+        contentText={'The action will delete the current user'}
+        onClose={() => {
+          setOpenAlert(false);
+        }}
+        onAgree={() => {
+          deleteUser(currentUserId);
+        }}
       />
     </Card>
   );
