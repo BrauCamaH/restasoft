@@ -4,6 +4,8 @@ import { makeStyles } from '@material-ui/styles';
 import { UsersToolbar, UsersTable } from './components';
 import { useSnackbar } from 'notistack';
 import axios from 'axios';
+import { RoleManager } from '../../tools';
+import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,14 +58,16 @@ const UserList = () => {
   };
 
   return (
-    <div className={classes.root}>
-      <UsersToolbar />
-      {!loading ? (
-        <div className={classes.content}>
-          <UsersTable users={users} deleteUser={deleteUser} />
-        </div>
-      ) : null}
-    </div>
+    <RoleManager customReturn={<Redirect to='/orders' />}>
+      <div className={classes.root}>
+        <UsersToolbar />
+        {!loading ? (
+          <div className={classes.content}>
+            <UsersTable users={users} deleteUser={deleteUser} />
+          </div>
+        ) : null}
+      </div>
+    </RoleManager>
   );
 };
 

@@ -7,7 +7,7 @@ import { IconButton } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import ProductsFormDialog from '../ProductFormDialog';
-import SearchInput from '../../../../tools/SearchBar';
+import { SearchBar as SearchInput, RoleManager } from '../../../../tools';
 import { Button } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
@@ -55,13 +55,16 @@ const ProductsToolbar = props => {
           <ArrowBackIcon />
         </IconButton>
         <span className={classes.spacer} />
-        {loading ? (
-          <Skeleton width={100} height={40} />
-        ) : (
-          <Button color='primary' variant='contained' onClick={handleOpen}>
-            Add Product
-          </Button>
-        )}
+        <RoleManager>
+          {loading ? (
+            <Skeleton width={100} height={40} />
+          ) : (
+            <Button color='primary' variant='contained' onClick={handleOpen}>
+              Add Product
+            </Button>
+          )}
+        </RoleManager>
+
         <ProductsFormDialog open={open} onClose={handleClose} />
       </div>
       <div className={classes.row}>

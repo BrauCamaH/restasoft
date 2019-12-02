@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/styles';
 import CategoryFormDialog from '../CategoryForm';
 import { CategoriesContext } from '../../Categories';
 
-import SearchInput from '../../../../tools/SearchBar';
+import { SearchBar as SearchInput, RoleManager } from '../../../../tools';
 
 import { Button } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -86,13 +86,15 @@ const ProductsToolbar = props => {
     <div {...rest} className={clsx(classes.root, className)}>
       <div className={classes.row}>
         <span className={classes.spacer} />
-        {loading ? (
-          <Skeleton width={100} height={40} />
-        ) : (
-          <Button color='primary' variant='contained' onClick={handleOpen}>
-            Add Category
-          </Button>
-        )}
+        <RoleManager>
+          {loading ? (
+            <Skeleton width={100} height={40} />
+          ) : (
+            <Button color='primary' variant='contained' onClick={handleOpen}>
+              Add Category
+            </Button>
+          )}
+        </RoleManager>
         <CategoryFormDialog open={open} onClose={handleClose} />
       </div>
       <div className={classes.row}>

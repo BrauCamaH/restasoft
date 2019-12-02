@@ -3,6 +3,7 @@ import { NavLink as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { List, ListItem, Button, colors } from '@material-ui/core';
+import { RoleManager } from '../../../../../../tools';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -51,15 +52,29 @@ const SidebarNav = props => {
     <List>
       {pages.map(page => (
         <ListItem key={page.title} className={classes.item}>
-          <Button
-            activeClassName={classes.active}
-            className={classes.button}
-            component={CustomRouterLink}
-            to={page.href}
-          >
-            <div className={classes.icon}>{page.icon}</div>
-            {page.title}
-          </Button>
+          {page.title === 'Users' || page.title == 'Dashboard' ? (
+            <RoleManager
+              component={
+                <Button
+                  activeClassName={classes.active}
+                  className={classes.button}
+                  component={CustomRouterLink}
+                  to={page.href}>
+                  <div className={classes.icon}>{page.icon}</div>
+                  {page.title}
+                </Button>
+              }
+            />
+          ) : (
+            <Button
+              activeClassName={classes.active}
+              className={classes.button}
+              component={CustomRouterLink}
+              to={page.href}>
+              <div className={classes.icon}>{page.icon}</div>
+              {page.title}
+            </Button>
+          )}
         </ListItem>
       ))}
     </List>

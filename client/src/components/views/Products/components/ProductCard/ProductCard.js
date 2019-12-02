@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-import AlertDialog from '../../../../tools/AlertDialog';
+import { AlertDialog, RoleManager } from '../../../../tools';
 
 import { ProductsContext } from '../../Products';
 import ProductFormDialog from '../ProductFormDialog';
@@ -81,7 +81,7 @@ const Product = props => {
     <div>
       <Card {...rest} className={classes.card}>
         <CardHeader
-          action={<EditAndDelete></EditAndDelete>}
+          action={<RoleManager component={<EditAndDelete></EditAndDelete>} />}
           title={product.name}
           subheader={`Price: $${product.price}`}></CardHeader>
         <CardMedia className={classes.media} image={`${image}`} />

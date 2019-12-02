@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-import AlertDialog from '../../../../tools/AlertDialog';
+import { AlertDialog, RoleManager } from '../../../../tools';
 
 import { CategoriesContext } from '../../Categories';
 
@@ -168,14 +168,20 @@ const CategoryItem = props => {
         </CardContent>
         <Divider></Divider>
         <CardActions>
-          <ButtonGroup fullWidth>
-            <Button color='primary' onClick={handleOpenEdit}>
-              Edit
-            </Button>
-            <Button className={classes.deleteButton} onClick={handleOpenAlert}>
-              Delete
-            </Button>
-          </ButtonGroup>
+          <RoleManager
+            component={
+              <ButtonGroup fullWidth>
+                <Button color='primary' onClick={handleOpenEdit}>
+                  Edit
+                </Button>
+                <Button
+                  className={classes.deleteButton}
+                  onClick={handleOpenAlert}>
+                  Delete
+                </Button>
+              </ButtonGroup>
+            }
+          />
         </CardActions>
       </Card>
       <div>
