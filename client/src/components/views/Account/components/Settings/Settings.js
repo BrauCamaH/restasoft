@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
 import clsx from 'clsx';
@@ -12,6 +12,9 @@ import {
   Button,
   TextField,
 } from '@material-ui/core';
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
+import UserContext from '../../../../../context/user-context';
 
 const schema = {
   password: {
@@ -35,8 +38,9 @@ const useStyles = makeStyles(() => ({
 
 const Password = props => {
   const { className, ...rest } = props;
-
   const classes = useStyles();
+  const context = useContext(UserContext);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -78,9 +82,42 @@ const Password = props => {
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
+  const handleSubmit = event => {
+    event.preventDefault();
+
+    if (formState.values.password !== formState.values.confirm) {
+      enqueueSnackbar('Passwords must match', {
+        variant: 'error',
+      });
+      setTimeout(closeSnackbar, 2000);
+    } else {
+      event.preventDefault();
+      axios
+        .put(`/api/users/profile/${context.user.id}`, {
+          password: formState.values.password,
+        })
+        .then(res => {
+          enqueueSnackbar('Password has been changed', {
+            variant: 'success',
+          });
+          setTimeout(closeSnackbar, 2000);
+          setFormState(formState => ({
+            ...formState,
+            values: {},
+          }));
+        })
+        .catch(err => {
+          enqueueSnackbar(err.response.data.message, {
+            variant: 'error',
+          });
+          setTimeout(closeSnackbar, 2000);
+        });
+    }
+  };
+
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <form>
+      <form onSubmit={handleSubmit}>
         <CardHeader subheader='Update password' title='Password' />
         <Divider />
         <CardContent>
@@ -94,7 +131,7 @@ const Password = props => {
             name='password'
             onChange={handleChange}
             type='password'
-            value={formState.values.password}
+            value={formState.values.password || ''}
             variant='outlined'
           />
           <TextField
@@ -108,17 +145,17 @@ const Password = props => {
             onChange={handleChange}
             style={{ marginTop: '1rem' }}
             type='password'
-            value={formState.values.confirm}
+            value={formState.values.confirm || ''}
             variant='outlined'
           />
         </CardContent>
         <Divider />
         <CardActions>
           <Button
+            type='submit'
             color='primary'
             variant='outlined'
-            disabled={!formState.isValid}
-          >
+            disabled={!formState.isValid}>
             Update
           </Button>
         </CardActions>

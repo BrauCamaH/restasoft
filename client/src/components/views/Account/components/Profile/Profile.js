@@ -5,6 +5,9 @@ import { makeStyles } from '@material-ui/styles';
 import validate from 'validate.js';
 import UserContext from '../../../../../context/user-context';
 
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
+
 import {
   Card,
   CardHeader,
@@ -43,24 +46,13 @@ const schema = {
       minimum: 4,
     },
   },
-  email: {
-    presence: { message: 'is required' },
-    length: {
-      maximum: 30,
-    },
-  },
-  phone: {
-    presence: { message: 'is required' },
-    length: {
-      maximum: 13,
-    },
-  },
 };
 
 const AccountDetails = props => {
   const { className, ...rest } = props;
   const context = useContext(UserContext);
   const classes = useStyles();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const firstName = context.user.name.split(' ')[0];
   const lastName = context.user.name.split(' ')[1];
@@ -102,21 +94,35 @@ const AccountDetails = props => {
     }));
   };
 
-  const [values, setValues] = React.useState({
-    type: context.user.type,
-  });
-  const handleSelect = event => {
-    setValues(oldValues => ({
-      ...oldValues,
-      type: event.target.value,
-    }));
-  };
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
 
+  const handleSubmit = event => {
+    event.preventDefault();
+    const name = `${formState.values.firstName} ${formState.values.lastName}`;
+    const username = formState.values.username;
+    axios
+      .put(`/api/users/profile/${context.user.id}`, {
+        name: name,
+        username: username,
+      })
+      .then(res => {
+        enqueueSnackbar('User Profile Updated', {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+        context.setUser(res.data.user);
+      })
+      .catch(err => {
+        enqueueSnackbar('Error', {
+          variant: 'error',
+        });
+        setTimeout(closeSnackbar, 2000);
+      });
+  };
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <FormControl autoComplete='off' noValidate>
+      <FormControl autoComplete='off'>
         <CardHeader subheader='The profile can be edited' title='Profile' />
         <Divider />
         <CardContent>
@@ -149,7 +155,7 @@ const AccountDetails = props => {
                 name='lastName'
                 onChange={handleChange}
                 required
-                value={formState.values.lastName}
+                value={formState.values.lastName || ''}
                 variant='outlined'
               />
             </Grid>
@@ -165,26 +171,29 @@ const AccountDetails = props => {
                 name='username'
                 onChange={handleChange}
                 required
-                value={formState.values.username}
+                value={formState.values.username || ''}
                 variant='outlined'
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <Select
-                fullWidth
-                value={values.type}
-                name={formState.values.type}
-                onChange={handleSelect}
-                type='text'>
-                <MenuItem value={'Administrator'}>Administrator</MenuItem>
-                <MenuItem value={'Waiter'}>Waiter</MenuItem>
-              </Select>
+              <TextField
+                label='Type'
+                margin='dense'
+                value={context.user.type}
+                disabled={true}
+                variant='outlined'
+              />
             </Grid>
           </Grid>
         </CardContent>
         <Divider />
         <CardActions>
-          <Button color='primary' variant='contained' type='submit'>
+          <Button
+            disabled={!formState.isValid}
+            color='primary'
+            variant='contained'
+            type='submit'
+            onClick={handleSubmit}>
             Save details
           </Button>
         </CardActions>

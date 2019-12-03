@@ -21,4 +21,8 @@ router.get('/', UsersController.getUsers);
 
 router.get('/user/:id', UsersController.getUserById);
 
+router.put('/profile/:id', UsersController.updateProfile);
+
+router.put('/password/:id', UsersController.updatePassword);
+
 module.exports = router;

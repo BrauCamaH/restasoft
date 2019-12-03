@@ -6,6 +6,17 @@ const Joi = require('joi');
 
 const Users = db.users;
 
+const schema = {
+  name: Joi.string().required(),
+  username: Joi.string()
+    .min(4)
+    .required(),
+  password: Joi.string()
+    .min(6)
+    .required(),
+  type: Joi.string().required(),
+};
+
 exports.getUsers = (req, res) => {
   Users.findAll()
     .then(users => res.json(users))
@@ -24,17 +35,6 @@ exports.getUserById = (req, res) => {
 
 exports.signUp = (req, res, next) => {
   const { name, username, password, type } = req.body;
-
-  const schema = {
-    name: Joi.string().required(),
-    username: Joi.string()
-      .min(4)
-      .required(),
-    password: Joi.string()
-      .min(6)
-      .required(),
-    type: Joi.string().required(),
-  };
 
   const result = Joi.validate(req.body, schema);
 
@@ -104,14 +104,15 @@ exports.signIn = (req, res, next) => {
             },
             config.jwtSecret,
             {
-              expiresIn: '1h',
-            },
+              expiresIn: '24h',
+            }
           );
-          // message: 'Auth successful',
-          // token: token,
           return res
             .cookie('restaToken', token, { httpOnly: true })
-            .sendStatus(200);
+            .status(200)
+            .json({
+              userId: user.id,
+            });
         } else {
           res.status(401).json({
             message: 'Auth failed',
@@ -140,4 +141,70 @@ exports.deleteUser = (req, res, next) => {
         error: err,
       });
     });
+};
+
+exports.updateProfile = (req, res) => {
+  const { id } = req.params;
+  const { name, username } = req.body;
+  Users.update(
+    {
+      name: name,
+      username: username,
+    },
+    {
+      where: {
+        id: id,
+      },
+    }
+  )
+    .then(user => {
+      Users.findOne({ where: { id: req.params.id } }).then(user => {
+        res.status(200).json({
+          message: `Client updated with ID: ${id}`,
+          user: user,
+        });
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err,
+      });
+    });
+};
+
+exports.updatePassword = (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  const result = Joi.validate(req.body, schema);
+
+  if (result.error) {
+    return res.status(400).json({
+      message: result.error.details[0].message,
+    });
+  } else {
+    bcrypt.hash(password, 10, (err, hash) => {
+      if (err) {
+        return res.status(500).json({
+          error: err,
+        });
+      } else {
+        Users.update(
+          {
+            password: hash,
+          },
+          {
+            where: {
+              id: id,
+            },
+          }
+        ).then(user => {
+          res.status(200).json({
+            message: `Client updated with ID: ${id}`,
+            user: user,
+          });
+        });
+      }
+    });
+  }
 };
