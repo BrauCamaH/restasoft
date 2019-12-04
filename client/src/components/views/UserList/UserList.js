@@ -6,6 +6,7 @@ import { useSnackbar } from 'notistack';
 import axios from 'axios';
 import { RoleManager } from '../../tools';
 import { Redirect } from 'react-router-dom';
+import UserContext from '../../../context/user-context';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -57,13 +58,41 @@ const UserList = () => {
       });
   };
 
+  const editUser = user => {
+    const { id, name, username, type } = user;
+    const updatedUsers = [...users];
+    const updatedItemIndex = updatedUsers.findIndex(item => item.id === id);
+
+    updatedUsers[updatedItemIndex] = user;
+    setUsers(updatedUsers);
+    axios
+      .put(`/api/users/${id}`, {
+        name: name,
+        username: username,
+        type: type,
+      })
+      .then(res => {
+        enqueueSnackbar('User Profile Updated', {
+          variant: 'success',
+        });
+        setTimeout(closeSnackbar, 2000);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   return (
     <RoleManager customReturn={<Redirect to='/orders' />}>
       <div className={classes.root}>
         <UsersToolbar />
         {!loading ? (
           <div className={classes.content}>
-            <UsersTable users={users} deleteUser={deleteUser} />
+            <UsersTable
+              users={users}
+              deleteUser={deleteUser}
+              editUser={editUser}
+            />
           </div>
         ) : null}
       </div>

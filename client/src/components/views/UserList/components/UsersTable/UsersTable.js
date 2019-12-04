@@ -3,8 +3,9 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { CustomMaterialTable } from './../../../../tools';
-import { Card } from '@material-ui/core';
+import { Card, TextField, Select, MenuItem } from '@material-ui/core';
 
+import { useSnackbar } from 'notistack';
 import { AlertDialog } from '../../../../tools';
 
 const useStyles = makeStyles(theme => ({
@@ -28,8 +29,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersTable = props => {
-  const { deleteUser, className, users, ...rest } = props;
+  const { editUser, deleteUser, className, users, ...rest } = props;
   const classes = useStyles();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [openAlert, setOpenAlert] = useState(false);
 
   const [currentUserId, setCurrentUserId] = useState(0);
@@ -38,14 +40,42 @@ const UsersTable = props => {
     {
       title: 'Name',
       field: 'name',
+      editComponent: props => (
+        <TextField
+          type='text'
+          variant='outlined'
+          value={props.value}
+          onChange={e => props.onChange(e.target.value)}
+        />
+      ),
     },
     {
       title: 'Username',
       field: 'username',
+
+      editComponent: props => (
+        <TextField
+          variant='outlined'
+          type='text'
+          value={props.value}
+          onChange={e => props.onChange(e.target.value)}
+        />
+      ),
     },
     {
       title: 'Type',
       field: 'type',
+
+      editComponent: props => (
+        <Select
+          type='text'
+          variant='outlined'
+          value={props.value}
+          onChange={e => props.onChange(e.target.value)}>
+          <MenuItem value={'Administrator'}>Administrator</MenuItem>
+          <MenuItem value={'Waiter'}>Waiter</MenuItem>
+        </Select>
+      ),
     },
   ]);
   return (
@@ -57,11 +87,6 @@ const UsersTable = props => {
         options={{ search: false }}
         actions={[
           {
-            icon: 'edit',
-            tooltip: 'Edit User',
-            onClick: () => {},
-          },
-          {
             icon: 'delete',
             tooltip: 'Delete User',
             onClick: (event, rowData) => {
@@ -70,6 +95,21 @@ const UsersTable = props => {
             },
           },
         ]}
+        editable={{
+          onRowUpdate: (newData, oldData) =>
+            new Promise((resolve, reject) => {
+              if (newData.username.length < 4) {
+                enqueueSnackbar('Please fill all the fields correctly', {
+                  variant: 'error',
+                });
+                setTimeout(closeSnackbar, 2000);
+                reject();
+              } else {
+                editUser(newData);
+                resolve();
+              }
+            }),
+        }}
       />
       <AlertDialog
         open={openAlert}

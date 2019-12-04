@@ -143,6 +143,36 @@ exports.deleteUser = (req, res, next) => {
     });
 };
 
+exports.updateUser = (req, res) => {
+  const { id } = req.params;
+  const { name, username, type } = req.body;
+  Users.update(
+    {
+      name: name,
+      username: username,
+      type,
+    },
+    {
+      where: {
+        id: id,
+      },
+    }
+  )
+    .then(user => {
+      Users.findOne({ where: { id: req.params.id } }).then(user => {
+        res.status(200).json({
+          message: `Client updated with ID: ${id}`,
+          user: user,
+        });
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err,
+      });
+    });
+};
+
 exports.updateProfile = (req, res) => {
   const { id } = req.params;
   const { name, username } = req.body;
