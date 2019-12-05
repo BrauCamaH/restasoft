@@ -37,7 +37,6 @@ const ProductsToolbar = props => {
   const [open, setOpen] = useState(false);
 
   const context = useContext(CategoriesContext);
-  const [currentList, setCurrentList] = useState([]);
 
   const handleClose = () => {
     setOpen(false);
@@ -47,37 +46,15 @@ const ProductsToolbar = props => {
     setOpen(true);
   };
 
-  React.useEffect(() => {
+  const handleSearchChange = value => {
     axios
-      .get(`/api/categories`)
+      .get(`/api/categories/search?value=${value}`)
       .then(res => {
-        setCurrentList(res.data);
+        context.setCategories(res.data);
       })
       .catch(err => {
         console.error(err);
       });
-  }, []);
-
-  const handleSearchChange = event => {
-    let newList = [];
-
-    axios
-      .get(`/api/categories`)
-      .then(res => {
-        setCurrentList(res.data);
-      })
-      .catch(err => {
-        console.error(err);
-      });
-
-    newList = currentList.filter(
-      item =>
-        item.name.toLowerCase().includes(event.target.value.toLowerCase()) ||
-        item.description
-          .toLowerCase()
-          .includes(event.target.value.toLowerCase())
-    );
-    context.setCategories(newList);
   };
 
   const classes = useStyles();

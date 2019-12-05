@@ -21,6 +21,23 @@ exports.getCategories = (req, res) => {
     .catch(e => res.json({ err: e }));
 };
 
+exports.searchCategories = (req, res) => {
+  const { value } = req.query;
+  Categories.findAll({
+    order: ['id'],
+  })
+    .then(categories =>
+      res.json(
+        categories.filter(
+          item =>
+            item.name.toLowerCase().includes(value.toLowerCase()) ||
+            item.description.toLowerCase().includes(value.toLowerCase())
+        )
+      )
+    )
+    .catch(e => res.json({ err: e }));
+};
+
 exports.addCategory = (req, res) => {
   const { name, description } = req.body;
   //console.log(req.file);
@@ -69,7 +86,7 @@ exports.updateCategory = (req, res) => {
         where: {
           id: id,
         },
-      },
+      }
     )
       .then(() => {
         res.status(200).json({

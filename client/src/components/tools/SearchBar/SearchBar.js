@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Paper, Input } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import { useDebounce } from 'use-debounce';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,6 +31,17 @@ const SearchInput = props => {
 
   const classes = useStyles();
 
+  const [text, setText] = useState('');
+  const [debouncedText] = useDebounce(text, 500);
+
+  const handleDebouncedText = event => {
+    setText(event.target.value);
+  };
+
+  useEffect(() => {
+    onChange(text);
+  }, [debouncedText]);
+
   return (
     <Paper {...rest} className={clsx(classes.root, className)} style={style}>
       <SearchIcon className={classes.icon} />
@@ -38,7 +50,9 @@ const SearchInput = props => {
         type='search'
         className={classes.input}
         disableUnderline
-        onChange={onChange}
+        onChange={e => {
+          handleDebouncedText(e);
+        }}
       />
     </Paper>
   );
@@ -46,7 +60,7 @@ const SearchInput = props => {
 
 SearchInput.propTypes = {
   className: PropTypes.string,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
   style: PropTypes.object,
 };
 
