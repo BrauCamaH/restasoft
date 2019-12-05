@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Link as RouterLink, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -15,10 +15,7 @@ import {
   Button,
   Typography,
   Grid,
-  FormControlLabel,
-  Checkbox,
   Container,
-  Link,
 } from '@material-ui/core';
 
 const schema = {
@@ -172,10 +169,6 @@ const SignIn = props => {
               margin='normal'
             />
           </Grid>
-          <FormControlLabel
-            control={<Checkbox value='remember' color='primary' />}
-            label='Remember me'
-          />
           <Button
             type='submit'
             fullWidth
@@ -184,18 +177,6 @@ const SignIn = props => {
             disabled={!formState.isValid}>
             Sign In
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href='' variant='body2'>
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link to='/sign-up' component={RouterLink} variant='body2'>
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
         </form>
       </div>
     </Container>
