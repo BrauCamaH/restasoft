@@ -52,7 +52,7 @@ const SidebarNav = props => {
     <List>
       {pages.map(page => (
         <ListItem key={page.title} className={classes.item}>
-          {page.title === 'Users' || page.title == 'Dashboard' ? (
+          {page.title === 'Users' || page.title === 'Dashboard' ? (
             <RoleManager
               component={
                 <Button
