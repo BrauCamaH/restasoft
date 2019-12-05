@@ -45,7 +45,7 @@ const Profile = props => {
         {user.avatar}
       </Avatar>
       <Typography className={classes.name} variant='h4'>
-        {context.user.name}
+        {context.user.name || ''}
       </Typography>
       <Typography variant='body2'>{`Restaurant ${context.user.type}`}</Typography>
     </div>
