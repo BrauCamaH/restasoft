@@ -1,13 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-import {
-  Typography,
-  Container,
-  Card,
-  CardContent,
-  Button,
-} from '@material-ui/core';
+import { Typography, Container, Card, CardContent } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: { marginTop: '15%' },
@@ -22,20 +16,7 @@ const EmptyPlaceholder = () => {
       <Card className={classes.card}>
         <CardContent>
           <Typography variant='h5' component='h2'>
-            There is not items to Display
-          </Typography>
-          <br />
-          <Typography className={classes.pos} color='textSecondary'>
-            You can add a item with the
-            {
-              <Button
-                className={classes.button}
-                variant='contained'
-                color='primary'>
-                Button
-              </Button>
-            }
-            shown in the top right part
+            There is not items to display
           </Typography>
         </CardContent>
       </Card>
