@@ -8,3 +8,4 @@ export { default as FormDialog } from './FormDialog';
 export { default as CustomMaterialTable } from './CustomMaterialTable';
 export { default as EmptyPlaceholder } from './EmptyPlaceholder';
 export { default as RoleManager } from './RoleManager';
+export { default as Logo } from './Logo';

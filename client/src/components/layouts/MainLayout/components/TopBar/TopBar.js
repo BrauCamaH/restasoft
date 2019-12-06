@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link as RouterLink, withRouter } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
@@ -13,8 +12,9 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import InputIcon from '@material-ui/icons/Input';
 
+import { withRouter } from 'react-router-dom';
 import axios from 'axios';
-import logo from './resta_logo_texto.png';
+import { Logo } from '../../../../tools';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,9 +49,7 @@ const Topbar = props => {
           </IconButton>
         </Hidden>
         <div className={classes.flexGrow}>
-          <RouterLink to='/'>
-            <img alt='Logo' width={125} height={50} src={logo} />
-          </RouterLink>
+          <Logo />
         </div>
         <Tooltip title='SignOut'>
           <IconButton
