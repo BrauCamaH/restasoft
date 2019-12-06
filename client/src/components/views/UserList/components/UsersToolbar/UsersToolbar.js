@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
@@ -7,6 +6,8 @@ import { Button, Drawer } from '@material-ui/core';
 
 import { SearchBar } from '../../../../tools';
 import { SingUp } from '../../../../views';
+
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -25,10 +26,21 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersToolbar = props => {
-  const { className, ...rest } = props;
+  const { setUsers, className, ...rest } = props;
 
   const classes = useStyles();
   const [open, setOpen] = useState();
+
+  const handleSearchChange = value => {
+    axios
+      .get(`/api/users/search?value=${value}`)
+      .then(res => {
+        setUsers(res.data);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
 
   return (
     <div {...rest} className={clsx(classes.root, className)}>
@@ -55,7 +67,11 @@ const UsersToolbar = props => {
         </Drawer>
       </div>
       <div className={classes.row}>
-        <SearchBar className={classes.searchInput} placeholder='Search user' />
+        <SearchBar
+          className={classes.searchInput}
+          placeholder='Search user'
+          onChange={handleSearchChange}
+        />
       </div>
     </div>
   );

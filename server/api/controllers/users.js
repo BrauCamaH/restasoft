@@ -33,6 +33,24 @@ exports.getUserById = (req, res) => {
     });
 };
 
+exports.searchUsers = (req, res) => {
+  const { value } = req.query;
+  Users.findAll({
+    order: ['id'],
+  })
+    .then(users =>
+      res.json(
+        users.filter(
+          item =>
+            item.name.toLowerCase().includes(value.toLowerCase()) ||
+            item.username.toLowerCase().includes(value.toLowerCase()) ||
+            item.type.toLowerCase().includes(value.toLowerCase())
+        )
+      )
+    )
+    .catch(e => res.json({ err: e }));
+};
+
 exports.signUp = (req, res, next) => {
   const { name, username, password, type } = req.body;
 

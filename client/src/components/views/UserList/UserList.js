@@ -84,7 +84,7 @@ const UserList = () => {
   return (
     <RoleManager customReturn={<Redirect to='/orders' />}>
       <div className={classes.root}>
-        <UsersToolbar />
+        <UsersToolbar setUsers={setUsers} />
         {!loading ? (
           <div className={classes.content}>
             <UsersTable

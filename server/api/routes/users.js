@@ -17,6 +17,7 @@ router.delete('/:id', UsersController.deleteUser);
 
 router.get('/', UsersController.getUsers);
 router.get('/user/:id', UsersController.getUserById);
+router.get('/search', UsersController.searchUsers);
 
 router.put('/:id', UsersController.updateUser);
 router.put('/profile/:id', UsersController.updateProfile);
