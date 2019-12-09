@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
@@ -7,6 +7,7 @@ import { Button, Drawer } from '@material-ui/core';
 import { SearchBar } from '../../../../tools';
 import { SingUp } from '../../../../views';
 
+import UserContext from '../../../../../context/user-context';
 import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 
 const UsersToolbar = props => {
   const { setUsers, className, ...rest } = props;
-
+  const context = useContext(UserContext);
   const classes = useStyles();
   const [open, setOpen] = useState();
 
@@ -35,7 +36,7 @@ const UsersToolbar = props => {
     axios
       .get(`/api/users/search?value=${value}`)
       .then(res => {
-        setUsers(res.data);
+        setUsers(res.data.filter(user => user.id !== context.user.id));
       })
       .catch(err => {
         console.error(err);

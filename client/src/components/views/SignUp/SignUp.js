@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useSnackbar } from 'notistack';
 
+import { UserListContext } from '../UserList/UserList';
 import axios from 'axios';
 import validate from 'validate.js';
 
@@ -86,6 +87,7 @@ const useStyles = makeStyles(theme => ({
 const SignUp = props => {
   const classes = useStyles();
   const { onClose } = props;
+  const context = useContext(UserListContext);
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -147,26 +149,14 @@ const SignUp = props => {
       rewrite,
     } = formState.values;
     const { type } = values;
+    const user = {
+      name: `${firstName} ${lastName}`,
+      username: username,
+      password: password,
+      type: type,
+    };
     if (password === rewrite) {
-      axios
-        .post(`api/users/sign-up`, {
-          name: `${firstName} ${lastName}`,
-          username: username,
-          password: password,
-          type: type,
-        })
-        .then(res => {
-          enqueueSnackbar(res.data.message, {
-            variant: 'success',
-          });
-          setTimeout(closeSnackbar, 2000);
-        })
-        .catch(err => {
-          enqueueSnackbar(err.response.data.message, {
-            variant: 'error',
-          });
-          setTimeout(closeSnackbar, 2000);
-        });
+      context.addUser(user);
     } else {
       enqueueSnackbar('passwords do not match', {
         variant: 'error',
