@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
@@ -9,6 +9,10 @@ import SearchInput from '../../../../tools/SearchBar';
 
 import { Button } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+
+import UserContext from '../../../../../context/user-context';
+import { SalesContext } from '../../Sales';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -31,6 +35,8 @@ const useStyles = makeStyles(theme => ({
 
 const SalesToolbar = props => {
   const { loading, className, ...rest } = props;
+  const context = useContext(SalesContext);
+  const userContext = useContext(UserContext);
   const [open, setOpen] = useState(false);
 
   const handleClose = () => {
@@ -41,7 +47,16 @@ const SalesToolbar = props => {
     setOpen(true);
   };
 
-  const handleSearchChange = event => {};
+  const handleSearchChange = value => {
+    axios
+      .get(`/api/sales/search/${userContext.user.id}?value=${value}`)
+      .then(res => {
+        context.setSales(res.data.rows);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
 
   const classes = useStyles();
 
@@ -64,7 +79,7 @@ const SalesToolbar = props => {
         ) : (
           <SearchInput
             className={classes.searchInput}
-            placeholder='Search product'
+            placeholder='Search Sale'
             onChange={handleSearchChange}
           />
         )}

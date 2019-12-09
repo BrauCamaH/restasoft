@@ -13,15 +13,26 @@ exports.getSales = (req, res) => {
 };
 
 exports.getSalesByUser = (req, res) => {
-  Sales.findAll({
-    order: ['id'],
-    where: {
-      user: req.params.user,
-      finish: null,
-    },
-  })
-    .then(Sale => res.json(Sale))
-    .catch(e => res.json({ err: e }));
+  Clients.findAll().then(clients => {
+    Tables.findAll().then(tables => {
+      Sales.findAndCountAll({
+        order: ['createdAt'],
+        where: { user: req.params.user, finish: null },
+      })
+        .then(sales =>
+          res.json({
+            rows: sales.rows.map(sale => ({
+              id: sale.id,
+              finish: sale.finish,
+              client: clients.find(client => client.id === sale.client),
+              table: tables.find(table => table.id === sale.table),
+              total: sale.total,
+            })),
+          })
+        )
+        .catch(e => res.json({ err: e }));
+    });
+  });
 };
 
 exports.getLatestSales = (req, res) => {
@@ -34,6 +45,38 @@ exports.getLatestSales = (req, res) => {
         rows: results,
       });
     });
+};
+
+exports.searchSales = (req, res) => {
+  const { value } = req.query || '';
+  Clients.findAll().then(clients => {
+    Tables.findAll().then(tables => {
+      Sales.findAndCountAll({
+        order: ['createdAt'],
+        where: { user: req.params.user, finish: null },
+      })
+        .then(sales =>
+          res.json({
+            rows: sales.rows
+              .map(sale => ({
+                id: sale.id,
+                finish: sale.finish,
+                client: clients.find(client => client.id === sale.client),
+                table: tables.find(table => table.id === sale.table),
+                total: sale.total,
+              }))
+              .filter(
+                item =>
+                  item.client.name
+                    .toLowerCase()
+                    .includes(value.toLowerCase()) ||
+                  item.table.code.toLowerCase().includes(value.toLowerCase())
+              ),
+          })
+        )
+        .catch(e => res.json({ err: e }));
+    });
+  });
 };
 
 exports.filterSales = (req, res) => {

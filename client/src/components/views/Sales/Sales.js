@@ -77,7 +77,7 @@ const Sales = () => {
     axios
       .get(`/api/sales/${context.user.id}`)
       .then(res => {
-        setSales(res.data);
+        setSales(res.data.rows);
         //console.log(res.data);
         setLoading(false);
       })
@@ -145,7 +145,14 @@ const Sales = () => {
       .then(res => {
         //console.log(res.data);
         const updatedSales = [...sales];
-        updatedSales.push(res.data);
+        const sale = res.data;
+        updatedSales.push({
+          id: sale.id,
+          pay: sale.pay,
+          total: sale.total,
+          table: tables.find(table => table.id === sale.table),
+          client: clients.find(client => client.id === sale.client),
+        });
         setSales(updatedSales);
 
         enqueueSnackbar('Sale Added', {
@@ -360,16 +367,7 @@ const Sales = () => {
                 <Grid container spacing={3}>
                   {sales.map(sale => (
                     <Grid item key={sale.id} lg={4} md={6} xs={12}>
-                      <SaleCard
-                        sale={{
-                          id: sale.id,
-                          pay: sale.pay,
-                          total: sale.total,
-                          table: tables.find(table => table.id === sale.table),
-                          client: clients.find(
-                            client => client.id === sale.client
-                          ),
-                        }}></SaleCard>
+                      <SaleCard sale={sale}></SaleCard>
                     </Grid>
                   ))}
                 </Grid>
