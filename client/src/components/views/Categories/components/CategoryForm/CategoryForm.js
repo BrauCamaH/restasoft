@@ -58,9 +58,6 @@ const CategoryForm = props => {
     errors: {},
   });
 
-  // console.log(context.userId);
-
-  // console.log(context.user);
   useEffect(() => {
     const errors = validate(formState.values, schema);
 
@@ -104,7 +101,10 @@ const CategoryForm = props => {
     if (!isEditable) {
       setFormState(formState => ({
         ...formState,
-        values: {},
+        values: {
+          name: '',
+          description: '',
+        },
       }));
     }
     onClose();

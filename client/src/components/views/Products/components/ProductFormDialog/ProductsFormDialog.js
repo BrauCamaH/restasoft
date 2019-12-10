@@ -113,7 +113,11 @@ const ProductFormDialog = props => {
     if (!isEditable) {
       setFormState(formState => ({
         ...formState,
-        values: {},
+        values: {
+          name: '',
+          description: '',
+          price: '0',
+        },
       }));
     }
     onClose();
