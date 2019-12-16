@@ -24,8 +24,12 @@ exports.getSalesByUser = (req, res) => {
             rows: sales.rows.map(sale => ({
               id: sale.id,
               finish: sale.finish,
-              client: clients.find(client => client.id === sale.client),
-              table: tables.find(table => table.id === sale.table),
+              client: clients.find(client => client.id === sale.client) || {
+                name: 'client eliminated',
+              },
+              table: tables.find(table => table.id === sale.table) || {
+                code: 'table eliminated',
+              },
               total: sale.total,
             })),
           })
@@ -61,8 +65,12 @@ exports.searchSales = (req, res) => {
               .map(sale => ({
                 id: sale.id,
                 finish: sale.finish,
-                client: clients.find(client => client.id === sale.client),
-                table: tables.find(table => table.id === sale.table),
+                client: clients.find(client => client.id === sale.client) || {
+                  name: 'Client eliminated',
+                },
+                table: tables.find(table => table.id === sale.table) || {
+                  code: 'Table eliminated',
+                },
                 total: sale.total,
               }))
               .filter(
@@ -93,6 +101,8 @@ exports.filterSales = (req, res) => {
         offset: offset,
         limit: limit,
         where: {
+          table: { [Op.not]: null },
+          client: { [Op.not]: null },
           finish: {
             [Op.between]: [
               new Date(new Date(from) - 24 * 60 * 60 * 1000),

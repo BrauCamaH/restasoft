@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { Bar } from 'react-chartjs-2';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
+import ReactToPrint from 'react-to-print';
 import palette from '../../../../theme/palette';
 import {
   Card,
@@ -16,6 +17,8 @@ import {
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
+import { FormDialog } from '../../../../tools';
+import Overview from './Overview';
 import { options } from './chart';
 
 const useStyles = makeStyles(() => ({
@@ -33,6 +36,7 @@ const LatestSales = props => {
   const { className, ...rest } = props;
   const classes = useStyles();
 
+  const [openDialog, setOpenDialog] = useState(false);
   const [data, setData] = useState({});
   const [selectedFilter, setSelectedFilter] = React.useState(new Date());
   const handleChange = event => {
@@ -65,49 +69,64 @@ const LatestSales = props => {
     });
   }, []);
 
-  const getYestesday = () => {
+  const getLastNDays = n => {
     const today = new Date();
-    const yesterday = today.setDate(today.getDate() - 1);
+    const yesterday = today.setDate(today.getDate() - (n + 1));
     return new Date(yesterday).toDateString();
   };
-
-  const getLast3Days = () => {
-    const today = new Date();
-    const yesterday = today.setDate(today.getDate() - 2);
-    return new Date(yesterday).toDateString();
-  };
-
+  const componentRef = useRef();
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
       <CardHeader
+        // action={
+        //   <Select
+        //     native
+        //     variant='outlined'
+        //     value={selectedFilter}
+        //     onChange={handleChange}>
+        //     <option value={getLastNDays(2)}>Last 2 days</option>
+        //     <option value={getLastNDays(3)}>Lat 3 days</option>
+        //     <option value={getLastNDays(3)}>Lat 3 days</option>
+        //     <option value={getLastNDays(4)}>Lat 4 days</option>
+        //     <option value={getLastNDays(3)}>Lat 5 days</option>
+        //     <option value={getLastNDays(3)}>Lat 6 days</option>
+        //     <option value={getLastNDays(3)}>Lat 7 days</option>
+        //   </Select>
+        // }
         action={
-          <Select
-            native
-            variant='outlined'
-            value={selectedFilter}
-            onChange={handleChange}>
-            <option value={new Date()}>Today</option>
-            <option value={getYestesday()}>Yesterday</option>
-            <option value={getLast3Days()}>Lat 3 days</option>
-            <option value={new Date()}>This Week</option>
-            <option value={new Date()}>Last Week</option>
-            <option value={new Date()}>This Month</option>
-            <option value={new Date()}>Last Month</option>
-          </Select>
+          <ReactToPrint
+            trigger={() => <Button color='secondary'>Print</Button>}
+            content={() => componentRef.current}
+          />
         }
         title='Latest Sales'
       />
       <Divider />
-      <CardContent>
+      <CardContent ref={componentRef}>
         <div className={classes.chartContainer}>
           <Bar data={data} options={options} />
         </div>
       </CardContent>
       <Divider />
       <CardActions className={classes.actions}>
-        <Button color='primary' size='small' variant='text'>
+        <Button
+          onClick={() => {
+            setOpenDialog(true);
+          }}
+          color='primary'
+          size='small'
+          variant='text'>
           Overview <ArrowRightIcon />
         </Button>
+        <FormDialog
+          title='Overview'
+          scroll='body'
+          component={<Overview />}
+          open={openDialog}
+          onClose={() => {
+            setOpenDialog(false);
+          }}
+        />
       </CardActions>
     </Card>
   );
