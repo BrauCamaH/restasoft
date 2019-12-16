@@ -26,6 +26,7 @@
     "react-scripts": "3.1.1",
     "react-select": "^3.0.8",
     "react-text-mask": "^5.4.3",
+    "react-to-print": "^2.5.0",
     "use-debounce": "^3.3.0",
     "validate.js": "^0.13.1"
   },
