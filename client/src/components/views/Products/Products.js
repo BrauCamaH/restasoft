@@ -169,7 +169,9 @@ const Products = ({ match }) => {
         updateProduct: updateProduct,
       }}>
       <div className={classes.root}>
-        <ProductsToolbar loading={loading}></ProductsToolbar>
+        <ProductsToolbar
+          loading={loading}
+          category={category}></ProductsToolbar>
         {loading ? (
           <LinearProgress className={classes.content} />
         ) : (

@@ -19,10 +19,28 @@ exports.getProducts = (req, res) => {
     .catch(e => res.json({ err: e }));
 };
 
+exports.searchProducts = (req, res) => {
+  const { value } = req.params;
+  Sales.findAll({
+    order: ['id'],
+    where: { category: req.params.category },
+  })
+    .then(products =>
+      res.json(
+        products.filter(
+          item =>
+            item.name.toLowerCase().includes(value.toLowerCase()) ||
+            item.description.toLowerCase().includes(value.toLowerCase())
+        )
+      )
+    )
+    .catch(e => res.json({ err: e }));
+};
+
 exports.getProductsByCategory = (req, res) => {
   category = Products.findAll({ where: { category: req.params.category } })
     .then(product => res.json(product))
-    .catch(e => res.jso({ err: e }));
+    .catch(e => res.json({ err: e }));
 };
 
 exports.addProduct = (req, res) => {
@@ -77,7 +95,7 @@ exports.updateProduct = (req, res) => {
         where: {
           id: id,
         },
-      },
+      }
     )
       .then(() => {
         res.status(200).json({

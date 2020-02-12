@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -10,6 +10,9 @@ import ProductsFormDialog from '../ProductFormDialog';
 import { SearchBar as SearchInput, RoleManager } from '../../../../tools';
 import { Button } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+
+import { ProductsContext } from '../../Products';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -31,8 +34,17 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ProductsToolbar = props => {
-  const { loading, className, staticContext, history, ...rest } = props;
+  const {
+    loading,
+    category,
+    className,
+    staticContext,
+    history,
+    ...rest
+  } = props;
   const [open, setOpen] = useState(false);
+
+  const context = useContext(ProductsContext);
 
   const handleBack = () => {
     history.goBack();
@@ -44,7 +56,22 @@ const ProductsToolbar = props => {
     setOpen(true);
   };
 
-  const handleSearchChange = event => {};
+  const handleSearchChange = value => {
+    axios
+      .get(`/api/products/${category}`)
+      .then(res => {
+        context.setProducts(
+          res.data.filter(
+            item =>
+              item.name.toLowerCase().includes(value.toLowerCase()) ||
+              item.description.toLowerCase().includes(value.toLowerCase())
+          )
+        );
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
 
   const classes = useStyles();
 
@@ -64,7 +91,6 @@ const ProductsToolbar = props => {
             </Button>
           )}
         </RoleManager>
-
         <ProductsFormDialog open={open} onClose={handleClose} />
       </div>
       <div className={classes.row}>
